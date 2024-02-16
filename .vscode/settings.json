@@ -1,0 +1,10 @@
+{
+    "C_Cpp.errorSquiggles": "disabled",
+    "editor.fontSize": 14,
+    "C_Cpp.dimInactiveRegions": false,
+    "files.associations": {
+        "pico-vgaboard.h": "c"
+    },
+    // "window.zoomLevel": 0,
+    // "terminal.integrated.fontSize": 11,
+}
