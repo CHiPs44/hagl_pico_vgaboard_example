@@ -1,9 +1,14 @@
-[submodule "external/hagl"]
-	path = external/hagl
-	url = git@github.com:CHiPs44/hagl.git
-[submodule "external/embedded-fonts"]
-	path = external/embedded-fonts
-	url = https://github.com/tuupola/embedded-fonts.git
-[submodule "external/fontx2-fonts"]
-	path = external/fontx2-fonts
-	url = https://github.com/CHiPs44/fontx2-fonts.git
+# [submodule "external/hagl"]
+# 	path = external/hagl
+# 	url = git@github.com:CHiPs44/hagl.git
+# 	branch = chips44
+# [submodule "external/embedded-fonts"]
+# 	path = external/embedded-fonts
+# 	url = https://github.com/tuupola/embedded-fonts.git
+# [submodule "external/fontx2-fonts"]
+# 	path = external/fontx2-fonts
+# 	url = https://github.com/CHiPs44/fontx2-fonts.git
+# [submodule "external/hagl_hal"]
+# 	path = external/hagl_hal
+# 	url = git@github.com:CHiPs44/hagl_pico_vgaboard.git
+# 	branch = develop

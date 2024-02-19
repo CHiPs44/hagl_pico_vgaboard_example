@@ -33,31 +33,31 @@
 // #define W 15
 
 #define _ 1
-#define M 0
-#define X 13
-#define Y 14
-#define Z 2
+#define M 1
+#define X 6
+#define Y 9
+#define Z 11
 #define O 3
 #define W 12
 
 hagl_color_t ship_16x16x4_1_bitmap[] = {
     /*  00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 */
-    _, _, _, Z, M, _, _, W, M, _, _, Z, M, _, _, _, /* 00 */
-    _, _, _, Y, M, _, _, X, M, _, _, Y, M, _, _, _, /* 01 */
-    _, _, _, W, M, _, X, Y, X, M, _, W, M, _, _, _, /* 02 */
-    _, _, _, X, M, _, X, Y, X, M, _, X, M, _, _, _, /* 03 */
-    _, _, _, X, M, X, Y, Y, Y, X, M, X, M, _, _, _, /* 04 */
-    _, _, _, X, M, X, Y, Y, Y, X, M, X, M, _, _, _, /* 05 */
-    _, _, _, X, X, Y, Y, Y, Y, Y, X, X, M, _, _, _, /* 06 */
-    O, M, _, X, X, Y, Y, Y, Y, Y, X, X, M, _, O, M, /* 07 */
-    X, M, _, X, Z, Z, Z, Z, Z, Z, Z, X, M, _, X, M, /* 08 */
-    X, M, _, X, X, X, Z, Z, Z, X, X, X, M, _, X, M, /* 09 */
-    X, M, X, X, X, X, Z, Z, Z, X, X, X, X, M, X, M, /* 10 */
-    X, X, X, X, M, X, X, X, X, X, M, X, X, X, X, M, /* 11 */
-    X, X, X, M, M, X, X, X, X, X, M, _, X, X, X, M, /* 12 */
-    X, M, M, _, _, _, X, M, X, M, _, _, _, _, X, M, /* 13 */
-    X, M, _, _, _, _, O, M, O, M, _, _, _, _, X, M, /* 14 */
-    M, M, _, _, _, _, M, M, M, M, _, _, _, _, M, M, /* 15 */
+    _, _, _, Z, Z, _, _, W, W, _, _, Z, Z, _, _, _, /* 00 */
+    _, _, _, Y, Y, _, _, X, X, _, _, Y, Y, _, _, _, /* 01 */
+    _, _, _, W, W, _, X, Y, X, X, _, W, W, _, _, _, /* 02 */
+    _, _, _, X, X, _, X, Y, X, X, _, X, X, _, _, _, /* 03 */
+    _, _, _, X, X, X, Y, Y, Y, X, X, X, X, _, _, _, /* 04 */
+    _, _, _, X, X, X, Y, Y, Y, X, X, X, X, _, _, _, /* 05 */
+    _, _, _, X, X, Y, Y, Y, Y, Y, X, X, X, _, _, _, /* 06 */
+    O, O, _, X, X, Y, Y, Y, Y, Y, X, X, X, _, O, O, /* 07 */
+    X, X, _, X, Z, Z, Z, Z, Z, Z, Z, X, X, _, X, X, /* 08 */
+    X, X, _, X, X, X, Z, Z, Z, X, X, X, X, _, X, X, /* 09 */
+    X, X, X, X, X, X, Z, Z, Z, X, X, X, X, X, X, X, /* 10 */
+    X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, /* 11 */
+    X, X, X, X, X, X, X, X, X, X, X, _, X, X, X, X, /* 12 */
+    X, X, _, _, _, _, X, X, X, X, _, _, _, _, X, X, /* 13 */
+    X, X, _, _, _, _, X, O, O, X, _, _, _, _, X, X, /* 14 */
+    X, X, _, _, _, _, X, X, X, X, _, _, _, _, X, X, /* 15 */
 };
 
 hagl_bitmap_t ship_16x16x4_1 = {
@@ -73,6 +73,7 @@ int ship_y;
 int ship_dx;
 int ship_dy;
 int ship_counter = 0;
+absolute_time_t ship_timer;
 
 #include "tiles-4bpp.c"
 #include "aliens-4bpp.c"
@@ -96,22 +97,17 @@ bool sprites_init()
     alien_init();
     alien_draw();
 
-    ship_x = rand() % DEMO.w;
-    ship_y = rand() % DEMO.h;
-    ship_y = DEMO.h / 2 + rand() % (DEMO.h / 2);
+    ship_x = DEMO.x + rand() % (DEMO.w - DEMO.x);
+    ship_y = DEMO.y + rand() % (DEMO.h - DEMO.y);
     ship_dx = rand() % 2 == 0 ? 1 : -1;
     ship_dy = rand() % 2 == 0 ? 1 : -1;
-    // ship_x = DEMO.w / 2 - ship_16x16x4_1.width / 2;
-    // ship_y = DEMO.h / 2 - ship_16x16x4_1.height / 2;
-    // ship_dx = 0;
-    // ship_dy = 0;
 
     return true;
 }
 
 void sprites_done()
 {
-    free(tile_map);
+    tile_done();
 }
 
 void sprites_draw()

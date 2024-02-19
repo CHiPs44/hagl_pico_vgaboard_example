@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/CMakeFiles/PioasmBuild"
+		},
+		{
+			"file" : "/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/CMakeFiles/PioasmBuild.rule"
+		},
+		{
+			"file" : "/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/CMakeFiles/PioasmBuild-complete.rule"
+		},
+		{
+			"file" : "/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/pioasm/src/PioasmBuild-stamp/PioasmBuild-build.rule"
+		},
+		{
+			"file" : "/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/pioasm/src/PioasmBuild-stamp/PioasmBuild-configure.rule"
+		},
+		{
+			"file" : "/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/pioasm/src/PioasmBuild-stamp/PioasmBuild-download.rule"
+		},
+		{
+			"file" : "/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/pioasm/src/PioasmBuild-stamp/PioasmBuild-install.rule"
+		},
+		{
+			"file" : "/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/pioasm/src/PioasmBuild-stamp/PioasmBuild-mkdir.rule"
+		},
+		{
+			"file" : "/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/pioasm/src/PioasmBuild-stamp/PioasmBuild-patch.rule"
+		},
+		{
+			"file" : "/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/pioasm/src/PioasmBuild-stamp/PioasmBuild-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"PioasmBuild"
+		],
+		"name" : "PioasmBuild"
+	}
+}

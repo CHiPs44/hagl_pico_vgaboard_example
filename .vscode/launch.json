@@ -2,8 +2,32 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build2/hagl_pico_vgaboard_example",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "cwd": "${workspaceRoot}",
-            "executable": "./example/build/hagl_pico_vgaboard_example.elf",
+            "executable": "./build/hagl_pico_vgaboard_example.elf",
             "name": "Debug with OpenOCD",
             "request": "launch",
             "type": "cortex-debug",
@@ -28,7 +52,8 @@
             //     "continue"
             // ],
             "liveWatch": {
-                "enabled": true,
+                // "enabled": true,
+                "enabled": false,
                 "samplesPerSecond": 4
             }
         }

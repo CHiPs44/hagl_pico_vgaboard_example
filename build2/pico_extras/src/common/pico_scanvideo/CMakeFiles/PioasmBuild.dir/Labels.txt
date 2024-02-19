@@ -1,0 +1,13 @@
+# Target labels
+ PioasmBuild
+# Source files and their labels
+/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/CMakeFiles/PioasmBuild
+/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/CMakeFiles/PioasmBuild.rule
+/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/CMakeFiles/PioasmBuild-complete.rule
+/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/pioasm/src/PioasmBuild-stamp/PioasmBuild-build.rule
+/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/pioasm/src/PioasmBuild-stamp/PioasmBuild-configure.rule
+/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/pioasm/src/PioasmBuild-stamp/PioasmBuild-download.rule
+/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/pioasm/src/PioasmBuild-stamp/PioasmBuild-install.rule
+/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/pioasm/src/PioasmBuild-stamp/PioasmBuild-mkdir.rule
+/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/pioasm/src/PioasmBuild-stamp/PioasmBuild-patch.rule
+/home/chips/src/hagl_pico_vgaboard_example/build2/pico_extras/src/common/pico_scanvideo/pioasm/src/PioasmBuild-stamp/PioasmBuild-update.rule

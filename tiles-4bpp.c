@@ -1,16 +1,18 @@
-#define B0 0
+#define B0 10
+#define B1 9
+#define B2 5
 #define G0 1
 #define G1 2
 #define G2 3
 #define G3 4
-#define BF 14
+#define BF 0
 
 // clang-format off
 
 hagl_color_t tile_8x8x4_0_bitmap[] = {
-    G0, G0, G0, G0, G0, G0, G0, B0,
     G0, G0, G0, G0, G0, G0, G0, BF,
-    G0, G0, G0, G0, G0, G0, G0, BF,
+    G0, B0, B1, G0, G0, G0, G0, BF,
+    G0, B1, B2, G0, G0, G0, G0, BF,
     G0, G0, G0, G0, G0, G0, G0, BF,
     G0, G0, G0, G0, G0, G0, G0, BF,
     G0, G0, G0, G0, G0, G0, G0, BF,
@@ -19,9 +21,9 @@ hagl_color_t tile_8x8x4_0_bitmap[] = {
 };
 
 hagl_color_t tile_8x8x4_1_bitmap[] = {
-    G1, G1, G1, G1, G1, G1, G1, B0,
     G1, G1, G1, G1, G1, G1, G1, BF,
-    G1, G1, G1, G1, G1, G1, G1, BF,
+    G1, B0, B1, G1, G1, G1, G1, BF,
+    G1, B1, B2, G1, G1, G1, G1, BF,
     G1, G1, G1, G1, G1, G1, G1, BF,
     G1, G1, G1, G1, G1, G1, G1, BF,
     G1, G1, G1, G1, G1, G1, G1, BF,
@@ -30,9 +32,9 @@ hagl_color_t tile_8x8x4_1_bitmap[] = {
 };
 
 hagl_color_t tile_8x8x4_2_bitmap[] = {
-    G2, G2, G2, G2, G2, G2, G2, B0,
     G2, G2, G2, G2, G2, G2, G2, BF,
-    G2, G2, G2, G2, G2, G2, G2, BF,
+    G2, B0, B1, G2, G2, G2, G2, BF,
+    G2, B1, B2, G2, G2, G2, G2, BF,
     G2, G2, G2, G2, G2, G2, G2, BF,
     G2, G2, G2, G2, G2, G2, G2, BF,
     G2, G2, G2, G2, G2, G2, G2, BF,
@@ -41,9 +43,9 @@ hagl_color_t tile_8x8x4_2_bitmap[] = {
 };
 
 hagl_color_t tile_8x8x4_3_bitmap[] = {
-    G3, G3, G3, G3, G3, G3, G3, B0,
     G3, G3, G3, G3, G3, G3, G3, BF,
-    G3, G3, G3, G3, G3, G3, G3, BF,
+    G3, B0, B1, G3, G3, G3, G3, BF,
+    G3, B1, B2, G3, G3, G3, G3, BF,
     G3, G3, G3, G3, G3, G3, G3, BF,
     G3, G3, G3, G3, G3, G3, G3, BF,
     G3, G3, G3, G3, G3, G3, G3, BF,
@@ -98,6 +100,9 @@ int tile_height;
 int tile_columns;
 int tile_lines;
 uint8_t *tile_map;
+uint8_t *tile_line;
+int tile_counter = 0;
+int tile_offset_y = 0;
 
 void tile_draw()
 {
@@ -108,7 +113,7 @@ void tile_draw()
             hagl_blit_xywh(
                 hagl_backend,
                 DEMO.x + tile_width * column,
-                DEMO.y + tile_height * line,
+                DEMO.y + tile_height * line - tile_offset_y,
                 tile_width, tile_height,
                 tiles_8x8x4[tile_map[line * tile_columns + column]]);
         }
@@ -119,10 +124,11 @@ bool tile_init()
 {
     tile_width = 8 * tile_zoom;
     tile_height = 8 * tile_zoom;
-    tile_columns = DEMO.w / tile_width;
-    tile_lines = DEMO.h / tile_height;
+    tile_columns = (DEMO.w - DEMO.x) / tile_width;
+    tile_lines = 1 + (DEMO.h - DEMO.y) / tile_height;
     tile_map = malloc(sizeof(uint8_t) * tile_columns * tile_lines);
-    if (tile_map == NULL)
+    tile_line = malloc(sizeof(uint8_t) * tile_columns);
+    if (tile_map == NULL || tile_line == NULL)
     {
         return false;
     }
@@ -136,9 +142,38 @@ bool tile_init()
     return true;
 }
 
+void tile_done()
+{
+    if (tile_map != NULL)
+        free(tile_map);
+    if (tile_line != NULL)
+        free(tile_map);
+}
+
 void tile_anim()
 {
-    // nothing!
+    tile_counter += 1;
+    if (tile_counter < 30)
+        return;
+    tile_counter = 0;
+    tile_offset_y += 1;
+    if (tile_offset_y > tile_height)
+        tile_offset_y = 0;
+    for (int column = 0; column < tile_columns; column++)
+    {
+        tile_line[column] = tile_map[column];
+    }
+    for (int line = 1; line < tile_lines; line++)
+    {
+        for (int column = 0; column < tile_columns; column++)
+        {
+            tile_map[(line - 1) * tile_columns + column] = tile_map[line * tile_columns + column];
+        }
+    }
+    for (int column = 0; column < tile_columns; column++)
+    {
+        tile_map[(tile_lines - 1) * tile_columns + column] = tile_line[column];
+    }
 }
 
 // EOF

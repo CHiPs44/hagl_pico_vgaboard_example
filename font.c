@@ -4,20 +4,20 @@
 #include "hagl.h"
 #include "hagl_hal.h"
 // HAGL provided Fonts
-#include "./external/hagl/include/font5x7.h"
-#include "./external/hagl/include/font5x8.h"
-#include "./external/hagl/include/font6x9.h"
+#include "font5x7.h"
+#include "font5x8.h"
+#include "font6x9.h"
 // Embedded fonts (from tuupola)
-// #include "./external/embedded-fonts/X11/include/font10x20.h"
-#include "./external/embedded-fonts/X11/include/font6x10.h"
-#include "./external/embedded-fonts/X11/include/font8x13.h"
-#include "./external/embedded-fonts/X11/include/font8x13B.h"
-#include "./external/embedded-fonts/X11/include/font9x18B.h"
-// #include "./external/embedded-fonts/misc/viznut/include/unscii-8.h"
-// #include "./external/embedded-fonts/misc/viznut/include/unscii-8-fantasy.h"
+// KO? #include "font10x20.h"
+#include "font6x10.h"
+#include "font8x13.h"
+#include "font8x13B.h"
+#include "font9x18B.h"
+// KO #include "./external/embedded-fonts/misc/viznut/include/unscii-8.h"
+// KO #include "./external/embedded-fonts/misc/viznut/include/unscii-8-fantasy.h"
 // FONTX2 fonts (from CHiPs44)
-#include "./external/fontx2-fonts/BIOS/BIOS_F08.h"
-#include "./external/fontx2-fonts/font8x8/font8x8.h"
+#include "BIOS_F08.h"
+#include "font8x8.h"
 
 /* clang-format off */
 //                                                                                12345678901234567
