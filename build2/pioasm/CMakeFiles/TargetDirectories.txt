@@ -1,3 +1,0 @@
-/home/chips/src/hagl_pico_vgaboard_example/build2/pioasm/CMakeFiles/pioasm.dir
-/home/chips/src/hagl_pico_vgaboard_example/build2/pioasm/CMakeFiles/edit_cache.dir
-/home/chips/src/hagl_pico_vgaboard_example/build2/pioasm/CMakeFiles/rebuild_cache.dir
