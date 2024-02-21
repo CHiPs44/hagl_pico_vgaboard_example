@@ -1,83 +1,87 @@
 #include <pico/time.h>
 
-#define V 15
-#define A 12
-#define I 13
-#define C 0
-#define B 8
+#define __ 15
+#define XX 12
+#define YY 13
+#define ZZ 0
+#define TT 8
+// #define __ 12
 
 // clang-format off
 
 hagl_color_t alien_16x16x4_0_bitmap[] = {
-//  00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15
-    V, V, V, V, V, V, B, B, B, B, V, V, V, V, V, V, // 00
-    V, V, V, V, V, B, A, A, A, A, B, V, V, V, V, V, // 01
-    V, V, V, B, B, A, A, A, A, A, A, B, V, V, V, V, // 02
-    V, V, B, A, A, A, A, A, A, A, A, A, A, B, V, V, // 03
-    V, B, A, A, A, I, I, A, A, I, I, A, A, A, B, V, // 04
-    B, A, A, A, A, I, I, A, A, I, I, A, A, A, A, B, // 05
-    B, A, A, A, A, I, I, A, A, I, I, A, A, A, A, B, // 06
-    V, B, A, A, A, I, C, A, A, I, C, A, A, A, B, V, // 07
-    V, B, A, A, A, C, C, A, A, C, C, A, A, A, B, V, // 08
-    V, V, B, A, A, A, A, A, A, A, A, A, A, B, V, V, // 09
-    V, V, V, B, A, A, A, A, A, A, A, A, B, V, V, V, // 10
-    V, V, V, B, A, A, A, A, A, A, A, V, V, V, V, V, // 11
-    V, V, V, V, B, A, B, V, V, B, A, B, V, V, V, V, // 12
-    V, V, V, B, A, B, V, V, V, V, B, A, B, V, V, V, // 13
-    V, B, A, A, B, V, V, V, V, V, V, B, A, A, B, V, // 14
-    V, V, V, V, V, V, V, V, V, V, V, V, V, V, V, V, // 15
+//  00  01  02  03  04  05  06  07  08  09  10  11  12  13  14  15
+    __, __, __, __, __, __, XX, XX, XX, __, __, __, __, __, __, __, // 00
+    __, __, __, __, XX, XX, XX, XX, XX, XX, XX, __, __, __, __, __, // 01
+    __, __, __, XX, XX, XX, XX, XX, XX, XX, XX, XX, __, __, __, __, // 02
+    __, __, __, XX, XX, YY, YY, XX, YY, YY, XX, XX, __, __, __, __, // 03
+    __, __, XX, XX, XX, YY, YY, XX, YY, YY, XX, XX, XX, __, __, __, // 04
+    __, __, XX, XX, XX, YY, YY, XX, YY, YY, XX, XX, XX, __, __, __, // 05
+    __, __, XX, XX, XX, YY, ZZ, XX, YY, ZZ, XX, XX, XX, __, __, __, // 06
+    __, __, XX, XX, XX, YY, ZZ, XX, YY, ZZ, XX, XX, XX, __, __, __, // 07
+    __, __, __, XX, XX, ZZ, ZZ, XX, ZZ, ZZ, XX, XX, __, __, __, __, // 08
+    __, __, __, __, XX, XX, XX, XX, XX, XX, XX, __, __, __, __, __, // 09
+    __, __, __, __, XX, XX, XX, XX, XX, XX, XX, __, __, __, __, __, // 10
+    __, __, __, XX, XX, __, __, __, __, __, XX, XX, __, __, __, __, // 11
+    __, __, XX, XX, __, __, __, __, __, __, __, XX, XX, __, __, __, // 12
+    __, XX, XX, __, __, __, __, __, __, __, __, __, XX, XX, __, __, // 13
+    XX, XX, __, __, __, __, __, __, __, __, __, __, __, XX, XX, __, // 14
+    __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, // 15
 };
 
 hagl_color_t alien_16x16x4_1_bitmap[] = {
-//  00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15
-    V, V, V, V, V, V, B, B, B, B, V, V, V, V, V, V, // 00
-    V, V, V, V, V, B, A, A, A, A, B, V, V, V, V, V, // 01
-    V, V, V, B, B, A, A, A, A, A, A, B, V, V, V, V, // 02
-    V, V, B, A, A, A, A, A, A, A, A, A, A, B, V, V, // 03
-    V, B, A, A, A, I, I, A, A, I, I, A, A, A, B, V, // 04
-    B, A, A, A, A, I, I, A, A, I, I, A, A, A, A, B, // 05
-    B, A, A, A, A, I, I, A, A, I, I, A, A, A, A, B, // 06
-    V, B, A, A, A, C, I, A, A, C, I, A, A, A, B, V, // 07
-    V, B, A, A, A, C, C, A, A, C, C, A, A, A, B, V, // 08
-    V, V, B, A, A, A, A, A, A, A, A, A, A, B, V, V, // 09
-    V, V, V, B, A, A, A, A, A, A, A, A, B, V, V, V, // 10
-    V, V, V, B, A, A, A, A, A, A, A, B, V, V, V, V, // 11
-    V, V, V, V, B, A, B, V, V, B, A, B, V, V, V, V, // 12
-    V, V, V, B, A, B, V, V, V, V, B, A, B, V, V, V, // 13
-    V, V, V, V, B, A, A, B, B, A, A, B, V, V, V, V, // 14
-    V, V, V, V, V, V, V, V, V, V, V, V, V, V, V, V, // 15
+//  00  01  02  03  04  05  06  07  08  09  10  11  12  13  14  15
+    __, __, __, __, __, __, XX, XX, XX, __, __, __, __, __, __, __, // 00
+    __, __, __, __, XX, XX, XX, XX, XX, XX, XX, __, __, __, __, __, // 01
+    __, __, __, XX, XX, XX, XX, XX, XX, XX, XX, XX, __, __, __, __, // 02
+    __, __, __, XX, XX, YY, YY, XX, YY, YY, XX, XX, __, __, __, __, // 03
+    __, __, XX, XX, XX, YY, YY, XX, YY, YY, XX, XX, XX, __, __, __, // 04
+    __, __, XX, XX, XX, YY, YY, XX, YY, YY, XX, XX, XX, __, __, __, // 05
+    __, __, XX, XX, XX, ZZ, YY, XX, ZZ, YY, XX, XX, XX, __, __, __, // 06
+    __, __, XX, XX, XX, ZZ, YY, XX, ZZ, YY, XX, XX, XX, __, __, __, // 07
+    __, __, __, XX, XX, ZZ, ZZ, XX, ZZ, ZZ, XX, XX, __, __, __, __, // 08
+    __, __, __, __, XX, XX, XX, XX, XX, XX, XX, __, __, __, __, __, // 09
+    __, __, __, __, XX, XX, XX, XX, XX, XX, XX, __, __, __, __, __, // 10
+    __, __, __, XX, XX, __, __, __, __, __, XX, XX, __, __, __, __, // 11
+    __, __, XX, XX, __, __, __, __, __, __, __, XX, XX, __, __, __, // 12
+    __, __, XX, XX, __, __, __, __, __, __, __, XX, XX, __, __, __, // 13
+    __, __, __, XX, XX, __, __, __, __, __, XX, XX, __, __, __, __, // 14
+    __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, // 15
 };
 
 // clang-format on
 
-hagl_bitmap_t alien_16x16x4_0 = {
-    .width = 16,
-    .height = 16,
-    .depth = 4,                             // bits
-    .pitch = 32,                            // 16 * 2, bytes per row
-    .size = sizeof(alien_16x16x4_0_bitmap), // 16 * 16  = 256 bytes
-    .buffer = (uint8_t *)&alien_16x16x4_0_bitmap};
-
-hagl_bitmap_t alien_16x16x4_1 = {
-    .width = 16,
-    .height = 16,
-    .depth = 4,                             // bits
-    .pitch = 32,                            // 16 * 2, bytes per row
-    .size = sizeof(alien_16x16x4_1_bitmap), // 16 * 16  = 256 bytes
-    .buffer = (uint8_t *)&alien_16x16x4_1_bitmap};
+hagl_bitmap_t alien_16x16x4_frames[2] = {
+    {.width = 16,
+     .height = 16,
+     .depth = 4,                             // bits
+     .pitch = 32,                            // 16 * 2, bytes per row
+     .size = sizeof(alien_16x16x4_0_bitmap), // 16 * 16  = 256 bytes
+     .buffer = (uint8_t *)&alien_16x16x4_0_bitmap},
+    {.width = 16,
+     .height = 16,
+     .depth = 4,                             // bits
+     .pitch = 32,                            // 16 * 2, bytes per row
+     .size = sizeof(alien_16x16x4_1_bitmap), // 16 * 16  = 256 bytes
+     .buffer = (uint8_t *)&alien_16x16x4_1_bitmap},
+};
 
 typedef struct
 {
     int16_t x;
     int16_t y;
     int16_t dx;
+    int16_t dy;
     int16_t frame;
 } alien_t;
 
-#define ALIENS 32
-#define ALIEN_COLS 8
-#define ALIEN_ROWS 4
-#define ALIEN_SPEED_MS 256
+#define ALIENS 55
+#define ALIEN_COLS 11
+#define ALIEN_ROWS 5
+#define ALIEN_SPEED_MS 128
+#define ALIEN_GRID_X 16
+#define ALIEN_GRID_Y 16
+
 alien_t aliens[ALIENS];
 int alien_speed_ms = ALIEN_SPEED_MS;
 absolute_time_t alien_timer;
@@ -87,13 +91,13 @@ void alien_draw()
 {
     for (size_t i = 0; i < ALIENS; i++)
     {
-        hagl_bitmap_t *bitmap = aliens[i].frame ? &alien_16x16x4_1 : &alien_16x16x4_0;
+        hagl_bitmap_t *bitmap = &alien_16x16x4_frames[aliens[i].frame];
         hagl_blit_xywh_transparent(
             hagl_backend,
             DEMO.x + aliens[i].x, DEMO.y + aliens[i].y,
             bitmap->width, bitmap->height,
             bitmap,
-            V);
+            __);
     }
 }
 
@@ -106,9 +110,10 @@ void alien_init()
         for (size_t row = 0; row < ALIEN_ROWS; row++)
         {
             size_t i = row * ALIEN_COLS + col;
-            aliens[i].x = DEMO.x + 24 + col * 24;
-            aliens[i].y = DEMO.y + 24 + row * 24;
+            aliens[i].x = DEMO.x + ALIEN_GRID_X + ALIEN_GRID_X * col;
+            aliens[i].y = DEMO.y + ALIEN_GRID_Y + ALIEN_GRID_Y * row;
             aliens[i].dx = 1;
+            aliens[i].dy = 1;
         }
     }
     alien_draw();
@@ -125,20 +130,31 @@ void alien_anim()
             alien_speed_ms -= ALIEN_SPEED_MS / 10;
         }
         int16_t min_x = 32767, max_x = 0;
+        int16_t min_y = 32767, max_y = 0;
         for (size_t i = 0; i < ALIENS; i++)
         {
             if (aliens[i].x < min_x)
                 min_x = aliens[i].x;
             if (aliens[i].x > max_x)
                 max_x = aliens[i].x;
+            if (aliens[i].y < min_y)
+                min_y = aliens[i].y;
+            if (aliens[i].y > max_y)
+                max_y = aliens[i].y;
         }
-        bool change = (min_x < DEMO.x + 24) || (max_x > DEMO.x + DEMO.w - 24 - 16);
+        bool change_x = (min_x < DEMO.x + ALIEN_GRID_X) || (max_x > DEMO.x + DEMO.w - ALIEN_GRID_X - 16);
+        bool change_y = (min_y < DEMO.y + ALIEN_GRID_Y) || (max_y > DEMO.y + DEMO.h - ALIEN_GRID_Y - 16);
         for (size_t i = 0; i < ALIENS; i++)
         {
             aliens[i].frame = 1 - aliens[i].frame;
-            if (change)
+            if (change_x)
+            {
                 aliens[i].dx = -aliens[i].dx;
+                aliens[i].y += aliens[i].dy;
+            }
             aliens[i].x += aliens[i].dx;
+            if (change_y)
+                aliens[i].dy = -aliens[i].dy;
         }
     }
 }
