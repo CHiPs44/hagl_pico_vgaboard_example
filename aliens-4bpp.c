@@ -75,21 +75,21 @@ typedef struct
     int16_t frame;
 } alien_t;
 
-#define ALIENS 55
-#define ALIEN_COLS 11
-#define ALIEN_ROWS 5
+#define ALIEN_COLS 8
+#define ALIEN_ROWS 4
+#define ALIEN_COUNT (ALIEN_COLS * ALIEN_ROWS)
 #define ALIEN_SPEED_MS 128
-#define ALIEN_GRID_X 16
-#define ALIEN_GRID_Y 16
+#define ALIEN_GRID_X 24
+#define ALIEN_GRID_Y 20
 
-alien_t aliens[ALIENS];
+alien_t aliens[ALIEN_COUNT];
 int alien_speed_ms = ALIEN_SPEED_MS;
 absolute_time_t alien_timer;
 uint alien_counter;
 
 void alien_draw()
 {
-    for (size_t i = 0; i < ALIENS; i++)
+    for (size_t i = 0; i < ALIEN_COUNT; i++)
     {
         hagl_bitmap_t *bitmap = &alien_16x16x4_frames[aliens[i].frame];
         hagl_blit_xywh_transparent(
@@ -101,7 +101,7 @@ void alien_draw()
     }
 }
 
-void alien_init()
+bool alien_init()
 {
     alien_timer = make_timeout_time_ms(alien_speed_ms);
     alien_counter = 0;
@@ -117,6 +117,12 @@ void alien_init()
         }
     }
     alien_draw();
+    return true;
+}
+
+void alien_done()
+{
+    // NADA!
 }
 
 void alien_anim()
@@ -125,13 +131,13 @@ void alien_anim()
     {
         alien_timer = make_timeout_time_ms(alien_speed_ms);
         alien_counter++;
-        if (alien_counter % 100 == 0 && alien_speed_ms >= (ALIEN_SPEED_MS / 10))
+        if (alien_counter % 100 == 0 && alien_speed_ms >= (ALIEN_SPEED_MS / 8))
         {
-            alien_speed_ms -= ALIEN_SPEED_MS / 10;
+            alien_speed_ms -= ALIEN_SPEED_MS / 8;
         }
         int16_t min_x = 32767, max_x = 0;
         int16_t min_y = 32767, max_y = 0;
-        for (size_t i = 0; i < ALIENS; i++)
+        for (size_t i = 0; i < ALIEN_COUNT; i++)
         {
             if (aliens[i].x < min_x)
                 min_x = aliens[i].x;
@@ -144,7 +150,7 @@ void alien_anim()
         }
         bool change_x = (min_x < DEMO.x + ALIEN_GRID_X) || (max_x > DEMO.x + DEMO.w - ALIEN_GRID_X - 16);
         bool change_y = (min_y < DEMO.y + ALIEN_GRID_Y) || (max_y > DEMO.y + DEMO.h - ALIEN_GRID_Y - 16);
-        for (size_t i = 0; i < ALIENS; i++)
+        for (size_t i = 0; i < ALIEN_COUNT; i++)
         {
             aliens[i].frame = 1 - aliens[i].frame;
             if (change_x)

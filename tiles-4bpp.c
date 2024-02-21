@@ -94,15 +94,19 @@ hagl_bitmap_t *tiles_8x8x4[] = {
     &tile_8x8x4_3,
 };
 
-const int tile_zoom = 1;
 int tile_width;
 int tile_height;
 int tile_columns;
 int tile_lines;
+int tile_map_columns;
+int tile_map_lines;
 uint8_t *tile_map;
-// uint8_t *tile_line;
-int tile_counter = 0;
-int tile_offset_y = 0;
+int tile_offset_column;
+int tile_offset_x;
+int tile_offset_dx;
+int tile_offset_line;
+int tile_offset_y;
+int tile_offset_dy;
 
 void tile_draw()
 {
@@ -110,10 +114,11 @@ void tile_draw()
     {
         for (int column = 0; column < tile_columns; column++)
         {
+            int tile_offset = (tile_offset_line + line) * tile_map_columns + tile_offset_column;
             hagl_blit_xywh(
                 hagl_backend,
-                DEMO.x + tile_width * column,
-                DEMO.y + tile_height * (line - 1) - tile_offset_y,
+                DEMO.x + tile_width * (column - 1) + tile_offset_x * tile_offset_dx,
+                DEMO.y + tile_height * (line - 1) + tile_offset_y * tile_offset_dy,
                 tile_width, tile_height,
                 tiles_8x8x4[tile_map[line * tile_columns + column]]);
         }
@@ -122,23 +127,28 @@ void tile_draw()
 
 bool tile_init()
 {
-    tile_width = 8 * tile_zoom;
-    tile_height = 8 * tile_zoom;
+    tile_width = 8;
+    tile_height = 8;
     tile_columns = (DEMO.w - DEMO.x) / tile_width;
-    tile_lines = 3 + (DEMO.h - DEMO.y) / tile_height;
-    tile_map = malloc(sizeof(uint8_t) * tile_columns * tile_lines);
-    // tile_line = malloc(sizeof(uint8_t) * tile_columns);
-    tile_offset_y = 0;
-    if (tile_map == NULL) // || tile_line == NULL)
+    tile_lines = (DEMO.h - DEMO.y) / tile_height;
+    tile_map_columns = 2 * tile_columns;
+    tile_map_lines = 2 * tile_lines;
+    tile_map = malloc(sizeof(uint8_t) * tile_map_columns * tile_map_lines);
+    if (tile_map == NULL)
     {
         return false;
     }
-    for (int line = 0; line < tile_lines; line++)
+    tile_offset_column = (tile_map_columns - tile_columns) / 2;
+    tile_offset_x = 0;
+    tile_offset_dx = 0;
+    tile_offset_line = (tile_map_lines - tile_lines) / 2;
+    tile_offset_y = 0;
+    tile_offset_dy = 0;
+    for (int line = 0; line < tile_map_lines; line++)
     {
-        for (int column = 0; column < tile_columns; column++)
+        for (int column = 0; column < tile_map_columns; column++)
         {
             tile_map[line * tile_columns + column] = rand() % 4;
-            // tile_map[line * tile_columns + column] = (line * (tile_columns + 2) + column) % 4;
         }
     }
     return true;
@@ -148,35 +158,41 @@ void tile_done()
 {
     if (tile_map != NULL)
         free(tile_map);
-    // if (tile_line != NULL)
-    //     free(tile_line);
 }
 
 void tile_anim()
 {
-    // tile_counter += 1;
-    // if (tile_counter < 2)
-    //     return;
-    // tile_counter = 0;
-    tile_offset_y += 1;
-    if (tile_offset_y < tile_height)
-        return;
-    tile_offset_y = 0;
-    // for (int column = 0; column < tile_columns; column++)
-    // {
-    //     tile_line[column] = tile_map[column];
-    // }
-    for (int line = 1; line < tile_lines; line++)
+    tile_offset_x += tile_offset_dx;
+    if (tile_offset_x < 0 || tile_offset_x > tile_width - 1)
     {
-        for (int column = 0; column < tile_columns; column++)
+        tile_offset_x = tile_offset_dx > 0 ? tile_width - 1 : 0;
+        tile_offset_column += tile_offset_dx;
+        if (tile_offset_column < 1)
         {
-            tile_map[(line - 1) * tile_columns + column] = tile_map[line * tile_columns + column];
+            tile_offset_column = 0;
+            tile_offset_dx -= tile_offset_dx;
+        }
+        else if (tile_offset_column > tile_map_columns - tile_columns - 1)
+        {
+            tile_offset_column = tile_map_columns - tile_columns - 1;
+            tile_offset_dx -= tile_offset_dx;
         }
     }
-    for (int column = 0; column < tile_columns; column++)
+    tile_offset_y += tile_offset_dy;
+    if (tile_offset_y < 0 || tile_offset_y > tile_height - 1)
     {
-        // tile_map[(tile_lines - 1) * tile_columns + column] = tile_line[column];
-        tile_map[(tile_lines - 1) * tile_columns + column] = rand() % 4;
+        tile_offset_y = tile_offset_dy > 0 ? tile_height - 1 : 0;
+        tile_offset_line += tile_offset_dy;
+        if (tile_offset_line < 0)
+        {
+            tile_offset_line = 0;
+            tile_offset_dy -= tile_offset_dy;
+        }
+        else if (tile_offset_line > tile_map_lines - tile_lines - 1)
+        {
+            tile_offset_line = tile_map_lines - tile_lines - 1;
+            tile_offset_dy -= tile_offset_dy;
+        }
     }
 }
 
