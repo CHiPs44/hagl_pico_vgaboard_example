@@ -474,10 +474,14 @@ int main(void)
 
     if (pico_vgaboard->has_margins){
         /* Random border colors in letterbox mode instead of default black ones */
-        pico_vgaboard->border_color_top    = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-        pico_vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-        pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-        pico_vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        // pico_vgaboard->border_color_top    = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        // pico_vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        // pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        // pico_vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        pico_vgaboard->border_color_top    = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
+        pico_vgaboard->border_color_left   = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
+        pico_vgaboard->border_color_bottom = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
+        pico_vgaboard->border_color_right  = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
     }
 
     /* clang-format on */

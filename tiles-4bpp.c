@@ -1,3 +1,8 @@
+/* SPDX-License-Identifier: MIT-0 */
+
+#include "hagl.h"
+#include "hagl_hal.h"
+
 #define B0 10
 #define B1 9
 #define B2 5
@@ -107,22 +112,42 @@ int tile_offset_dx;
 int tile_offset_line;
 int tile_offset_y;
 int tile_offset_dy;
+wchar_t tile_debug_text[40];
 
 void tile_draw()
 {
+    int min_index = 10000;
+    int max_index = 0;
     for (int line = 0; line < tile_lines; line++)
     {
         for (int column = 0; column < tile_columns; column++)
         {
-            int tile_offset = (tile_offset_line + line) * tile_map_columns + tile_offset_column;
+            int index = (tile_offset_line + line) * tile_map_columns + tile_offset_column + column;
+            if (index < min_index)
+                min_index = index;
+            if (index > max_index)
+                max_index = index;
             hagl_blit_xywh(
                 hagl_backend,
-                DEMO.x + tile_width * (column - 1) + tile_offset_x * tile_offset_dx,
-                DEMO.y + tile_height * (line - 1) + tile_offset_y * tile_offset_dy,
+                DEMO.x + tile_width * (column - tile_offset_dx) + tile_offset_x * tile_offset_dx,
+                DEMO.y + tile_height * (line - tile_offset_dy) + tile_offset_y * tile_offset_dy,
                 tile_width, tile_height,
-                tiles_8x8x4[tile_map[line * tile_columns + column]]);
+                tiles_8x8x4[tile_map[index]]);
         }
     }
+    swprintf(
+        tile_debug_text, sizeof(tile_debug_text) / sizeof(wchar_t),
+        L"off: l=%02d/%02d, c=%02d/%02d min=%04d max=%04d",
+        tile_offset_line, tile_offset_dx,
+        tile_offset_column, tile_offset_dy,
+        min_index, max_index);
+    hagl_put_text(
+        hagl_backend,
+        tile_debug_text,
+        DEMO.x + 16,
+        DEMO.y + 16,
+        COLORS - 1,
+        FONT8X8.fontx);
 }
 
 bool tile_init()
@@ -143,7 +168,7 @@ bool tile_init()
     tile_offset_dx = 0;
     tile_offset_line = (tile_map_lines - tile_lines) / 2;
     tile_offset_y = 0;
-    tile_offset_dy = 0;
+    tile_offset_dy = 1;
     for (int line = 0; line < tile_map_lines; line++)
     {
         for (int column = 0; column < tile_map_columns; column++)

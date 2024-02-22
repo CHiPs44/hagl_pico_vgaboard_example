@@ -14,33 +14,33 @@ bool sprites_init()
         return false;
     }
     tile_draw();
-    if (!alien_init())
-    {
-        return false;
-    }
-    alien_draw();
-    if (!ship_init())
-    {
-        return false;
-    }
+    // if (!alien_init())
+    // {
+    //     return false;
+    // }
+    // alien_draw();
+    // if (!ship_init())
+    // {
+    //     return false;
+    // }
     return true;
 }
 
 void sprites_done()
 {
     tile_done();
-    alien_done();
-    ship_done();
+    // alien_done();
+    // ship_done();
 }
 
 void sprites_draw()
 {
     tile_anim();
     tile_draw();
-    alien_anim();
-    alien_draw();
-    ship_anim();
-    ship_draw();
+    // alien_anim();
+    // alien_draw();
+    // ship_anim();
+    // ship_draw();
 }
 
 /* EOF */
