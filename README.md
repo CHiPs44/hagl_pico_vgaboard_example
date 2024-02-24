@@ -80,4 +80,4 @@ See [LICENSE](LICENSE) for more information.
 
 CHiPs44.
 
-<!-- EOF -->
+`EOF`
