@@ -99,81 +99,91 @@ hagl_bitmap_t *tiles_8x8x4[] = {
     &tile_8x8x4_3,
 };
 
-int tile_width;
-int tile_height;
-int tile_columns;
-int tile_lines;
-int tile_map_columns;
-int tile_map_lines;
-uint8_t *tile_map;
-int tile_offset_column;
+int tile_w;
+int tile_h;
+int tile_cols;
+int tile_rows;
+int tile_map_size;
+int tile_map_cols;
+int tile_map_rows;
+int tile_offset_col;
 int tile_offset_x;
 int tile_offset_dx;
-int tile_offset_line;
+int tile_offset_row;
 int tile_offset_y;
 int tile_offset_dy;
+int tile_counter;
+int tile_score;
+uint8_t *tile_map;
 wchar_t tile_debug_text[40];
 
 void tile_draw()
 {
     int min_index = 10000;
     int max_index = 0;
-    for (int line = 0; line < tile_lines; line++)
+    for (int row = -1; row < tile_rows + 1; row++)
     {
-        for (int column = 0; column < tile_columns; column++)
+        for (int col = -1; col < tile_cols + 1; col++)
         {
-            int index = (tile_offset_line + line) * tile_map_columns + tile_offset_column + column;
+            int x = DEMO.x + tile_w * col + tile_offset_x * tile_offset_dx;
+            int y = DEMO.y + tile_h * row + tile_offset_y * tile_offset_dy;
+            int index = (tile_offset_row + row) * tile_map_cols + tile_offset_col + col;
             if (index < min_index)
                 min_index = index;
             if (index > max_index)
                 max_index = index;
-            hagl_blit_xywh(
-                hagl_backend,
-                DEMO.x + tile_width * (column - tile_offset_dx) + tile_offset_x * tile_offset_dx,
-                DEMO.y + tile_height * (line - tile_offset_dy) + tile_offset_y * tile_offset_dy,
-                tile_width, tile_height,
-                tiles_8x8x4[tile_map[index]]);
+            hagl_blit_xywh(hagl_backend, x, y, tile_w, tile_h, tiles_8x8x4[tile_map[index]]);
         }
     }
-    swprintf(
-        tile_debug_text, sizeof(tile_debug_text) / sizeof(wchar_t),
-        L"off: l=%02d/%02d, c=%02d/%02d min=%04d max=%04d",
-        tile_offset_line, tile_offset_dx,
-        tile_offset_column, tile_offset_dy,
-        min_index, max_index);
-    hagl_put_text(
-        hagl_backend,
-        tile_debug_text,
-        DEMO.x + 16,
-        DEMO.y + 16,
-        COLORS - 1,
-        FONT8X8.fontx);
+    hagl_put_text(hagl_backend, L"SCORE:", DEMO.x + 8, DEMO.y + 8, CO16_GREENISH, FONT8X8.fontx);
+    swprintf(tile_debug_text, sizeof(tile_debug_text) / sizeof(wchar_t),
+             L"%06d", tile_score);
+    hagl_put_text(hagl_backend, tile_debug_text, DEMO.x + 8 * 8, DEMO.y + 8, CO16_YELLOW, FONT8X8.fontx);
+    swprintf(tile_debug_text, sizeof(tile_debug_text) / sizeof(wchar_t),
+             L"x=%1d dx=%2d col=%3d/%3d/%3d", tile_offset_x, tile_offset_dx, tile_offset_col, tile_cols, tile_map_cols);
+    hagl_put_text(hagl_backend, tile_debug_text, DEMO.x + 16, DEMO.y + DEMO.h - 24, COLORS - 1, FONT8X8.fontx);
+    swprintf(tile_debug_text, sizeof(tile_debug_text) / sizeof(wchar_t),
+             L"y=%1d dy=%2d row=%3d/%3d/%3d", tile_offset_y, tile_offset_dy, tile_offset_row, tile_rows, tile_map_rows);
+    hagl_put_text(hagl_backend, tile_debug_text, DEMO.x + 16, DEMO.y + DEMO.h - 16, COLORS - 1, FONT8X8.fontx);
 }
 
 bool tile_init()
 {
-    tile_width = 8;
-    tile_height = 8;
-    tile_columns = (DEMO.w - DEMO.x) / tile_width;
-    tile_lines = (DEMO.h - DEMO.y) / tile_height;
-    tile_map_columns = 2 * tile_columns;
-    tile_map_lines = 2 * tile_lines;
-    tile_map = malloc(sizeof(uint8_t) * tile_map_columns * tile_map_lines);
+    tile_w = 8;
+    tile_h = 8;
+    tile_cols = DEMO.w / tile_w;
+    tile_rows = DEMO.h / tile_h;
+    tile_map_cols = 3 * tile_cols;
+    tile_map_rows = 3 * tile_rows;
+    tile_map_size = sizeof(uint8_t) * tile_map_cols * tile_map_rows;
+    tile_map = malloc(tile_map_size);
     if (tile_map == NULL)
     {
         return false;
     }
-    tile_offset_column = (tile_map_columns - tile_columns) / 2;
+    tile_offset_col = (tile_map_cols - tile_cols) / 2;
     tile_offset_x = 0;
     tile_offset_dx = 0;
-    tile_offset_line = (tile_map_lines - tile_lines) / 2;
+    tile_offset_row = (tile_map_rows - tile_rows) / 2;
     tile_offset_y = 0;
-    tile_offset_dy = 1;
-    for (int line = 0; line < tile_map_lines; line++)
+    tile_offset_dy = -1;
+    tile_counter = 0;
+    for (int row = 0; row < tile_map_rows; row++)
     {
-        for (int column = 0; column < tile_map_columns; column++)
+        for (int col = 0; col < tile_map_cols; col++)
         {
-            tile_map[line * tile_columns + column] = rand() % 4;
+            if (row == 0 || row == tile_map_rows - 1 || row % 8 == 0 || col == 0 || col == tile_map_cols - 1 || col % 8 == 0)
+            {
+                tile_map[row * tile_map_cols + col] = 0;
+            }
+            else
+            {
+                tile_map[row * tile_map_cols + col] = 1 + rand() % 3;
+            }
+            // rand() % 4;
+            // row % 2 == 0 ? col % 2 : 2 + col % 2;
+            // (line + column) % 4;
+            // rand() % 4;
         }
     }
     return true;
@@ -187,36 +197,44 @@ void tile_done()
 
 void tile_anim()
 {
-    tile_offset_x += tile_offset_dx;
-    if (tile_offset_x < 0 || tile_offset_x > tile_width - 1)
+    tile_counter += 1;
+    if (tile_counter > 10)
+        return;
+    tile_counter = 0;
+    if (rand() % 10 == 0)
     {
-        tile_offset_x = tile_offset_dx > 0 ? tile_width - 1 : 0;
-        tile_offset_column += tile_offset_dx;
-        if (tile_offset_column < 1)
+        tile_score += 100 * (rand() % 11);
+    }
+    tile_offset_x += tile_offset_dx;
+    if (tile_offset_x < 0 || tile_offset_x > tile_w - 1)
+    {
+        tile_offset_x = tile_offset_dx > 0 ? 0 : (tile_w - 1);
+        tile_offset_col += tile_offset_dx;
+        if (tile_offset_col < 2)
         {
-            tile_offset_column = 0;
-            tile_offset_dx -= tile_offset_dx;
+            tile_offset_col = 2;
+            tile_offset_dx = -tile_offset_dx;
         }
-        else if (tile_offset_column > tile_map_columns - tile_columns - 1)
+        else if (tile_offset_col > tile_map_cols - tile_cols - 1)
         {
-            tile_offset_column = tile_map_columns - tile_columns - 1;
-            tile_offset_dx -= tile_offset_dx;
+            tile_offset_col = tile_map_cols - tile_cols - 2;
+            tile_offset_dx = -tile_offset_dx;
         }
     }
     tile_offset_y += tile_offset_dy;
-    if (tile_offset_y < 0 || tile_offset_y > tile_height - 1)
+    if (tile_offset_y < 0 || tile_offset_y > tile_h - 1)
     {
-        tile_offset_y = tile_offset_dy > 0 ? tile_height - 1 : 0;
-        tile_offset_line += tile_offset_dy;
-        if (tile_offset_line < 0)
+        tile_offset_y = tile_offset_dy > 0 ? 0 : (tile_h - 1);
+        tile_offset_row += tile_offset_dy;
+        if (tile_offset_row < 2)
         {
-            tile_offset_line = 0;
-            tile_offset_dy -= tile_offset_dy;
+            tile_offset_row = 2;
+            tile_offset_dy = -tile_offset_dy;
         }
-        else if (tile_offset_line > tile_map_lines - tile_lines - 1)
+        else if (tile_offset_row > tile_map_rows - tile_rows - 2)
         {
-            tile_offset_line = tile_map_lines - tile_lines - 1;
-            tile_offset_dy -= tile_offset_dy;
+            tile_offset_row = tile_map_rows - tile_rows - 2;
+            tile_offset_dy = -tile_offset_dy;
         }
     }
 }

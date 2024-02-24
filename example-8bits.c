@@ -226,9 +226,9 @@ void example_demo_loop(void)
 #if PICO_VGABOARD_DEBUG
     printf("*** EXAMPLE_%dX%dX%dBPP@%d ***\n", WIDTH, HEIGHT, DEPTH, pico_vgaboard->freq_hz);
 #endif
-    // init_windows(0, 0);
+    init_windows(0, 0);
     // init_windows(0, 8);
-    init_windows(8, 8);
+    // init_windows(8, 8);
     // init_windows( HEIGHT <= 192 ? 0 : HEIGHT <= 240 ? 8 : 16, 8);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
     demo = 0;
@@ -381,6 +381,7 @@ int main(void)
     // setup(&pico_vgaboard_384x288x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 288); // OK (Pac-man rulez ;-))
+    setup(&pico_vgaboard_384x288x4bpp        , 256, 256); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
@@ -397,11 +398,12 @@ int main(void)
 
     /******************************* 16:9 RATIO *******************************/
     // setup(&pico_vgaboard_320x180x4bpp        , 240, 136); // OK
-    // setup(&pico_vgaboard_320x180x4bpp        ,   0, 0); // OK
+    // setup(&pico_vgaboard_320x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x360x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x360x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x360x4bpp        , 576, 324); // OK
     // setup(&pico_vgaboard_640x360x4bpp        , 608, 328); // OK
+    // setup(&pico_vgaboard_1024x576x4bpp_294912, 640, 200); // OK, too much margins
     // setup(&pico_vgaboard_1024x576x4bpp_294912, 640, 400); // OK, too much margins
 
     /******************************* 16:10 RATIO ******************************/
@@ -413,6 +415,7 @@ int main(void)
     // setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x4bpp        , 240, 136); // OK
     // setup(&pico_vgaboard_320x400x4bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_320x400x4bpp        , 256, 256); // OK
     // setup(&pico_vgaboard_256x384x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_512x144x4bpp        ,   0,   0); // OK (sort of: 144 lines is not enough...)
     // setup(&pico_vgaboard_256x288x4bpp        ,   0,   0); // OK
@@ -457,7 +460,7 @@ int main(void)
     // setup(&pico_vgaboard_160x200x8bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x8bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_560x175x8bpp_1      , 384, 170); // OK (1680x1050 based)
-    setup(&pico_vgaboard_336x210x4bpp_1      , 320, 200);// OK?
+    // setup(&pico_vgaboard_336x210x4bpp_1      , 320, 200);// OK?
 
     /******************************* 16:9 RATIO *******************************/
     // setup(&pico_vgaboard_256x144x8bpp        ,   0,   0); // OK (16:9 letterbox as 1x scale of TIC-80)
@@ -478,10 +481,10 @@ int main(void)
         // pico_vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
         // pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
         // pico_vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-        pico_vgaboard->border_color_top    = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
-        pico_vgaboard->border_color_left   = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
-        pico_vgaboard->border_color_bottom = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
-        pico_vgaboard->border_color_right  = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
+        // pico_vgaboard->border_color_top    = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
+        // pico_vgaboard->border_color_left   = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
+        // pico_vgaboard->border_color_bottom = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
+        // pico_vgaboard->border_color_right  = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
     }
 
     /* clang-format on */

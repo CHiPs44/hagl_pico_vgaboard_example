@@ -41,7 +41,14 @@ void palette_draw_color(hagl_color_t color, int16_t x, int16_t y, int16_t w, int
     r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb); // << 3;
     g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb); // << 3;
     b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgb); // << 3;
-    swprintf(palette_text, sizeof(palette_text) / sizeof(wchar_t), L"r%02Xg%02Xb%02X", r, g, b);
+    if (WIDTH < 320)
+    {
+        swprintf(palette_text, sizeof(palette_text) / sizeof(wchar_t), L"%02X%02X%02X", r, g, b);
+    }
+    else
+    {
+        swprintf(palette_text, sizeof(palette_text) / sizeof(wchar_t), L"r%02Xg%02Xb%02X", r, g, b);
+    }
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_put_text_styled(hagl_backend, palette_text, x + 2, y + 2 + palette_font->h, &palette_style);
 #else
