@@ -3,44 +3,45 @@
 #include "hagl.h"
 #include "hagl_hal.h"
 
-#include "ship-4bpp.c"
+#include "ship-4bpp.h"
+
 #include "tiles-4bpp.c"
+
 #include "aliens-4bpp.c"
+#include "ship-4bpp.c"
 
-bool sprites_init()
+bool
+sprites_init()
 {
-    if (!tile_init())
-    {
-        return false;
-    }
-    tile_draw();
-    // if (!alien_init())
-    // {
-    //     return false;
-    // }
-    // alien_draw();
-    // if (!ship_init())
-    // {
-    //     return false;
-    // }
-    return true;
+  if (!tile_init())
+    return false;
+  tile_draw();
+  if (!alien_init())
+    return false;
+  alien_draw();
+  if (!ship_init())
+    return false;
+  return true;
 }
 
-void sprites_done()
+void
+sprites_done()
 {
-    tile_done();
-    // alien_done();
-    // ship_done();
+  tile_done();
+  alien_done();
+  ship_done();
 }
 
-void sprites_draw()
+void
+sprites_draw()
 {
-    tile_anim();
-    tile_draw();
-    // alien_anim();
-    // alien_draw();
-    // ship_anim();
-    // ship_draw();
+  tile_anim();
+  alien_anim();
+  ship_anim();
+  tile_draw();
+  clip(&SCROLL);
+  alien_draw();
+  ship_draw();
 }
 
 /* EOF */

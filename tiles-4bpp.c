@@ -3,240 +3,316 @@
 #include "hagl.h"
 #include "hagl_hal.h"
 
-#define B0 10
-#define B1 9
-#define B2 5
-#define G0 1
-#define G1 2
-#define G2 3
-#define G3 4
-#define BF 0
+#include "tiles-4bpp.h"
 
-// clang-format off
+rect_t SCROLL;
+rect_t PANEL;
 
-hagl_color_t tile_8x8x4_0_bitmap[] = {
-    G0, G0, G0, G0, G0, G0, G0, BF,
-    G0, B0, B1, G0, G0, G0, G0, BF,
-    G0, B1, B2, G0, G0, G0, G0, BF,
-    G0, G0, G0, G0, G0, G0, G0, BF,
-    G0, G0, G0, G0, G0, G0, G0, BF,
-    G0, G0, G0, G0, G0, G0, G0, BF,
-    G0, G0, G0, G0, G0, G0, G0, BF,
-    BF, BF, BF, BF, BF, BF, BF, BF,
-};
-
-hagl_color_t tile_8x8x4_1_bitmap[] = {
-    G1, G1, G1, G1, G1, G1, G1, BF,
-    G1, B0, B1, G1, G1, G1, G1, BF,
-    G1, B1, B2, G1, G1, G1, G1, BF,
-    G1, G1, G1, G1, G1, G1, G1, BF,
-    G1, G1, G1, G1, G1, G1, G1, BF,
-    G1, G1, G1, G1, G1, G1, G1, BF,
-    G1, G1, G1, G1, G1, G1, G1, BF,
-    BF, BF, BF, BF, BF, BF, BF, BF,
-};
-
-hagl_color_t tile_8x8x4_2_bitmap[] = {
-    G2, G2, G2, G2, G2, G2, G2, BF,
-    G2, B0, B1, G2, G2, G2, G2, BF,
-    G2, B1, B2, G2, G2, G2, G2, BF,
-    G2, G2, G2, G2, G2, G2, G2, BF,
-    G2, G2, G2, G2, G2, G2, G2, BF,
-    G2, G2, G2, G2, G2, G2, G2, BF,
-    G2, G2, G2, G2, G2, G2, G2, BF,
-    BF, BF, BF, BF, BF, BF, BF, BF,
-};
-
-hagl_color_t tile_8x8x4_3_bitmap[] = {
-    G3, G3, G3, G3, G3, G3, G3, BF,
-    G3, B0, B1, G3, G3, G3, G3, BF,
-    G3, B1, B2, G3, G3, G3, G3, BF,
-    G3, G3, G3, G3, G3, G3, G3, BF,
-    G3, G3, G3, G3, G3, G3, G3, BF,
-    G3, G3, G3, G3, G3, G3, G3, BF,
-    G3, G3, G3, G3, G3, G3, G3, BF,
-    BF, BF, BF, BF, BF, BF, BF, BF,
-};
-
-// clang-format on
-
-hagl_bitmap_t tile_8x8x4_0 = {
-    .width = 8,
-    .height = 8,
-    .depth = 4,                          // bits
-    .pitch = 16,                         // 8 * 2, bytes per row
-    .size = sizeof(tile_8x8x4_0_bitmap), // 8 * 8  = 64 bytes
-    .buffer = (uint8_t *)&tile_8x8x4_0_bitmap};
-
-hagl_bitmap_t tile_8x8x4_1 = {
-    .width = 8,
-    .height = 8,
-    .depth = 4,                          // bits
-    .pitch = 16,                         // 8 * 2, bytes per row
-    .size = sizeof(tile_8x8x4_1_bitmap), // 8 * 8  = 64 bytes
-    .buffer = (uint8_t *)&tile_8x8x4_1_bitmap};
-
-hagl_bitmap_t tile_8x8x4_2 = {
-    .width = 8,
-    .height = 8,
-    .depth = 4,                          // bits
-    .pitch = 16,                         // 8 * 2, bytes per row
-    .size = sizeof(tile_8x8x4_2_bitmap), // 8 * 8  = 64 bytes
-    .buffer = (uint8_t *)&tile_8x8x4_2_bitmap};
-
-hagl_bitmap_t tile_8x8x4_3 = {
-    .width = 8,
-    .height = 8,
-    .depth = 4,                          // bits
-    .pitch = 16,                         // 8 * 2, bytes per row
-    .size = sizeof(tile_8x8x4_3_bitmap), // 8 * 8  = 64 bytes
-    .buffer = (uint8_t *)&tile_8x8x4_3_bitmap};
-
-hagl_bitmap_t *tiles_8x8x4[] = {
-    &tile_8x8x4_0,
-    &tile_8x8x4_1,
-    &tile_8x8x4_2,
-    &tile_8x8x4_3,
-};
-
-int tile_w;
-int tile_h;
-int tile_cols;
-int tile_rows;
-int tile_map_size;
-int tile_map_cols;
-int tile_map_rows;
-int tile_offset_col;
-int tile_offset_x;
-int tile_offset_dx;
-int tile_offset_row;
-int tile_offset_y;
-int tile_offset_dy;
-int tile_counter;
-int tile_score;
-uint8_t *tile_map;
-wchar_t tile_debug_text[40];
-
-void tile_draw()
+struct
 {
-    int min_index = 10000;
-    int max_index = 0;
-    for (int row = -1; row < tile_rows + 1; row++)
+  int             cols;
+  int             rows;
+  int             map_size;
+  int             map_cols;
+  int             map_rows;
+  int             scroll_col;
+  int             scroll_x;
+  int             scroll_dx;
+  int             scroll_row;
+  int             scroll_y;
+  int             scroll_dy;
+  int             counter;
+  int             score;
+  uint8_t*        map;
+  int             speed;
+  absolute_time_t timer;
+} TILES;
+wchar_t tile_scratch_text[80];
+
+void
+tile_draw(void)
+{
+  int start_row, end_row, row;
+  int start_col, end_col, col;
+  int x, y, index;
+  clip(&SCROLL);
+  /*
+      d=-1 => -1 .. +1
+      d=+1 => -2 .. +0?
+  */
+  start_col = TILES.scroll_dx < 0 ? -3 : -3;
+  end_col   = TILES.scroll_dx > 0 ? TILES.cols + 3 : TILES.cols + 2;
+  start_row = TILES.scroll_dy < 0 ? -3 : -3;
+  end_row   = TILES.scroll_dy > 0 ? TILES.rows + 3 : TILES.rows + 2;
+  for (row = start_row; row < end_row; row += 1)
+  {
+    for (col = start_col; col < end_col; col += 1)
     {
-        for (int col = -1; col < tile_cols + 1; col++)
-        {
-            int x = DEMO.x + tile_w * col + tile_offset_x * tile_offset_dx;
-            int y = DEMO.y + tile_h * row + tile_offset_y * tile_offset_dy;
-            int index = (tile_offset_row + row) * tile_map_cols + tile_offset_col + col;
-            if (index < min_index)
-                min_index = index;
-            if (index > max_index)
-                max_index = index;
-            hagl_blit_xywh(hagl_backend, x, y, tile_w, tile_h, tiles_8x8x4[tile_map[index]]);
-        }
+      // horizontal scroll
+      x = SCROLL.x + TILES_W * col +
+          (TILES.scroll_dx == -1  ? TILES.scroll_x
+           : TILES.scroll_dx == 1 ? TILES_W - TILES.scroll_x
+                                  : 0);
+      // vertical scroll
+      y = SCROLL.y + TILES_H * row +
+          (TILES.scroll_dy == -1  ? TILES.scroll_y
+           : TILES.scroll_dy == 1 ? TILES_H - TILES.scroll_y
+                                  : 0);
+      // which tile?
+      index =
+        (TILES.scroll_row + row) * TILES.map_cols + TILES.scroll_col + col;
+      if (row < -1 || col < -1 || row > TILES.cols - 1 ||
+          col > TILES.cols - 1 || index < 0 || index > TILES.map_size - 1)
+        // display error
+        hagl_blit_xywh(hagl_backend, x, y, TILES_W, TILES_H, &tile_8x8x4_4);
+      else
+        // display tile
+        hagl_blit_xywh(
+          hagl_backend, x, y, TILES_W, TILES_H, tiles_8x8x4[TILES.map[index]]);
     }
-    hagl_put_text(hagl_backend, L"SCORE:", DEMO.x + 8, DEMO.y + 8, CO16_GREENISH, FONT8X8.fontx);
-    swprintf(tile_debug_text, sizeof(tile_debug_text) / sizeof(wchar_t),
-             L"%06d", tile_score);
-    hagl_put_text(hagl_backend, tile_debug_text, DEMO.x + 8 * 8, DEMO.y + 8, CO16_YELLOW, FONT8X8.fontx);
-    swprintf(tile_debug_text, sizeof(tile_debug_text) / sizeof(wchar_t),
-             L"x=%1d dx=%2d col=%3d/%3d/%3d", tile_offset_x, tile_offset_dx, tile_offset_col, tile_cols, tile_map_cols);
-    hagl_put_text(hagl_backend, tile_debug_text, DEMO.x + 16, DEMO.y + DEMO.h - 24, COLORS - 1, FONT8X8.fontx);
-    swprintf(tile_debug_text, sizeof(tile_debug_text) / sizeof(wchar_t),
-             L"y=%1d dy=%2d row=%3d/%3d/%3d", tile_offset_y, tile_offset_dy, tile_offset_row, tile_rows, tile_map_rows);
-    hagl_put_text(hagl_backend, tile_debug_text, DEMO.x + 16, DEMO.y + DEMO.h - 16, COLORS - 1, FONT8X8.fontx);
+  }
+  /****************************** PANEL ******************************/
+  clip(&PANEL);
+  // border + fill
+  // hagl_fill_rounded_rectangle_xywh(hagl_backend,
+  //                                  PANEL.x + 0,
+  //                                  PANEL.y + 0,
+  //                                  PANEL.w - 0,
+  //                                  PANEL.h - 0,
+  //                                  4,
+  //                                  CO16_DARK_VIOLET);
+  hagl_draw_rounded_rectangle_xywh(hagl_backend,
+                                   PANEL.x + 0,
+                                   PANEL.y + 0,
+                                   PANEL.w - 0,
+                                   PANEL.h - 0,
+                                   4,
+                                   CO16_DARK_BLUE);
+  // score
+  hagl_draw_rounded_rectangle_xywh(hagl_backend,
+                                   PANEL.x + 8 - 4,
+                                   PANEL.y + 8 - 4,
+                                   PANEL.w - 8,
+                                   4 + 8 + 8 + 4,
+                                   3,
+                                   CO16_DARK_BLUE);
+  hagl_put_text(hagl_backend,
+                L"SCORE",
+                PANEL.x + 8,
+                PANEL.y + 8,
+                CO16_GREEN,
+                FONT5X8.fontx);
+  swprintf(tile_scratch_text,
+           sizeof(tile_scratch_text) / sizeof(wchar_t),
+           L"%06d",
+           TILES.score);
+  hagl_put_text(hagl_backend,
+                tile_scratch_text,
+                PANEL.x + 8,
+                PANEL.y + 16,
+                CO16_ORANGE,
+                FONT8X8.fontx);
+  // lives
+  hagl_draw_rounded_rectangle_xywh(hagl_backend,
+                                   PANEL.x + 8 - 4,
+                                   PANEL.y + PANEL.h - 32 - 4,
+                                   PANEL.w - 8,
+                                   4 + 8 + 16 + 4,
+                                   3,
+                                   CO16_DARK_BLUE);
+  hagl_put_text(hagl_backend,
+                L"LIVES",
+                PANEL.x + 8,
+                PANEL.y + PANEL.h - 32,
+                CO16_GREEN,
+                FONT5X8.fontx);
+  int ships = 3;
+  for (int ship = 0; ship < ships; ship += 1)
+  {
+    hagl_blit_xywh_transparent(hagl_backend,
+                               PANEL.x + 8 + ship * 16,
+                               PANEL.y + PANEL.h - 24,
+                               16,
+                               16,
+                               &ship_16x16x4_0,
+                               _);
+  }
+  /* DEBUG */
+  // hagl_draw_rectangle_xywh(
+  //   hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, COLORS - 2);
+  // hagl_draw_rectangle_xyxy(hagl_backend,
+  //                          SCROLL.x - 2,
+  //                          SCROLL.y - 2,
+  //                          SCROLL.x + SCROLL.w + 2,
+  //                          SCROLL.y + SCROLL.h + 2,
+  //                          COLORS - 1);
+  // swprintf(tile_scratch_text,
+  //          sizeof(tile_scratch_text) / sizeof(wchar_t*),
+  //          L"col=%d dx=%d row=%d dy=%d",
+  //          TILES.scroll_col,
+  //          TILES.scroll_dx,
+  //          TILES.scroll_row,
+  //          TILES.scroll_dy);
+  // wprintf(L"DEBUG: %ls\n", tile_scratch_text);
+  // hagl_put_text(hagl_backend,
+  //               tile_scratch_text,
+  //               SCROLL.x + 16,
+  //               SCROLL.y + SCROLL.h - 40,
+  //               COLORS - 1,
+  //               FONT6X9.fontx);
 }
 
-bool tile_init()
+void
+tile_change_speed(bool random)
 {
-    tile_w = 8;
-    tile_h = 8;
-    tile_cols = DEMO.w / tile_w;
-    tile_rows = DEMO.h / tile_h;
-    tile_map_cols = 3 * tile_cols;
-    tile_map_rows = 3 * tile_rows;
-    tile_map_size = sizeof(uint8_t) * tile_map_cols * tile_map_rows;
-    tile_map = malloc(tile_map_size);
-    if (tile_map == NULL)
-    {
-        return false;
-    }
-    tile_offset_col = (tile_map_cols - tile_cols) / 2;
-    tile_offset_x = 0;
-    tile_offset_dx = 0;
-    tile_offset_row = (tile_map_rows - tile_rows) / 2;
-    tile_offset_y = 0;
-    tile_offset_dy = -1;
-    tile_counter = 0;
-    for (int row = 0; row < tile_map_rows; row++)
-    {
-        for (int col = 0; col < tile_map_cols; col++)
-        {
-            if (row == 0 || row == tile_map_rows - 1 || row % 8 == 0 || col == 0 || col == tile_map_cols - 1 || col % 8 == 0)
-            {
-                tile_map[row * tile_map_cols + col] = 0;
-            }
-            else
-            {
-                tile_map[row * tile_map_cols + col] = 1 + rand() % 3;
-            }
-            // rand() % 4;
-            // row % 2 == 0 ? col % 2 : 2 + col % 2;
-            // (line + column) % 4;
-            // rand() % 4;
-        }
-    }
-    return true;
+  if (random && rand() % 10 != 0)
+    return;
+  int toto = rand() % 5 - 2; // between 0 - 2 = -2 and 4 - 2 = +2
+  // int titi =
+  TILES.speed += toto;
+  if (TILES.speed < 0)
+    TILES.speed = 0;
+  if (TILES.speed > 7)
+    TILES.speed = 7;
 }
 
-void tile_done()
+bool
+tile_init(void)
 {
-    if (tile_map != NULL)
-        free(tile_map);
+  // scrolling region: left 3/4 of DEMO
+  SCROLL.x       = DEMO.x;
+  SCROLL.y       = DEMO.y;
+  SCROLL.w       = DEMO.w * 3 / 4;
+  SCROLL.h       = DEMO.h;
+  // panel region: right 1/4 of DEMO
+  PANEL.x        = DEMO.x + SCROLL.w;
+  PANEL.y        = DEMO.y;
+  PANEL.w        = DEMO.w * 1 / 4;
+  PANEL.h        = DEMO.h;
+  // tiles count horizontally & vertically
+  TILES.cols     = SCROLL.w / TILES_W;
+  TILES.rows     = SCROLL.h / TILES_H;
+  // map is bigger than scrolling region
+  TILES.map_cols = (3 * TILES.cols) / 2;
+  TILES.map_rows = (3 * TILES.rows) / 2;
+  TILES.map_size = sizeof(uint8_t) * TILES.map_cols * TILES.map_rows;
+  TILES.map      = malloc(TILES.map_size);
+  if (TILES.map == NULL)
+  {
+    return false;
+  }
+  // // initialize map with borders and grid, fill with random tiles
+  // for (int row = 0; row < TILES.map_rows; row += 1)
+  // {
+  //   for (int col = 0; col < TILES.map_cols; col += 1)
+  //   {
+  //     if (row == 0 || row == TILES.map_rows - 1 || row % 8 == 0 || col == 0
+  //     ||
+  //         col == TILES.map_cols - 1 || col % 8 == 0)
+  //     {
+  //       TILES.map[row * TILES.map_cols + col] = 0;
+  //     }
+  //     else
+  //     {
+  //       TILES.map[row * TILES.map_cols + col] = 1 + rand() % 3;
+  //     }
+  //   }
+  // }
+  // initialize map with random tiles
+  for (int row = 0; row < TILES.map_rows; row += 1)
+  {
+    for (int col = 0; col < TILES.map_cols; col += 1)
+    {
+      TILES.map[row * TILES.map_cols + col] = rand() % 4;
+    }
+  }
+  TILES.scroll_col = (TILES.map_cols - TILES.cols) / 2;
+  TILES.scroll_x   = 0;
+  TILES.scroll_dx  = rand() % 2 == 0 ? -1 : 1;
+  TILES.scroll_row = (TILES.map_rows - TILES.rows) / 2;
+  TILES.scroll_y   = 0;
+  TILES.scroll_dy  = rand() % 2 == 0 ? -1 : 1;
+  // count frames and initialize timer
+  TILES.counter    = 0;
+  tile_change_speed(false);
+  TILES.timer =
+    make_timeout_time_ms(TILES.speed * 1000 / pico_vgaboard->freq_hz);
+  // display all that mess
+  tile_draw();
+  return true;
 }
 
-void tile_anim()
+void
+tile_done(void)
 {
-    tile_counter += 1;
-    if (tile_counter > 10)
-        return;
-    tile_counter = 0;
-    if (rand() % 10 == 0)
+  if (TILES.map != NULL)
+    free(TILES.map);
+}
+
+void
+tile_anim(void)
+{
+  // timer elapsed?
+  if (absolute_time_diff_us(get_absolute_time(), TILES.timer) > 0)
+    return;
+  tile_change_speed(true);
+  TILES.timer =
+    make_timeout_time_ms(TILES.speed * 1000 / pico_vgaboard->freq_hz);
+  // not used, yet?
+  TILES.counter += 1;
+  // if (TILES.counter > 999)
+  //     return;
+  // TILES.counter = 0;
+  // if (rand() % 20 == 0)
+  // {
+  //   TILES.score += 10 * (rand() % 11);
+  // }
+  TILES.scroll_x += 1;
+  if (TILES.scroll_x == TILES_W)
+  {
+    TILES.scroll_x = 0;
+    TILES.scroll_col += TILES.scroll_dx;
+    if (TILES.scroll_col < 1)
     {
-        tile_score += 100 * (rand() % 11);
+      TILES.scroll_col = 1;
+      TILES.scroll_dx  = rand() % 10 == 0 ? 0 : 1;
     }
-    tile_offset_x += tile_offset_dx;
-    if (tile_offset_x < 0 || tile_offset_x > tile_w - 1)
+    else if (TILES.scroll_col > TILES.map_cols - TILES.cols - 1)
     {
-        tile_offset_x = tile_offset_dx > 0 ? 0 : (tile_w - 1);
-        tile_offset_col += tile_offset_dx;
-        if (tile_offset_col < 2)
-        {
-            tile_offset_col = 2;
-            tile_offset_dx = -tile_offset_dx;
-        }
-        else if (tile_offset_col > tile_map_cols - tile_cols - 1)
-        {
-            tile_offset_col = tile_map_cols - tile_cols - 2;
-            tile_offset_dx = -tile_offset_dx;
-        }
+      TILES.scroll_col = TILES.map_cols - TILES.cols - 1;
+      TILES.scroll_dx  = rand() % 10 == 0 ? 0 : -1;
     }
-    tile_offset_y += tile_offset_dy;
-    if (tile_offset_y < 0 || tile_offset_y > tile_h - 1)
+    else
     {
-        tile_offset_y = tile_offset_dy > 0 ? 0 : (tile_h - 1);
-        tile_offset_row += tile_offset_dy;
-        if (tile_offset_row < 2)
-        {
-            tile_offset_row = 2;
-            tile_offset_dy = -tile_offset_dy;
-        }
-        else if (tile_offset_row > tile_map_rows - tile_rows - 2)
-        {
-            tile_offset_row = tile_map_rows - tile_rows - 2;
-            tile_offset_dy = -tile_offset_dy;
-        }
+      if (TILES.scroll_dx == 0 && rand() % 10 == 0)
+      {
+        TILES.scroll_dx = rand() % 2 ? -1 : 1;
+      }
     }
+  }
+  TILES.scroll_y += 1;
+  if (TILES.scroll_y == TILES_H)
+  {
+    TILES.scroll_y = 0;
+    TILES.scroll_row += TILES.scroll_dy;
+    if (TILES.scroll_row < 1)
+    {
+      TILES.scroll_row = 1;
+      TILES.scroll_dy  = rand() % 2 ? 1 : 0;
+    }
+    else if (TILES.scroll_row > TILES.map_rows - TILES.rows - 1)
+    {
+      TILES.scroll_row = TILES.map_rows - TILES.rows - 1;
+      TILES.scroll_dy  = rand() % 2 ? -1 : 0;
+    }
+    else
+    {
+      if (TILES.scroll_dy == 0 && rand() % 10 == 0)
+      {
+        TILES.scroll_dy = rand() % 2 ? -1 : 1;
+      }
+    }
+  }
 }
 
 // EOF
