@@ -3,6 +3,7 @@
 #include "hagl.h"
 #include "hagl_hal.h"
 
+#include "aliens-4bpp.h"
 #include "ship-4bpp.h"
 
 #include "tiles-4bpp.c"
@@ -10,9 +11,7 @@
 #include "aliens-4bpp.c"
 #include "ship-4bpp.c"
 
-bool
-sprites_init()
-{
+bool sprites_init() {
   if (!tile_init())
     return false;
   tile_draw();
@@ -24,17 +23,13 @@ sprites_init()
   return true;
 }
 
-void
-sprites_done()
-{
+void sprites_done() {
   tile_done();
   alien_done();
   ship_done();
 }
 
-void
-sprites_draw()
-{
+void sprites_draw() {
   tile_anim();
   alien_anim();
   ship_anim();
