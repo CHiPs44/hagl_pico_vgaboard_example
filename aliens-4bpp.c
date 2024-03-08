@@ -27,7 +27,7 @@ void alien_draw() {
   for (size_t i = 0; i < ALIEN_COUNT; i++) {
     if (aliens[i].alive) {
       hagl_bitmap_t *bitmap = &alien_16x16x4_frames[aliens[i].frame];
-      hagl_blit_xywh_transparent(hagl_backend, SCROLL.x + aliens[i].x,
+      hagl_blit_xywh_transparent(hagl_ext_backend, SCROLL.x + aliens[i].x,
                                  SCROLL.y + aliens[i].y, bitmap->width,
                                  bitmap->height, bitmap, __);
     }

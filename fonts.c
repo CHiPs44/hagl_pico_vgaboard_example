@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT-0 */
 
-/* Stack space is precious, even if global variables are evil ;-) */
+/* Stack space is precious, even if global variables are evil for some people ;-) */
 wchar_t fonts_line1[80];
 wchar_t fonts_line2[80];
 hagl_color_t fonts_color1;
@@ -41,31 +41,24 @@ void fonts_draw()
     uint16_t y = 2;
     for (uint8_t i = 0; i < NFONTS; i++)
     {
-        swprintf(fonts_line1, sizeof(fonts_line1) / sizeof(wchar_t), L"%ls", FONTS[i]->name);
+        swprintf(fonts_line1, sizeof(fonts_line1) / sizeof(wchar_t), L" %ls ", FONTS[i]->name);
         swprintf(fonts_line2, sizeof(fonts_line2) / sizeof(wchar_t), L"0123456789 AaEeIiMmWw ÄäÂâÉéÊêÈèÏÎïîÖÔöôÜüÿŸÇç");
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         hagl_char_style_t style = {
             .font = FONTS[i]->fontx,
             .background_color = 0,
             .foreground_color = fonts_color1,
-            .mode = HAGL_CHAR_MODE_REVERSE,
+            .mode = HAGL_EXT_CHAR_MODE_REVERSE,
             .scale_x_numerator = 1,
             .scale_x_denominator = 1,
             .scale_y_numerator = 1,
             .scale_y_denominator = 1,
         };
-        hagl_put_text_styled(hagl_backend, fonts_line1, DEMO.x + x, DEMO.y + y, &style);
+        hagl_ext_put_text(hagl_ext_backend, fonts_line1, DEMO.x + x, DEMO.y + y, &style);
         y += FONTS[i]->h * style.scale_y_numerator / style.scale_y_denominator + 2;
-        style.mode = HAGL_CHAR_MODE_OPAQUE;
+        style.mode = HAGL_EXT_CHAR_MODE_OPAQUE;
         style.foreground_color = fonts_color2;
-        hagl_put_text_styled(hagl_backend, fonts_line2, DEMO.x + x, DEMO.y + y, &style);
+        hagl_ext_put_text(hagl_ext_backend, fonts_line2, DEMO.x + x, DEMO.y + y, &style);
         y += FONTS[i]->h * style.scale_y_numerator / style.scale_y_denominator + 2;
-#else
-        hagl_put_text(hagl_backend, fonts_line1, DEMO.x + x, DEMO.y + y, fonts_color1, FONTS[i]->fontx);
-        y += FONTS[i]->h + 2;
-        hagl_put_text(hagl_backend, fonts_line2, DEMO.x + x, DEMO.y + y, fonts_color1, FONTS[i]->fontx);
-        y += FONTS[i]->h + 2;
-#endif
     }
 }
 

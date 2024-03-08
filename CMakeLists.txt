@@ -6,6 +6,11 @@ set(CMAKE_CXX_STANDARD 17)
 # Use cmake --log-level=debug to get debug output.
 set(CMAKE_MESSAGE_LOG_LEVEL "DEBUG")
 
+# Use GIT modules for dependencies
+# set(GIT_MODULES 1)
+# Use includes for dependencies
+set(GIT_MODULES 0)
+
 set(PICO_BOARD vgaboard)
 # set(UART_TYPE NONE)
 # set(UART_TYPE USB)
@@ -35,20 +40,32 @@ add_executable(${PROJECT_NAME} example.c)
 
 # Add this in a project that uses this HAL
 # (git add submodule https://github.com/CHiPs44/hagl_pico_vgaboard.git --branch develop external/hagl_hal)
-# add_subdirectory(external/hagl_hal)
+if (GIT_MODULES==1)
+add_subdirectory(external/hagl_hal)
+else()
 include(../hagl_pico_vgaboard/CMakeLists.txt)
+endif()
 
 # Add HAGL directory
-# add_subdirectory(external/hagl)
+if (GIT_MODULES==1)
+add_subdirectory(external/hagl)
+else()
 include(../hagl/CMakeLists.txt)
+endif()
 
-# add_subdirectory(external/fontx2-fonts)
+if (GIT_MODULES==1)
+add_subdirectory(external/fontx2-fonts)
+else()
 # add_subdirectory(../fontx2-fonts)
 include(../fontx2-fonts/CMakeLists.txt)
+endif()
 
-# add_subdirectory(external/embedded-fonts)
+if (GIT_MODULES==1)
+add_subdirectory(external/embedded-fonts)
+else()
 # add_subdirectory(../embedded-fonts)
 include(../embedded-fonts/CMakeLists.txt)
+endif()
 
 # Set program name and version for UF2 / picotool
 pico_set_program_name(${PROJECT_NAME} 
@@ -142,9 +159,6 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
   # PICO_VGABOARD_VRAM_SIZE=76800
   # use MALLOC if size is zero => DOES NOT WORK, IMAGE IS CORRUPTED
   # PICO_VGABOARD_VRAM_SIZE=0
-  # Double buffer management (WIP)
-  # PICO_VGABOARD_DOUBLE_BUFFER=0
-  PICO_VGABOARD_DOUBLE_BUFFER=1
   # As we use 10x20 fonts max, set char buffer size accordingly (10 * 20 * 2)
   HAGL_CHAR_BUFFER_SIZE=400
   # Why have every HAGL pixel use 16 bits when you know you are an 8 bit guy?

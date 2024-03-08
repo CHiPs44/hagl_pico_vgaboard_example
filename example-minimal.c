@@ -13,10 +13,10 @@
 // Pico VGA Board
 #include "pico-vgaboard.h"
 // Colors
-#include "pico-vgaboard-colors.h"
+#include "colors.h"
 // Palettes
-#include "pico-vgaboard-palettes.h"
-#include "pico-vgaboard-palettes-sweetie16.h"
+#include "palettes.h"
+#include "sweetie16.h"
 // Modes
 // #include "pico-vgaboard-modes-640x480.h"
 #include "pico-vgaboard-modes-768x576.h"

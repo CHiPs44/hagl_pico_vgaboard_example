@@ -7,15 +7,13 @@ wchar_t palette_text[20];
 // wchar_t palette_separator = L'\u2192'; // \u2192 => Unicode right arrow
 font_t *palette_font = &FONT8X8;
 wchar_t palette_separator = ':';
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
 hagl_char_style_t palette_style = {
-    .mode = HAGL_CHAR_MODE_TRANSPARENT,
+    .mode = HAGL_EXT_CHAR_MODE_TRANSPARENT,
     .scale_x_numerator = 1,
     .scale_x_denominator = 1,
     .scale_y_numerator = 1,
     .scale_y_denominator = 1,
 };
-#endif
 
 /**
  * @brief Draws a color box for one of the palette colors
@@ -31,12 +29,8 @@ void palette_draw_color(hagl_color_t color, int16_t x, int16_t y, int16_t w, int
     hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, color);
     hagl_draw_rectangle_xywh(hagl_backend, x, y, w, h, frame_color);
     swprintf(palette_text, sizeof(palette_text) / sizeof(wchar_t), L"%02d%lc", color, palette_separator);
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     palette_style.foreground_color = text_color;
-    hagl_put_text_styled(hagl_backend, palette_text, x + 2, y + 2, &palette_style);
-#else
-    hagl_put_text(hagl_backend, palette_text, x + 2, y + 2, text_color, palette_font->fontx);
-#endif
+    hagl_ext_put_text(hagl_ext_backend, palette_text, x + 2, y + 2, &palette_style);
     rgb = pico_vgaboard_get_palette_color(color);
     r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb); // << 3;
     g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb); // << 3;
@@ -49,11 +43,7 @@ void palette_draw_color(hagl_color_t color, int16_t x, int16_t y, int16_t w, int
     {
         swprintf(palette_text, sizeof(palette_text) / sizeof(wchar_t), L"r%02Xg%02Xb%02X", r, g, b);
     }
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
-    hagl_put_text_styled(hagl_backend, palette_text, x + 2, y + 2 + palette_font->h, &palette_style);
-#else
-    hagl_put_text(hagl_backend, palette_text, x + 2, y + 2 + palette_font->h, text_color, palette_font->fontx);
-#endif
+    hagl_ext_put_text(hagl_ext_backend, palette_text, x + 2, y + 2 + palette_font->h, &palette_style);
 }
 
 bool palette_init()
@@ -69,11 +59,9 @@ bool palette_init()
 void palette_draw()
 {
     int16_t x, y, w, h;
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     palette_style.font = palette_font->fontx;
     palette_style.background_color = COLORS - 1;
     palette_style.foreground_color = 0;
-#endif
     switch (DEPTH)
     {
     case 1:
@@ -81,11 +69,7 @@ void palette_draw()
         w = DEMO.w / 2;
         h = DEMO.h - palette_font->h;
         uint16_t y = DEMO.y + palette_font->h;
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
-        hagl_put_text_styled(hagl_backend, palette_name, DEMO.x, DEMO.y, &palette_style);
-#else
-        hagl_put_text(hagl_backend, palette_name, DEMO.x, DEMO.y, COLORS - 1, palette_font->fontx);
-#endif
+        hagl_ext_put_text(hagl_ext_backend, palette_name, DEMO.x, DEMO.y, &palette_style);
         for (hagl_color_t c = 0; c < COLORS; c++)
         {
             uint16_t x = DEMO.x + (c / 2) * w;
@@ -96,11 +80,7 @@ void palette_draw()
         // 2 lines of 2 columns => 4
         w = DEMO.w / 2;
         h = (DEMO.h - palette_font->h) / 2 - 1;
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
-        hagl_put_text_styled(hagl_backend, palette_name, DEMO.x, DEMO.y, &palette_style);
-#else
-        hagl_put_text(hagl_backend, palette_name, DEMO.x, DEMO.y, COLORS - 1, palette_font->fontx);
-#endif
+        hagl_ext_put_text(hagl_ext_backend, palette_name, DEMO.x, DEMO.y, &palette_style);
         for (hagl_color_t c = 0; c < COLORS; c++)
         {
             uint16_t x = DEMO.x + (c / 2) * w;
@@ -112,11 +92,6 @@ void palette_draw()
         // 4 lines of 4 columns => 16
         w = DEMO.w / 4;
         h = (DEMO.h /* - palette_font->h*/) / 4 - 1;
-        // #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
-        //         hagl_put_text_styled(hagl_backend, palette_name, DEMO.x, DEMO.y, &palette_style);
-        // #else
-        //         hagl_put_text(hagl_backend, palette_name, DEMO.x, DEMO.y, COLORS - 1, palette_font->fontx);
-        // #endif
         for (hagl_color_t c = 0; c < COLORS; c++)
         {
             uint16_t x = DEMO.x + (c % 4) * w;
@@ -128,11 +103,7 @@ void palette_draw()
         // 16 lines of 16 columns => 256
         w = DEMO.w / 16;
         h = (DEMO.h /* - palette_font->h*/) / 16;
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
-        hagl_put_text_styled(hagl_backend, palette_name, DEMO.x, DEMO.y, &palette_style);
-#else
-        hagl_put_text(hagl_backend, palette_name, DEMO.x, DEMO.y, COLORS - 1, palette_font->fontx);
-#endif
+        hagl_ext_put_text(hagl_ext_backend, palette_name, DEMO.x, DEMO.y, &palette_style);
         wchar_t buffer[4];
         for (uint16_t c = 0; c < COLORS; c++)
         {
@@ -140,12 +111,8 @@ void palette_draw()
             y = DEMO.y + /*palette_font->h +*/ h * (c / 16);
             hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
             swprintf(buffer, sizeof(buffer) / sizeof(wchar_t), L"%02x", c);
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
             palette_style.foreground_color = ~c & 0xff;
-            hagl_put_text_styled(hagl_backend, buffer, x + (w - 2 * palette_font->w) / 2, y + (h - palette_font->h) / 2, &palette_style);
-#else
-            hagl_put_text(hagl_backend, buffer, x + (w - 2 * palette_font->w) / 2, y + (h - palette_font->h) / 2, ~c & 0xff, palette_font->fontx);
-#endif
+            hagl_ext_put_text(hagl_ext_backend, buffer, x + (w - 2 * palette_font->w) / 2, y + (h - palette_font->h) / 2, &palette_style);
         }
         break;
     case 16:
@@ -153,11 +120,7 @@ void palette_draw()
         //          128 lines of 256 columns,
         //          1 pixel for each color without text
         // TEST!
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
-        hagl_put_text_styled(hagl_backend, palette_name, DEMO.x, DEMO.y, &palette_style);
-#else
-        hagl_put_text(hagl_backend, palette_name, DEMO.x, DEMO.y, COLORS - 1, palette_font->fontx);
-#endif
+        hagl_ext_put_text(hagl_ext_backend, palette_name, DEMO.x, DEMO.y, &palette_style);
         for (uint8_t r = 0; r < 32; r++)
         {
             for (uint8_t g = 0; g < 32; g++)

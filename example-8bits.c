@@ -1,8 +1,5 @@
 /* SPDX-License-Identifier: MIT-0 */
 
-/* Only available with CHiPs44 fork of HAGL for now */
-#define HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
-
 // Standard libs
 #include <stdint.h>
 #include <stdio.h>
@@ -24,53 +21,60 @@
 // Pico VGA Board
 #include "pico-vgaboard.h"
 // Buttons
-#include "pico-vgaboard-buttons.h"
+#include "buttons.h"
 // Colors
-#include "pico-vgaboard-colors.h"
+#include "colors.h"
 // Palettes
-#include "palettes/pico-vgaboard-palettes-bubblegum16.h"
-#include "palettes/pico-vgaboard-palettes-c64.h"
-#include "palettes/pico-vgaboard-palettes-cga.h"
-#include "palettes/pico-vgaboard-palettes-console16.h"
-#include "palettes/pico-vgaboard-palettes-cpc.h"
-#include "palettes/pico-vgaboard-palettes-cx16.h"
-#include "palettes/pico-vgaboard-palettes-dawnbringer16.h"
-#include "palettes/pico-vgaboard-palettes-grey.h"
-#include "palettes/pico-vgaboard-palettes-sweetie16.h"
-#include "palettes/pico-vgaboard-palettes.h"
+#include "palettes/bubblegum16.h"
+#include "palettes/c64.h"
+#include "palettes/cga.h"
+#include "palettes/console16.h"
+#include "palettes/cpc.h"
+#include "palettes/cx16.h"
+#include "palettes/dawnbringer16.h"
+#include "palettes/grey.h"
+#include "palettes/sweetie16.h"
+#include "palettes/palettes.h"
 // Modes
-#include "modes/experimental/pico-vgaboard-modes-1024x576.h"
-#include "modes/experimental/pico-vgaboard-modes-1280x800.h"
-#include "modes/experimental/pico-vgaboard-modes-640x512.h"
-#include "modes/experimental/pico-vgaboard-modes-840x525.h"
-// #include "modes/experimental/pico-vgaboard-modes-840x525.h"
-#include "modes/pico-vgaboard-modes-1024x768.h"
-#include "modes/pico-vgaboard-modes-1280x1024.h"
-#include "modes/pico-vgaboard-modes-1280x720.h"
-#include "modes/pico-vgaboard-modes-1680x1050.h"
-#include "modes/pico-vgaboard-modes-640x400.h"
-#include "modes/pico-vgaboard-modes-640x480.h"
-#include "modes/pico-vgaboard-modes-768x576.h"
-#include "modes/pico-vgaboard-modes-800x600.h"
+#include "modes/experimental/1024x576.h"
+#include "modes/experimental/1280x800.h"
+#include "modes/experimental/640x512.h"
+#include "modes/experimental/840x525.h"
+// #include "modes/experimental/840x525.h"
+#include "modes/1024x768.h"
+#include "modes/1280x1024.h"
+#include "modes/1280x720.h"
+#include "modes/1680x1050.h"
+#include "modes/640x400.h"
+#include "modes/640x480.h"
+#include "modes/768x576.h"
+#include "modes/800x600.h"
 
 // HAGL
 #include "hagl.h"
 #include "hagl_hal.h"
 #include "hagl_hal_color.h"
+#include "hagl_ext.h"
+#include "hagl_ext_blit.h"
+#include "hagl_ext_char.h"
 
-hagl_backend_t* hagl_backend = NULL;
+hagl_ext_surface_t _hagl_ext_backend;
+hagl_ext_surface_t *hagl_ext_backend = &_hagl_ext_backend;
+hagl_backend_t *hagl_backend = NULL;
+
+bool double_buffer = true;
 
 // Convenient macros
-#define WIDTH  (hagl_backend->width)
+#define WIDTH (hagl_backend->width)
 #define HEIGHT (hagl_backend->height)
-#define DEPTH  (hagl_backend->depth)
+#define DEPTH (hagl_backend->depth)
 #define COLORS (pico_vgaboard->colors)
 
 typedef struct _palette_t
 {
-  wchar_t*        name;
-  wchar_t*        code;
-  const BGAR5515* palette;
+    wchar_t *name;
+    wchar_t *code;
+    const BGAR5515 *palette;
 } palette_t;
 
 /* clang-format off */
@@ -112,9 +116,9 @@ palette_t palettes8[] = {
 #define N_PALETTES2 (sizeof(palettes2) / sizeof(palette_t))
 #define N_PALETTES4 (sizeof(palettes4) / sizeof(palette_t))
 #define N_PALETTES8 (sizeof(palettes8) / sizeof(palette_t))
-palette_t* palette_table;
-int        palette_count;
-int        palette_index = 0;
+palette_t *palette_table;
+int palette_count;
+int palette_index = 0;
 
 /* "LIBS" for this demo (order is important) */
 /* clang-format off */
@@ -127,7 +131,7 @@ int        palette_index = 0;
 /* clang-format on */
 
 /* Other global variables */
-wchar_t* palette_name = L"Default";
+wchar_t *palette_name = L"Default";
 
 /* DEMOS */
 #include "bars.c"
@@ -146,13 +150,13 @@ wchar_t* palette_name = L"Default";
 
 typedef struct _demo_t
 {
-  wchar_t* name;
-  bool (*init)();
-  void (*draw)();
-  void (*done)();
-  int16_t duration_s;
-  bool    cumulative; // true if each frame is drawn over previous one, false if
-                      // everything is redrawn at each frame
+    wchar_t *name;
+    bool (*init)();
+    void (*draw)();
+    void (*done)();
+    int16_t duration_s;
+    bool cumulative; // true if each frame is drawn over previous one, false if
+                     // everything is redrawn at each frame
 } demo_t;
 
 /* clang-format off */
@@ -180,161 +184,177 @@ int demo;
 
 #include "buttons.c"
 
-void
-screen_update()
+void screen_update()
 {
-#if PICO_VGABOARD_DOUBLE_BUFFER == 1
-  if (demos[demo].cumulative)
-  {
-    // Copy previous image to working screen
-    memcpy(pico_vgaboard->framebuffers[pico_vgaboard->framebuffer_index],
-           pico_vgaboard->framebuffers[1 - pico_vgaboard->framebuffer_index],
-           pico_vgaboard->framebuffer_size);
-  }
-  else
-  {
-    // Clear screen
-    memset(
-      (uint8_t*)pico_vgaboard->framebuffer, 0, pico_vgaboard->framebuffer_size);
-  }
-#endif
-  // Draw title?
-  if (TITLE.h > 0)
-  {
-    clip(&TITLE);
-    swprintf(title_text,
-             sizeof(title_text) / sizeof(wchar_t),
-             L" %d/%d %ls ",
-             demo + 1,
-             N_DEMOS,
-             demos[demo].name);
-    title_draw();
-  }
-  // Draw demo
-  clip(&DEMO);
-  demos[demo].draw();
-  // Draw status?
-  if (STATUS.h > 0)
-  {
-    clip(&STATUS);
-    show_status();
-  }
+    if (pico_vgaboard->double_buffer)
+    {
+        if (demos[demo].cumulative)
+        {
+            // Copy previous image to working screen
+            memcpy(pico_vgaboard->framebuffers[pico_vgaboard->framebuffer_index],
+                   pico_vgaboard->framebuffers[1 - pico_vgaboard->framebuffer_index],
+                   pico_vgaboard->framebuffer_size);
+        }
+        else
+        {
+            // Clear screen
+            memset(
+                (uint8_t *)pico_vgaboard->framebuffer, 0, pico_vgaboard->framebuffer_size);
+        }
+    }
+    // Draw title?
+    if (TITLE.h > 0)
+    {
+        clip(&TITLE);
+        swprintf(title_text,
+                 sizeof(title_text) / sizeof(wchar_t),
+                 L" %d/%d %ls ",
+                 demo + 1,
+                 N_DEMOS,
+                 demos[demo].name);
+        title_draw();
+    }
+    // Draw demo
+    clip(&DEMO);
+    demos[demo].draw();
+    // Draw status?
+    if (STATUS.h > 0)
+    {
+        clip(&STATUS);
+        show_status();
+    }
 }
 
 /**
  * @brief Cycle through demos
  *        (does not return)
  */
-void
-example_demo_loop(void)
+void example_demo_loop(void)
 {
 #if PICO_VGABOARD_DEBUG
-  printf("*** EXAMPLE_%dX%dX%dBPP@%d ***\n",
-         WIDTH,
-         HEIGHT,
-         DEPTH,
-         pico_vgaboard->freq_hz);
+    printf("*** EXAMPLE_%dX%dX%dBPP@%d ***\n",
+           WIDTH,
+           HEIGHT,
+           DEPTH,
+           pico_vgaboard->freq_hz);
 #endif
-  init_windows(0, 0);
-  // init_windows(0, 8);
-  // init_windows(8, 8);
-  // init_windows( HEIGHT <= 192 ? 0 : HEIGHT <= 240 ? 8 : 16, 8);
-  // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() %
-  // (COLORS - 1), 1 + rand() % (COLORS - 1));
-  demo               = 0;
-  buttons_demo_first = false;
-  buttons_demo_next  = false;
-  title_init();
-  while (true)
-  {
-#if PICO_VGABOARD_DEBUG
-    wprintf(L"Launching #%d of %d: %ls\r\n", demo, N_DEMOS, demos[demo].name);
-#endif
-    // Clear framebuffer between each demo
-    memset(
-      (uint8_t*)pico_vgaboard->framebuffer, 0, pico_vgaboard->framebuffer_size);
-    if (demos[demo].init())
-    {
-#if PICO_VGABOARD_DOUBLE_BUFFER == 1
-      // Display in first framebuffer
-      pico_vgaboard_framebuffer_flip();
-      screen_update();
-      // Display in second framebuffer
-      pico_vgaboard_framebuffer_flip();
-      screen_update();
-#else
-      wait_for_vblank();
-      screen_update();
-#endif
-      clock_t          demo_now_ms = get_time_ms();
-      volatile clock_t demo_end_ms =
-        demo_now_ms + demos[demo].duration_s * 1000;
-      while ((demo_now_ms < demo_end_ms) && !buttons_demo_next &&
-             !buttons_demo_first)
-      {
-#if PICO_VGABOARD_DOUBLE_BUFFER == 1
-        pico_vgaboard_framebuffer_flip();
-#else
-        wait_for_vblank();
-#endif
-        buttons_handle();
-        screen_update();
-        demo_now_ms = get_time_ms();
-      }
-    }
-#if PICO_VGABOARD_DEBUG
-    else
-    {
-      wprintf(L"FAILED launching of demo #%d of %d: %ls\r\n",
-              demo,
-              N_DEMOS,
-              demos[demo].name);
-    }
-#endif
-    if (demos[demo].done != NULL)
-    {
-      demos[demo].done();
-    }
-    if (buttons_demo_first)
-    {
-      // First demo
-      demo               = 0;
-      buttons_demo_first = false;
-    }
-    else
-    {
-      // Next demo, be it by timer or by button press
-      demo = (demo + 1) % N_DEMOS;
-    }
+    init_windows(0, 0);
+    // init_windows(0, 8);
+    // init_windows(8, 8);
+    // init_windows( HEIGHT <= 192 ? 0 : HEIGHT <= 240 ? 8 : 16, 8);
+    // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() %
+    // (COLORS - 1), 1 + rand() % (COLORS - 1));
+    demo = 0;
+    buttons_demo_first = false;
     buttons_demo_next = false;
-  }
+    title_init();
+    while (true)
+    {
+#if PICO_VGABOARD_DEBUG
+        wprintf(L"Launching #%d of %d: %ls\r\n", demo, N_DEMOS, demos[demo].name);
+#endif
+        // Clear framebuffer between each demo
+        memset(
+            (uint8_t *)pico_vgaboard->framebuffer, 0, pico_vgaboard->framebuffer_size);
+        if (demos[demo].init())
+        {
+            if (pico_vgaboard->double_buffer)
+            {
+                // Display in first framebuffer
+                pico_vgaboard_framebuffer_flip();
+                screen_update();
+                // Display in second framebuffer
+                pico_vgaboard_framebuffer_flip();
+                screen_update();
+            }
+            else
+            {
+                wait_for_vblank();
+                screen_update();
+            }
+            clock_t demo_now_ms = get_time_ms();
+            volatile clock_t demo_end_ms =
+                demo_now_ms + demos[demo].duration_s * 1000;
+            while ((demo_now_ms < demo_end_ms) && !buttons_demo_next &&
+                   !buttons_demo_first)
+            {
+                if (pico_vgaboard->double_buffer)
+                {
+                    pico_vgaboard_framebuffer_flip();
+                }
+                else
+                {
+                    wait_for_vblank();
+                }
+                buttons_handle();
+                screen_update();
+                demo_now_ms = get_time_ms();
+            }
+        }
+#if PICO_VGABOARD_DEBUG
+        else
+        {
+            wprintf(L"FAILED launching of demo #%d of %d: %ls\r\n",
+                    demo,
+                    N_DEMOS,
+                    demos[demo].name);
+        }
+#endif
+        if (demos[demo].done != NULL)
+        {
+            demos[demo].done();
+        }
+        if (buttons_demo_first)
+        {
+            // First demo
+            demo = 0;
+            buttons_demo_first = false;
+        }
+        else
+        {
+            // Next demo, be it by timer or by button press
+            demo = (demo + 1) % N_DEMOS;
+        }
+        buttons_demo_next = false;
+    }
 }
+
+// void example_blit_alpha(void *self, int16_t x0, int16_t y0, hagl_bitmap_t *src, hagl_color_t alpha)
+// {
+//     // Should blit with transparency
+// }
+
+// void example_scale_blit_alpha(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *src, hagl_color_t alpha)
+// {
+//     // Should blit with scale & transparency
+// }
 
 /**
- * @brief Setup VGA mode, letterbox and HAGL
+ * @brief Setup double buffer, VGA mode, letterbox and HAGL
  */
-void
-setup(const pico_vgaboard_t* vgaboard_model,
-      uint16_t               display_width,
-      uint16_t               display_height)
+void setup(const pico_vgaboard_t *vgaboard_model,
+           uint16_t display_width,
+           uint16_t display_height)
 {
-  stdio_init_all();
+    stdio_init_all();
 #if PICO_VGABOARD_DEBUG
-  sleep_ms(100);
-  printf("SETUP!\r\n");
+    sleep_ms(100);
+    printf("SETUP!\r\n");
 #endif
-  pico_vgaboard_init();
+    pico_vgaboard_init(double_buffer);
 #if !PICO_NO_HARDWARE
-  pico_vgaboard_buttons_init();
+    pico_vgaboard_buttons_init();
 #endif
-  pico_vgaboard_start(vgaboard_model, display_width, display_height, 0);
-  hagl_backend = hagl_init();
+    pico_vgaboard_start(vgaboard_model, display_width, display_height, 0);
+    // hagl_ext_backend->blit_alpha = &example_blit_alpha;
+    // hagl_ext_backend->scale_blit_alpha = &example_scale_blit_alpha;
+    hagl_ext_init(hagl_ext_backend);
+    hagl_backend = (hagl_backend_t *)(hagl_ext_backend->_surface);
 }
 
-int
-main(void)
+int main(void)
 {
-  /* clang-format off */
+    /* clang-format off */
 
     /**************************************************************************/
     /* 1BPP - MONOCHROME                                                      */
@@ -352,8 +372,9 @@ main(void)
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_640x200x1bpp_16000  ,   0,   0); // OK
     // setup(&pico_vgaboard_640x400x1bpp        ,   0,   0); // OK
-    // setup(&pico_vgaboard_840x525x1bpp_1        ,   0,   0); // OK
-    // setup(&pico_vgaboard_840x525x1bpp_2        ,   0,   0); // OUT OF RANGE!
+    // setup(&pico_vgaboard_840x525x1bpp_1      , 640, 400); // OK
+    // setup(&pico_vgaboard_840x525x1bpp_1      ,   0,   0); // OK
+    // setup(&pico_vgaboard_840x525x1bpp_2      ,   0,   0); // OUT OF RANGE!
 
     /******************************** 5:4 RATIO *******************************/
     // setup(&pico_vgaboard_640x512x1bpp        ,   0,   0); // OK ()
@@ -407,6 +428,7 @@ main(void)
     // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  ,   0,   0); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)
+    // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 320); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 512, 288); // OK (1024x768 based, 16:9)
     // setup(&pico_vgaboard_640x480x4bpp_153600 , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)
     // setup(&pico_vgaboard_800x600x4bpp        , 640, 480); // OK 
@@ -442,6 +464,8 @@ main(void)
     // setup(&pico_vgaboard_320x200x4bpp        , 240, 136); // OK
     // setup(&pico_vgaboard_320x400x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x400x4bpp        , 256, 256); // OK
+    // setup(&pico_vgaboard_336x210x4bpp_1      , 256, 192);// OK
+    setup(&pico_vgaboard_336x210x4bpp_1      , 320, 200);// OK
     // setup(&pico_vgaboard_512x192x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_560x350x4bpp_1      , 480, 272); // OK (1680x1050 based, 16:9ish TIC-80)
     // setup(&pico_vgaboard_560x350x4bpp_1      , 480, 270); // OK (1680x1050 based, 16:9)
@@ -480,8 +504,6 @@ main(void)
     // setup(&pico_vgaboard_160x200x8bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x8bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_560x175x8bpp_1      , 384, 170); // OK (1680x1050 based)
-    setup(&pico_vgaboard_336x210x4bpp_1      , 256, 192);// OK?
-    // setup(&pico_vgaboard_336x210x4bpp_1      , 320, 200);// OK?
 
     /******************************* 16:9 RATIO *******************************/
     // setup(&pico_vgaboard_256x144x8bpp        ,   0,   0); // OK (16:9 letterbox as 1x scale of TIC-80)
@@ -502,58 +524,60 @@ main(void)
         // pico_vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
         // pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
         // pico_vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        /* White */
         // pico_vgaboard->border_color_top    = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
         // pico_vgaboard->border_color_left   = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
         // pico_vgaboard->border_color_bottom = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
         // pico_vgaboard->border_color_right  = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
-        // pico_vgaboard->border_color_top    = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
-        // pico_vgaboard->border_color_left   = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
-        // pico_vgaboard->border_color_bottom = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
-        // pico_vgaboard->border_color_right  = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
+        /* 50 percents of Grey ;-) */
+        pico_vgaboard->border_color_top    = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
+        pico_vgaboard->border_color_left   = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
+        pico_vgaboard->border_color_bottom = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
+        pico_vgaboard->border_color_right  = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
     }
 
-  /* clang-format on */
+    /* clang-format on */
 
-  switch (DEPTH)
-  {
+    switch (DEPTH)
+    {
     case 1:
-      palette_table = palettes1;
-      palette_count = N_PALETTES1;
-      break;
+        palette_table = palettes1;
+        palette_count = N_PALETTES1;
+        break;
     case 2:
-      palette_table = palettes2;
-      palette_count = N_PALETTES2;
-      break;
+        palette_table = palettes2;
+        palette_count = N_PALETTES2;
+        break;
     case 4:
-      palette_table = palettes4;
-      palette_count = N_PALETTES4;
-      break;
+        palette_table = palettes4;
+        palette_count = N_PALETTES4;
+        break;
     case 8:
-      palette_table = palettes8;
-      palette_count = N_PALETTES8;
-      break;
+        palette_table = palettes8;
+        palette_count = N_PALETTES8;
+        break;
     default:
-      panic("NO PALETTES for DEPTH %d!!!", DEPTH);
-      break;
-  }
-  pico_vgaboard_set_palette(palette_table[palette_index].palette);
-  palette_name = palette_table[palette_index].name;
+        panic("NO PALETTES for DEPTH %d!!!", DEPTH);
+        break;
+    }
+    pico_vgaboard_set_palette(palette_table[palette_index].palette);
+    palette_name = palette_table[palette_index].name;
 
 #if PICO_VGABOARD_DEBUG
-  printf("*** CORE1 => RENDER LOOP ***\n");
+    printf("*** CORE1 => RENDER LOOP ***\n");
 #endif
-  multicore_launch_core1(pico_vgaboard_render_loop);
+    multicore_launch_core1(pico_vgaboard_render_loop);
 #if PICO_VGABOARD_DEBUG
-  printf("*** CORE0 => DEMO ***\n");
+    printf("*** CORE0 => DEMO ***\n");
 #endif
-  example_demo_loop();
+    example_demo_loop();
 
-  __builtin_unreachable();
+    __builtin_unreachable();
 #if PICO_VGABOARD_DEBUG
-  printf("*** UNREACHABLE ***\n");
+    printf("*** UNREACHABLE ***\n");
 #endif
-  hagl_close(hagl_backend);
-  return 0;
+    hagl_close(hagl_backend);
+    return 0;
 }
 
 /* EOF */

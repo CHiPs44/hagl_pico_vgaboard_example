@@ -7,6 +7,7 @@
 #include <pico/version.h>
 
 #include "hagl/char.h"
+#include "hagl_ext_char.h"
 
 /**
  * @brief Get free RAM using malloc() and dichotomy
@@ -102,24 +103,22 @@ wchar_t *specs_scroller = _specs_scroller;
 //     .size = sizeof(tile2_bitmap), // 8 * 8  = 64 bytes
 //     .buffer = (uint8_t *)&tile2_bitmap};
 
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
 void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *style, hagl_color_t shadow_color)
 {
     hagl_color_t foreground_color = style->foreground_color;
     style->background_color = 0;
     /* Shadow text */
     style->foreground_color = 0; // shadow_color;
-    hagl_put_text_styled(hagl_backend, text, x0 - 1, y0 - 1, style);
-    hagl_put_text_styled(hagl_backend, text, x0 - 1, y0 + 0, style);
-    hagl_put_text_styled(hagl_backend, text, x0 + 1, y0 - 0, style);
-    hagl_put_text_styled(hagl_backend, text, x0 - 0, y0 + 1, style);
-    hagl_put_text_styled(hagl_backend, text, x0 + 0, y0 - 1, style);
-    hagl_put_text_styled(hagl_backend, text, x0 + 1, y0 + 1, style);
+    hagl_ext_put_text(hagl_ext_backend, text, x0 - 1, y0 - 1, style);
+    hagl_ext_put_text(hagl_ext_backend, text, x0 - 1, y0 + 0, style);
+    hagl_ext_put_text(hagl_ext_backend, text, x0 + 1, y0 - 0, style);
+    hagl_ext_put_text(hagl_ext_backend, text, x0 - 0, y0 + 1, style);
+    hagl_ext_put_text(hagl_ext_backend, text, x0 + 0, y0 - 1, style);
+    hagl_ext_put_text(hagl_ext_backend, text, x0 + 1, y0 + 1, style);
     /* Real text */
     style->foreground_color = foreground_color;
-    hagl_put_text_styled(hagl_backend, text, x0 + 0, y0 + 0, style);
+    hagl_ext_put_text(hagl_ext_backend, text, x0 + 0, y0 + 0, style);
 }
-#endif
 
 wchar_t *get_vreg_voltage_text(int vreg_voltage)
 {
@@ -196,11 +195,10 @@ void specs_calc(bool for_scroller)
     swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx%d", pico_vgaboard->display_width, pico_vgaboard->display_height);
     swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d.%d MHz", pixel_clock / 1000, pixel_clock % 1000);
     swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d", DEPTH, COLORS);
-#if PICO_VGABOARD_DOUBLE_BUFFER==1
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx2=%d/%d", pico_vgaboard->framebuffer_size, 2 * pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size);
-#else
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d", pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size);
-#endif
+    if (pico_vgaboard->double_buffer)
+        swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx2=%d/%d", pico_vgaboard->framebuffer_size, 2 * pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size);
+    else
+        swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d", pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size);
     swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"FREE LINE");
     swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d.%d MHz", sys_clock_khz / 1000, sys_clock_khz % 1000);
     swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%ls V", vreg_voltage);
@@ -305,21 +303,17 @@ void specs_draw()
     lines[2] = DEMO.w > 160 ? L"HAGL HAL by CHiPs44" : L"HAGL HAL";
     lines[3] = DEMO.w > 160 ? L"github.com/CHiPs44" : L"by CHiPs44";
     y0 = DEMO.y;
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_char_style_t style1 = {
         .font = font->fontx,
         .background_color = 0,
         .foreground_color = 0,
-        .mode = HAGL_CHAR_MODE_TRANSPARENT,
+        .mode = HAGL_EXT_CHAR_MODE_TRANSPARENT,
         .scale_x_numerator = 1,
         .scale_x_denominator = 1,
         .scale_y_numerator = 1,
         .scale_y_denominator = 1,
     };
     bool compact = DEMO.h / (font->h * style1.scale_y_numerator / style1.scale_y_denominator) <= NLINES + NLABELS;
-#else
-    bool compact = DEMO.h / font->h <= NLINES + NLABELS;
-#endif
     if (!compact)
     {
         y0 += font->h;
@@ -327,59 +321,36 @@ void specs_draw()
     for (uint8_t i = 0; i < NLINES; i += 1)
     {
         size_t len = wcslen(lines[i]);
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         x0 = DEMO.x + (DEMO.w - font->w * len * style1.scale_x_numerator / style1.scale_x_denominator) / 2;
         style1.foreground_color = specs_colors[i % 4];
         specs_text(x0, y0, lines[i], &style1, specs_colors[(i + 1) % 4]);
         y0 += font->h * style1.scale_y_numerator / style1.scale_y_denominator;
-#else
-        x0 = DEMO.x + (DEMO.w - font->w * len) / 2;
-        hagl_put_text(hagl_backend, lines[i], x0, y0, colors[i % 4], font->fontx);
-        y0 += font->h;
-#endif
     }
     font = &FONT8X8;
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     style1.font = FONT8X8.fontx;
-#endif
     if (!compact)
     {
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         y0 += font->h * style1.scale_y_numerator / style1.scale_y_denominator;
-#else
-        y0 += font->h;
-#endif
     }
     /* DISPLAY LABELS & VALUES */
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_char_style_t style2 = {
         .font = font->fontx,
         .background_color = 0,
         .foreground_color = 0,
-        .mode = HAGL_CHAR_MODE_TRANSPARENT,
+        .mode = HAGL_EXT_CHAR_MODE_TRANSPARENT,
         .scale_x_numerator = 1,
         .scale_x_denominator = 1,
         .scale_y_numerator = 1,
         .scale_y_denominator = 1,
     };
     x0 = DEMO.x + font->w * style2.scale_x_numerator / style2.scale_x_denominator;
-#else
-    x0 = DEMO.x + font->w;
-#endif
     for (uint8_t i = 0; i < NLABELS; i += 1)
     {
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         x1 = x0 + (wcslen(labels[i]) + 1) * font->w * style2.scale_x_denominator / style2.scale_y_denominator;
         y1 = y0 + i * font->h * style2.scale_y_numerator / style2.scale_y_denominator;
         style2.foreground_color = specs_colors[i % 4];
         specs_text(x0, y1, labels[i], &style2, specs_colors[(i + 1) % 4]);
         specs_text(x1, y1, values[i], &style2, specs_colors[(i + 1) % 4]);
-#else
-        x1 = x0 + (wcslen(labels[i]) + 1) * font->w;
-        y1 = y0 + i * font->h;
-        hagl_put_text(hagl_backend, labels[i], x0, y1, color1, font->fontx);
-        hagl_put_text(hagl_backend, values[i], x1, y1, color2, font->fontx);
-#endif
         // wprintf(
         //     L"spec #%d: label=%ls value=%ls\r\n",
         //     i, labels[i], values[i]

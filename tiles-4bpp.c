@@ -8,7 +8,8 @@
 rect_t SCROLL;
 rect_t PANEL;
 
-struct {
+struct
+{
   int cols;
   int rows;
   int map_size;
@@ -28,7 +29,8 @@ struct {
 } TILES;
 wchar_t tile_scratch_text[80];
 
-void tile_draw(void) {
+void tile_draw(void)
+{
   int start_row, end_row, row;
   int start_col, end_col, col;
   int x, y, index;
@@ -41,8 +43,10 @@ void tile_draw(void) {
   end_col = TILES.scroll_dx > 0 ? TILES.cols + 3 : TILES.cols + 2;
   start_row = TILES.scroll_dy < 0 ? -3 : -3;
   end_row = TILES.scroll_dy > 0 ? TILES.rows + 3 : TILES.rows + 2;
-  for (row = start_row; row < end_row; row += 1) {
-    for (col = start_col; col < end_col; col += 1) {
+  for (row = start_row; row < end_row; row += 1)
+  {
+    for (col = start_col; col < end_col; col += 1)
+    {
       // horizontal scroll
       x = SCROLL.x + TILES_W * col +
           (TILES.scroll_dx == -1  ? TILES.scroll_x
@@ -85,8 +89,9 @@ void tile_draw(void) {
                                    3, CO16_DARK_BLUE);
   hagl_put_text(hagl_backend, L"SCORE", PANEL.x + 8, PANEL.y + 8, CO16_GREEN,
                 FONT5X8.fontx);
+  int www = (PANEL.w - 16) / 8;
   swprintf(tile_scratch_text, sizeof(tile_scratch_text) / sizeof(wchar_t),
-           L"%06d", TILES.score);
+           L"%0*d", www, TILES.score);
   hagl_put_text(hagl_backend, tile_scratch_text, PANEL.x + 8, PANEL.y + 16,
                 CO16_ORANGE, FONT8X8.fontx);
   // title
@@ -94,13 +99,13 @@ void tile_draw(void) {
                                    PANEL.y + (PANEL.h - 4 - 8 - 32 - 8 - 4) / 2,
                                    PANEL.w - 8, 4 + 8 + 32 + 8 + 4, 3,
                                    CO16_DARK_VIOLET);
-  hagl_blit_xywh_transparent(hagl_backend, PANEL.x + (PANEL.w - 32) / 2,
+  hagl_blit_xywh_transparent(hagl_ext_backend, PANEL.x + (PANEL.w - 32) / 2,
                              PANEL.y + (PANEL.h - 32) / 2, 32, 32,
                              &alien_16x16x4_frames[0], __);
-  hagl_put_text(hagl_backend, L">SPACE", PANEL.x + 8,
+  hagl_put_text(hagl_backend, L"COSMIC", PANEL.x + 8,
                 PANEL.y + (PANEL.h - 4 - 8 - 32) / 2, CO16_MAGENTA,
                 FONT8X8.fontx);
-  hagl_put_text(hagl_backend, L"FIGHT<", PANEL.x + 8,
+  hagl_put_text(hagl_backend, L"BATTLE", PANEL.x + PANEL.w - 8 * 6 - 8,
                 PANEL.y + PANEL.h / 2 + 16, CO16_LIGHT_BLUE, FONT8X8.fontx);
   // hagl_draw_hline_xyw(hagl_backend, PANEL.x, PANEL.y + PANEL.h / 2, PANEL.w,
   // CO16_WHITE);
@@ -111,8 +116,9 @@ void tile_draw(void) {
   hagl_put_text(hagl_backend, L"SHIPS", PANEL.x + 8, PANEL.y + PANEL.h - 32,
                 CO16_GREEN, FONT5X8.fontx);
   int ships = 3;
-  for (int ship = 0; ship < ships; ship += 1) {
-    hagl_blit_xywh_transparent(hagl_backend, PANEL.x + 8 + ship * 16,
+  for (int ship = 0; ship < ships; ship += 1)
+  {
+    hagl_blit_xywh_transparent(hagl_ext_backend, PANEL.x + 8 + ship * 16,
                                PANEL.y + PANEL.h - 24, 16, 16, &ship_16x16x4_0,
                                _);
   }
@@ -141,7 +147,8 @@ void tile_draw(void) {
   //               FONT6X9.fontx);
 }
 
-void tile_change_speed(bool random) {
+void tile_change_speed(bool random)
+{
   if (random && rand() % 10 != 0)
     return;
   int toto = rand() % 5 - 2; // between 0 - 2 = -2 and 4 - 2 = +2
@@ -153,7 +160,8 @@ void tile_change_speed(bool random) {
     TILES.speed = 7;
 }
 
-bool tile_init(void) {
+bool tile_init(void)
+{
   // scrolling region: left 3/4 of DEMO
   SCROLL.x = DEMO.x;
   SCROLL.y = DEMO.y;
@@ -172,7 +180,8 @@ bool tile_init(void) {
   TILES.map_rows = (3 * TILES.rows) / 2;
   TILES.map_size = sizeof(uint8_t) * TILES.map_cols * TILES.map_rows;
   TILES.map = malloc(TILES.map_size);
-  if (TILES.map == NULL) {
+  if (TILES.map == NULL)
+  {
     return false;
   }
   // // initialize map with borders and grid, fill with random tiles
@@ -193,8 +202,10 @@ bool tile_init(void) {
   //   }
   // }
   // initialize map with random tiles
-  for (int row = 0; row < TILES.map_rows; row += 1) {
-    for (int col = 0; col < TILES.map_cols; col += 1) {
+  for (int row = 0; row < TILES.map_rows; row += 1)
+  {
+    for (int col = 0; col < TILES.map_cols; col += 1)
+    {
       TILES.map[row * TILES.map_cols + col] = rand() % 4;
     }
   }
@@ -214,12 +225,14 @@ bool tile_init(void) {
   return true;
 }
 
-void tile_done(void) {
+void tile_done(void)
+{
   if (TILES.map != NULL)
     free(TILES.map);
 }
 
-void tile_anim(void) {
+void tile_anim(void)
+{
   // timer elapsed?
   if (absolute_time_diff_us(get_absolute_time(), TILES.timer) > 0)
     return;
@@ -236,33 +249,47 @@ void tile_anim(void) {
   //   TILES.score += 10 * (rand() % 11);
   // }
   TILES.scroll_x += 1;
-  if (TILES.scroll_x == TILES_W) {
+  if (TILES.scroll_x == TILES_W)
+  {
     TILES.scroll_x = 0;
     TILES.scroll_col += TILES.scroll_dx;
-    if (TILES.scroll_col < 1) {
+    if (TILES.scroll_col < 1)
+    {
       TILES.scroll_col = 1;
       TILES.scroll_dx = rand() % 10 == 0 ? 0 : 1;
-    } else if (TILES.scroll_col > TILES.map_cols - TILES.cols - 1) {
+    }
+    else if (TILES.scroll_col > TILES.map_cols - TILES.cols - 1)
+    {
       TILES.scroll_col = TILES.map_cols - TILES.cols - 1;
       TILES.scroll_dx = rand() % 10 == 0 ? 0 : -1;
-    } else {
-      if (TILES.scroll_dx == 0 && rand() % 10 == 0) {
+    }
+    else
+    {
+      if (TILES.scroll_dx == 0 && rand() % 10 == 0)
+      {
         TILES.scroll_dx = rand() % 2 ? -1 : 1;
       }
     }
   }
   TILES.scroll_y += 1;
-  if (TILES.scroll_y == TILES_H) {
+  if (TILES.scroll_y == TILES_H)
+  {
     TILES.scroll_y = 0;
     TILES.scroll_row += TILES.scroll_dy;
-    if (TILES.scroll_row < 1) {
+    if (TILES.scroll_row < 1)
+    {
       TILES.scroll_row = 1;
       TILES.scroll_dy = rand() % 2 ? 1 : 0;
-    } else if (TILES.scroll_row > TILES.map_rows - TILES.rows - 1) {
+    }
+    else if (TILES.scroll_row > TILES.map_rows - TILES.rows - 1)
+    {
       TILES.scroll_row = TILES.map_rows - TILES.rows - 1;
       TILES.scroll_dy = rand() % 2 ? -1 : 0;
-    } else {
-      if (TILES.scroll_dy == 0 && rand() % 10 == 0) {
+    }
+    else
+    {
+      if (TILES.scroll_dy == 0 && rand() % 10 == 0)
+      {
         TILES.scroll_dy = rand() % 2 ? -1 : 1;
       }
     }

@@ -1,8 +1,5 @@
 /* SPDX-License-Identifier: MIT-0 */
 
-/* Only available with CHiPs44 fork of HAGL for now */
-#define HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
-
 // Standard libs
 #include <stdint.h>
 #include <stdio.h>
@@ -19,16 +16,16 @@
 // Pico VGA Board
 #include "pico-vgaboard.h"
 // Colors
-#include "pico-vgaboard-colors.h"
+#include "colors.h"
 // Palettes
-#include "pico-vgaboard-palettes.h"
-#include "pico-vgaboard-palettes-c64.h"
-#include "pico-vgaboard-palettes-cga.h"
-#include "pico-vgaboard-palettes-cpc.h"
-#include "pico-vgaboard-palettes-grey.h"
-#include "pico-vgaboard-palettes-bubblegum16.h"
-#include "pico-vgaboard-palettes-sweetie16.h"
-#include "pico-vgaboard-palettes-dawnbringer16.h"
+#include "palettes.h"
+#include "c64.h"
+#include "cga.h"
+#include "cpc.h"
+#include "grey.h"
+#include "bubblegum16.h"
+#include "sweetie16.h"
+#include "dawnbringer16.h"
 // Modes
 #include "pico-vgaboard-modes-640x400.h"
 #include "pico-vgaboard-modes-640x480.h"
