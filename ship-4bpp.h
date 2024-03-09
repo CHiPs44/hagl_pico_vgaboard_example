@@ -102,3 +102,8 @@ hagl_bitmap_t ship_16x16x4_1 = {
     .pitch = 32,                           // 16 * 2, bytes per row
     .size = sizeof(ship_16x16x4_1_bitmap), // 16 * 16 / 2, // in bytes
     .buffer = (uint8_t *)&ship_16x16x4_1_bitmap};
+
+hagl_bitmap_t *ship_16x16x4_frames[2] = {
+    &ship_16x16x4_0,
+    &ship_16x16x4_1,
+};

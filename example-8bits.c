@@ -25,6 +25,7 @@
 // Colors
 #include "colors.h"
 // Palettes
+#include "palettes/atari-ste.h"
 #include "palettes/bubblegum16.h"
 #include "palettes/c64.h"
 #include "palettes/cga.h"
@@ -49,11 +50,11 @@
 #include "modes/640x480.h"
 #include "modes/768x576.h"
 #include "modes/800x600.h"
-
 // HAGL
 #include "hagl.h"
 #include "hagl_hal.h"
 #include "hagl_hal_color.h"
+// HAGL extension
 #include "hagl_ext.h"
 #include "hagl_ext_blit.h"
 #include "hagl_ext_char.h"
@@ -78,47 +79,55 @@ typedef struct _palette_t
 } palette_t;
 
 /* clang-format off */
+
 palette_t palettes1[] = {
-    { /* 0 */ .name = L"White on black"     , .code = L"MONO2 ", .palette = pico_vgaboard_palette_1bpp_black      },
-    { /* 1 */ .name = L"Amber CRT 2"        , .code = L"AMBER ", .palette = pico_vgaboard_palette_1bpp_amber      },
-    { /* 2 */ .name = L"Amstrad CPC mode 2" , .code = L"CPC2  ", .palette = pico_vgaboard_palette_1bpp_cpc2       },
-    { /* 3 */ .name = L"Green CRT 2"        , .code = L"GREEN ", .palette = pico_vgaboard_palette_1bpp_green      },
-    { /* 4 */ .name = L"Black on white"     , .code = L"PAPER2", .palette = pico_vgaboard_palette_1bpp_paper      },
+    { /* 0 */ .name = L"White on black"     , .code = L"MONO2 ", .palette = palette_1bpp_black      },
+    { /* 1 */ .name = L"Amber CRT 2"        , .code = L"AMBER2", .palette = palette_1bpp_amber      },
+    { /* 2 */ .name = L"Amstrad CPC mode 2" , .code = L"CPC2  ", .palette = palette_1bpp_cpc2       },
+    { /* 3 */ .name = L"Green CRT 2"        , .code = L"GREEN2", .palette = palette_1bpp_green      },
+    { /* 4 */ .name = L"Black on white"     , .code = L"PAPER2", .palette = palette_1bpp_paper      },
 };
-palette_t palettes2[] = {
-    { /* 0 */ .name = L"White on black"     , .code = L"MONO4 ", .palette = pico_vgaboard_palette_2bpp_black      },
-    { /* 1 */ .name = L"Amber CRT 4"        , .code = L"AMBER4", .palette = pico_vgaboard_palette_2bpp_amber      },
-    { /* 2 */ .name = L"Amstrad CPC mode 1" , .code = L"CPC1  ", .palette = pico_vgaboard_palette_2bpp_cpc1       },
-    { /* 3 */ .name = L"Green CRT 4"        , .code = L"GREEN4", .palette = pico_vgaboard_palette_2bpp_green      },
-    { /* 4 */ .name = L"Grey/Gray 4"        , .code = L"GREY4 ", .palette = pico_vgaboard_palette_2bpp_grey       },
-};
-palette_t palettes4[] = {
-    { /* 0 */ .name = L"Console 16"         , .code = L"CO16  ", .palette = pico_vgaboard_palette_4bpp_co16       },
-    { /* 1 */ .name = L"Amstrad CPC mode 0" , .code = L"CPC0  ", .palette = pico_vgaboard_palette_4bpp_cpc0       },
-    { /* 2 */ .name = L"ANSI 16"            , .code = L"ANSI16", .palette = pico_vgaboard_palette_4bpp_ansi       },
-    { /* 3 */ .name = L"Atari STE"          , .code = L"STE   ", .palette = pico_vgaboard_palette_4bpp_atari_ste  },
-    { /* 4 */ .name = L"Bubblegum 16"       , .code = L"BG16  ", .palette = pico_vgaboard_palette_4bpp_bg16       },
-    { /* 5 */ .name = L"CGA"                , .code = L"CGA   ", .palette = pico_vgaboard_palette_4bpp_cga        },
-    { /* 6 */ .name = L"Commodore 64"       , .code = L"C64   ", .palette = pico_vgaboard_palette_4bpp_c64        },
-    { /* 7 */ .name = L"Dawnbringer 16"     , .code = L"DB16  ", .palette = pico_vgaboard_palette_4bpp_db16       },
-    { /* 8 */ .name = L"Grey/Gray 16"       , .code = L"GREY16", .palette = pico_vgaboard_palette_4bpp_grey       },
-    { /* 9 */ .name = L"Sweetie 16"         , .code = L"SW16  ", .palette = pico_vgaboard_palette_4bpp_sw16       },
-};
-palette_t palettes8[] = {
-    { /* 0 */ .name = L"ANSI"               , .code = L"ANSI  ", .palette = pico_vgaboard_palette_8bpp_ansi       },
-    { /* 1 */ .name = L"Aurora"             , .code = L"AURORA", .palette = pico_vgaboard_palette_8bpp_aurora     },
-    { /* 2 */ .name = L"Commander X16"      , .code = L"CX16  ", .palette = pico_vgaboard_palette_8bpp_cx16       },
-    { /* 3 */ .name = L"RGB 332"            , .code = L"RGB332", .palette = pico_vgaboard_palette_8bpp_rgb332     },
-    { /* 4 */ .name = L"RGB 685"            , .code = L"RGB685", .palette = pico_vgaboard_palette_8bpp_rgb685     },
-};
-/* clang-format on */
 #define N_PALETTES1 (sizeof(palettes1) / sizeof(palette_t))
+
+palette_t palettes2[] = {
+    { /* 0 */ .name = L"White on black"     , .code = L"MONO4 ", .palette = palette_2bpp_black      },
+    { /* 1 */ .name = L"Amber CRT 4"        , .code = L"AMBER4", .palette = palette_2bpp_amber      },
+    { /* 2 */ .name = L"Amstrad CPC mode 1" , .code = L"CPC1  ", .palette = palette_2bpp_cpc1       },
+    { /* 3 */ .name = L"Green CRT 4"        , .code = L"GREEN4", .palette = palette_2bpp_green      },
+    { /* 4 */ .name = L"Grey/Gray 4"        , .code = L"GREY4 ", .palette = palette_2bpp_grey       },
+};
 #define N_PALETTES2 (sizeof(palettes2) / sizeof(palette_t))
+
+palette_t palettes4[] = {
+    { /* 6 */ .name = L"Console 16"         , .code = L"CO16  ", .palette = palette_4bpp_co16       },
+    { /* 0 */ .name = L"ANSI 16"            , .code = L"ANSI16", .palette = palette_4bpp_ansi       },
+    { /* 1 */ .name = L"Amstrad CPC mode 0" , .code = L"CPC0  ", .palette = palette_4bpp_cpc0       },
+    { /* 2 */ .name = L"Atari STE"          , .code = L"STE   ", .palette = palette_4bpp_atari_ste  },
+    { /* 3 */ .name = L"Bubblegum 16"       , .code = L"BG16  ", .palette = palette_4bpp_bg16       },
+    { /* 4 */ .name = L"CGA"                , .code = L"CGA   ", .palette = palette_4bpp_cga        },
+    { /* 5 */ .name = L"Commodore 64"       , .code = L"C64   ", .palette = palette_4bpp_c64        },
+    { /* 7 */ .name = L"Dawnbringer 16"     , .code = L"DB16  ", .palette = palette_4bpp_db16       },
+    { /* 8 */ .name = L"Grey/Gray 16"       , .code = L"GREY16", .palette = palette_4bpp_grey       },
+    { /* 9 */ .name = L"Sweetie 16"         , .code = L"SW16  ", .palette = palette_4bpp_sw16       },
+};
 #define N_PALETTES4 (sizeof(palettes4) / sizeof(palette_t))
+
+palette_t palettes8[] = {
+    { /* 0 */ .name = L"ANSI"               , .code = L"ANSI  ", .palette = palette_8bpp_ansi       },
+    { /* 1 */ .name = L"Aurora"             , .code = L"AURORA", .palette = palette_8bpp_aurora     },
+    { /* 2 */ .name = L"Commander X16"      , .code = L"CX16  ", .palette = palette_8bpp_cx16       },
+    { /* 3 */ .name = L"RGB 332"            , .code = L"RGB332", .palette = palette_8bpp_rgb332     },
+    { /* 4 */ .name = L"RGB 685"            , .code = L"RGB685", .palette = palette_8bpp_rgb685     },
+    { /* 4 */ .name = L"RGBI"               , .code = L"RGBI  ", .palette = palette_8bpp_rgbi       },
+};
 #define N_PALETTES8 (sizeof(palettes8) / sizeof(palette_t))
+
 palette_t *palette_table;
-int palette_count;
-int palette_index = 0;
+int        palette_count;
+int        palette_index;
+wchar_t   *palette_name;
+
+/* clang-format on */
 
 /* "LIBS" for this demo (order is important) */
 /* clang-format off */
@@ -129,9 +138,6 @@ int palette_index = 0;
 #include "vsync.c"
 #include "borders-and-axis.c"
 /* clang-format on */
-
-/* Other global variables */
-wchar_t *palette_name = L"Default";
 
 /* DEMOS */
 #include "bars.c"
@@ -417,7 +423,7 @@ int main(void)
     // setup(&pico_vgaboard_256x192x4bpp_24576_2,   0,   0); // OK (768x576 based)
     // setup(&pico_vgaboard_256x192x4bpp_24576_2, 240, 136); // OK (768x576 based)
     // setup(&pico_vgaboard_320x240x4bpp        ,   0,   0); // OK
-    // setup(&pico_vga(board_320x240x4bpp       , 320, 200); // OK (so we have 320x200@60 in a standard mode)
+    // setup(&pico_vgaboard_320x240x4bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x4bpp        , 256, 192); // OK
     // setup(&pico_vgaboard_384x288x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 256); // OK (Space Invaders rulez ;-))
@@ -458,15 +464,17 @@ int main(void)
     // setup(&pico_vgaboard_1024x576x4bpp_294912, 640, 400); // OK, too much margins
 
     /******************************* 16:10 RATIO ******************************/
-    // setup(&pico_vgaboard_160x200x4bpp_16000  ,   0,   0); // OK
+    // setup(&pico_vgaboard_160x200x4bpp_16000  ,   0,   0); // OK (Fruity Frank compatible ;-))
     // setup(&pico_vgaboard_320x100x4bpp_16000  ,   0,   0); // OK (not very interesting...)
     // setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x4bpp        , 240, 136); // OK
     // setup(&pico_vgaboard_320x400x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x400x4bpp        , 256, 256); // OK
-    // setup(&pico_vgaboard_336x210x4bpp_1      , 256, 192);// OK
-    setup(&pico_vgaboard_336x210x4bpp_1      , 320, 200);// OK
+    // setup(&pico_vgaboard_336x210x4bpp_1      , 256, 192); // OK
+    // setup(&pico_vgaboard_336x210x4bpp_1      , 320, 180); // OK
+    setup(&pico_vgaboard_336x210x4bpp_1      , 320, 200); // OK
     // setup(&pico_vgaboard_512x192x4bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_560x350x4bpp_1      , 384, 288); // OK
     // setup(&pico_vgaboard_560x350x4bpp_1      , 480, 272); // OK (1680x1050 based, 16:9ish TIC-80)
     // setup(&pico_vgaboard_560x350x4bpp_1      , 480, 270); // OK (1680x1050 based, 16:9)
     // setup(&pico_vgaboard_640x200x4bpp        ,   0,   0); // OK
@@ -530,10 +538,10 @@ int main(void)
         // pico_vgaboard->border_color_bottom = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
         // pico_vgaboard->border_color_right  = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
         /* 50 percents of Grey ;-) */
-        pico_vgaboard->border_color_top    = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
-        pico_vgaboard->border_color_left   = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
-        pico_vgaboard->border_color_bottom = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
-        pico_vgaboard->border_color_right  = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
+        // pico_vgaboard->border_color_top    = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
+        // pico_vgaboard->border_color_left   = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
+        // pico_vgaboard->border_color_bottom = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
+        // pico_vgaboard->border_color_right  = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x7f, 0x7f, 0x7f);
     }
 
     /* clang-format on */
@@ -560,6 +568,7 @@ int main(void)
         panic("NO PALETTES for DEPTH %d!!!", DEPTH);
         break;
     }
+    palette_index = 0;
     pico_vgaboard_set_palette(palette_table[palette_index].palette);
     palette_name = palette_table[palette_index].name;
 

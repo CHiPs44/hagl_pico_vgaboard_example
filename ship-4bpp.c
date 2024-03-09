@@ -102,7 +102,7 @@ void
 ship_draw()
 {
   hagl_bitmap_t* bitmap = ship_frame == 0 ? &ship_16x16x4_0 : &ship_16x16x4_1;
-  hagl_blit_xywh_transparent(hagl_ext_backend,
+  hagl_ext_blit_xywh_transparent(hagl_ext_backend,
                              SCROLL.x + ship_x,
                              SCROLL.y + ship_y,
                              bitmap->width,

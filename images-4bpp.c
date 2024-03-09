@@ -18,10 +18,10 @@ hagl_bitmap_t *images4_bitmaps[] = {
 };
 #define N_IMAGES4 (sizeof(images4_bitmaps) / sizeof(hagl_bitmap_t *))
 BGAR5515 *images4_palettes[] = {
-    // (BGAR5515 *)pico_vgaboard_palette_4bpp_cat_320x240,
-    (BGAR5515 *)pico_vgaboard_palette_4bpp_sw16,
-    (BGAR5515 *)pico_vgaboard_palette_4bpp_sw16,
-    (BGAR5515 *)pico_vgaboard_palette_4bpp_sw16,
+    // (BGAR5515 *)palette_4bpp_cat_320x240,
+    (BGAR5515 *)palette_4bpp_sw16,
+    (BGAR5515 *)palette_4bpp_sw16,
+    (BGAR5515 *)palette_4bpp_sw16,
 };
 
 int images4_index;

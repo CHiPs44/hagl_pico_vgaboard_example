@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT-0 */
+
 #if HAGL_HAL_COLOR_BITS == 8
 #include "example-8bits.c"
 #elif HAGL_HAL_COLOR_BITS == 16

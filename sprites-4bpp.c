@@ -12,9 +12,9 @@
 #include "ship-4bpp.c"
 
 bool sprites_init() {
-  if (!tile_init())
+  if (!tiles_init())
     return false;
-  tile_draw();
+  tiles_draw();
   if (!alien_init())
     return false;
   alien_draw();
@@ -24,16 +24,16 @@ bool sprites_init() {
 }
 
 void sprites_done() {
-  tile_done();
+  tiles_done();
   alien_done();
   ship_done();
 }
 
 void sprites_draw() {
-  tile_anim();
+  tiles_anim();
   alien_anim();
   ship_anim();
-  tile_draw();
+  tiles_draw();
   clip(&SCROLL);
   alien_draw();
   ship_draw();
