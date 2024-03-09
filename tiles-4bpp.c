@@ -120,26 +120,28 @@ void tiles_draw(void)
     // left aligned
     x = PANEL.x + 8;
     y = PANEL.y + (PANEL.h - 4 - 32 - 32) / 2;
-    tile_text_style.foreground_color = CO16_DARK_VIOLET;
+    tile_text_style.foreground_color = CO16_DARK_RED;
     hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x - 0, y - 1, &tile_text_style);
     hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x - 0, y + 1, &tile_text_style);
     hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x - 1, y - 1, &tile_text_style);
     hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x - 1, y + 0, &tile_text_style);
     hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x - 1, y + 1, &tile_text_style);
     hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x + 1, y - 0, &tile_text_style);
+    hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x + 1, y - 1, &tile_text_style);
     hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x + 1, y + 1, &tile_text_style);
     tile_text_style.foreground_color = CO16_ORANGE;
     hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x + 0, y + 0, &tile_text_style);
     // right aligned
     x = PANEL.x + PANEL.w - 8 * 6 - 8;
     y = PANEL.y + PANEL.h / 2 + 16 + 4;
-    tile_text_style.foreground_color = CO16_DARK_VIOLET;
+    tile_text_style.foreground_color = CO16_DARK_RED;
     hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x - 0, y - 1, &tile_text_style);
     hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x - 0, y + 1, &tile_text_style);
     hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x - 1, y - 1, &tile_text_style);
     hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x - 1, y + 0, &tile_text_style);
     hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x - 1, y + 1, &tile_text_style);
     hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x + 1, y - 0, &tile_text_style);
+    hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x + 1, y - 1, &tile_text_style);
     hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x + 1, y + 1, &tile_text_style);
     tile_text_style.foreground_color = CO16_ORANGE;
     hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x + 0, y + 0, &tile_text_style);

@@ -2,7 +2,7 @@
 
 #define __ CO16_GREYISH
 #define XX CO16_GREEN
-#define YY CO16_SKY_BLUE
+#define YY CO16_WHITE
 #define ZZ CO16_BLACK
 #define TT CO16_GREEN
 
