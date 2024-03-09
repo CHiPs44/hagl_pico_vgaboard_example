@@ -170,16 +170,16 @@ typedef struct _demo_t
 demo_t demos[] = {
     // { .name = L"Minimal"            , .init = minimal_init      , .draw = minimal_draw      , .done = NULL              , .cumulative = true , .duration_s = 15 },
     // { .name = L"Double buffer test" , .init = dblbuf_init       , .draw = dblbuf_draw       , .done = dblbuf_done       , .cumulative = false, .duration_s = 15 },
-    // { .name = L"Specifications"     , .init = specs_init        , .draw = specs_draw        , .done = NULL              , .cumulative = false, .duration_s = 15 },
-    // { .name = L"Palette"            , .init = palette_init      , .draw = palette_draw      , .done = NULL              , .cumulative = false, .duration_s = 15 },
-    // { .name = L"Hollow figures"     , .init = figures_init      , .draw = figures_draw      , .done = NULL              , .cumulative = true , .duration_s = 15 },
-    // { .name = L"Filled figures"     , .init = figures_init      , .draw = figures_fill      , .done = NULL              , .cumulative = true , .duration_s = 15 },
-    // { .name = L"Bars"               , .init = bars_init         , .draw = bars_draw         , .done = NULL              , .cumulative = false, .duration_s = 15 },
-    // { .name = L"Rectangles"         , .init = rects_init        , .draw = rects_draw        , .done = NULL              , .cumulative = true , .duration_s = 15 },
-    // { .name = L"Fonts"              , .init = fonts_init        , .draw = fonts_draw        , .done = NULL              , .cumulative = false, .duration_s = 15 },
-    // { .name = L"Images"             , .init = images_init       , .draw = images_draw       , .done = images_done       , .cumulative = false, .duration_s = 40 },
+    { .name = L"Specifications"     , .init = specs_init        , .draw = specs_draw        , .done = NULL              , .cumulative = false, .duration_s = 15 },
+    { .name = L"Palette"            , .init = palette_init      , .draw = palette_draw      , .done = NULL              , .cumulative = false, .duration_s = 15 },
+    { .name = L"Hollow figures"     , .init = figures_init      , .draw = figures_draw      , .done = NULL              , .cumulative = true , .duration_s = 15 },
+    { .name = L"Filled figures"     , .init = figures_init      , .draw = figures_fill      , .done = NULL              , .cumulative = true , .duration_s = 15 },
+    { .name = L"Bars"               , .init = bars_init         , .draw = bars_draw         , .done = NULL              , .cumulative = false, .duration_s = 15 },
+    { .name = L"Rectangles"         , .init = rects_init        , .draw = rects_draw        , .done = NULL              , .cumulative = true , .duration_s = 15 },
+    { .name = L"Fonts"              , .init = fonts_init        , .draw = fonts_draw        , .done = NULL              , .cumulative = false, .duration_s = 15 },
+    { .name = L"Images"             , .init = images_init       , .draw = images_draw       , .done = images_done       , .cumulative = false, .duration_s = 40 },
     { .name = L"16 color sprites"   , .init = sprites_init      , .draw = sprites_draw      , .done = sprites_done      , .cumulative = false, .duration_s = 60 },
-    // { .name = L"Scroller"           , .init = scroller_init     , .draw = scroller_draw     , .done = NULL              , .cumulative = true , .duration_s = 60 },
+    { .name = L"Scroller"           , .init = scroller_init     , .draw = scroller_draw     , .done = NULL              , .cumulative = true , .duration_s = 60 },
 };
 /* clang-format on */
 #define N_DEMOS (sizeof(demos) / sizeof(demo_t))
@@ -466,13 +466,13 @@ int main(void)
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x4bpp_16000  ,   0,   0); // OK (Fruity Frank compatible ;-))
     // setup(&pico_vgaboard_320x100x4bpp_16000  ,   0,   0); // OK (not very interesting...)
-    // setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
+    setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x4bpp        , 240, 136); // OK
     // setup(&pico_vgaboard_320x400x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x400x4bpp        , 256, 256); // OK
     // setup(&pico_vgaboard_336x210x4bpp_1      , 256, 192); // OK
     // setup(&pico_vgaboard_336x210x4bpp_1      , 320, 180); // OK
-    setup(&pico_vgaboard_336x210x4bpp_1      , 320, 200); // OK
+    // setup(&pico_vgaboard_336x210x4bpp_1      , 320, 200); // OK
     // setup(&pico_vgaboard_512x192x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_560x350x4bpp_1      , 384, 288); // OK
     // setup(&pico_vgaboard_560x350x4bpp_1      , 480, 272); // OK (1680x1050 based, 16:9ish TIC-80)
