@@ -15,6 +15,7 @@ bool sprites_init() {
   if (!tiles_init())
     return false;
   tiles_draw();
+  panel_draw();
   if (!alien_init())
     return false;
   alien_draw();
@@ -34,6 +35,7 @@ void sprites_draw() {
   alien_anim();
   ship_anim();
   tiles_draw();
+  panel_draw();
   clip(&SCROLL);
   alien_draw();
   ship_draw();

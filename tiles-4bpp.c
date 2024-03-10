@@ -41,55 +41,14 @@ hagl_char_style_t tile_text_style = {
     .scale_y_denominator = 1,
 };
 
-void tiles_draw(void)
+void panel_draw(void)
 {
-    int start_row, end_row, row;
-    int start_col, end_col, col;
+    /********************************* PANEL *********************************/
     int x, y, w, h, index;
-    clip(&SCROLL);
-    /*
-        d=-1 => -1 .. +1
-        d=+1 => -2 .. +0?
-    */
-    start_col = TILES.scroll_dx < 0 ? -3 : -3;
-    end_col = TILES.scroll_dx > 0 ? TILES.cols + 3 : TILES.cols + 2;
-    start_row = TILES.scroll_dy < 0 ? -3 : -3;
-    end_row = TILES.scroll_dy > 0 ? TILES.rows + 3 : TILES.rows + 2;
-    for (row = start_row; row < end_row; row += 1)
-    {
-        for (col = start_col; col < end_col; col += 1)
-        {
-            // horizontal scroll
-            x = SCROLL.x + TILES_W * col +
-                (TILES.scroll_dx == -1  ? TILES.scroll_x
-                 : TILES.scroll_dx == 1 ? TILES_W - TILES.scroll_x
-                                        : 0);
-            // vertical scroll
-            y = SCROLL.y + TILES_H * row +
-                (TILES.scroll_dy == -1  ? TILES.scroll_y
-                 : TILES.scroll_dy == 1 ? TILES_H - TILES.scroll_y
-                                        : 0);
-            // which tile?
-            index =
-                (TILES.scroll_row + row) * TILES.map_cols + TILES.scroll_col + col;
-            if (row < -1 || col < -1 || row > TILES.cols - 1 ||
-                col > TILES.cols - 1 || index < 0 || index > TILES.map_size - 1)
-                // display error
-                hagl_blit_xywh(hagl_backend, x, y, TILES_W, TILES_H, &tiles_8x8x4[0]);
-            else
-                // display tile
-                hagl_blit_xywh(hagl_backend, x, y, TILES_W, TILES_H, &tiles_8x8x4[TILES.map[index]]);
-        }
-    }
-    /****************************** PANEL ******************************/
     clip(&PANEL);
     // BORDER + FILL
-    // hagl_fill_rounded_rectangle_xywh(hagl_backend, PANEL.x + 0, PANEL.y + 0, PANEL.w - 0, PANEL.h - 0, 3, CO16_DARK_VIOLET);
-    x = PANEL.x + 0;
-    y = PANEL.y + 0;
-    w = PANEL.w - 0;
-    h = PANEL.h - 0;
-    hagl_draw_rounded_rectangle_xywh(hagl_backend, x, y, w, h, 4, CO16_DARK_VIOLET);
+    hagl_fill_rounded_rectangle_xywh(hagl_backend, PANEL.x + 0, PANEL.y + 0, PANEL.w - 0, PANEL.h - 0, 3, CO16_DARK_VIOLET);
+    hagl_draw_rounded_rectangle_xywh(hagl_backend, PANEL.x + 0, PANEL.y + 0, PANEL.w - 0, PANEL.h - 0, 4, CO16_DARK_BLUE);
     // SCORE
     x = PANEL.x + 8 - 4;
     y = PANEL.y + 8 - 4;
@@ -113,21 +72,21 @@ void tiles_draw(void)
     h = 8 + 16 + 32 + 16 + 8;
     y = PANEL.y + (PANEL.h - h) / 2;
     w = PANEL.w - 8;
-    hagl_draw_rounded_rectangle_xywh(hagl_backend, x, y, w, h, 3, CO16_DARK_VIOLET);
+    hagl_draw_rounded_rectangle_xywh(hagl_backend, x, y, w, h, 3, CO16_DARK_BLUE);
     x = PANEL.x + (PANEL.w - 32) / 2;
     y = PANEL.y + (PANEL.h - 32) / 2;
-    hagl_ext_blit_xywh_transparent(hagl_ext_backend, x, y, 32, 32, &alien_16x16x4_frames[0], __);
+    hagl_ext_blit_xywh_transparent(hagl_ext_backend, x + 0, y + 0, 32, 32, &alien_16x16x4_frames[0], __);
     // left aligned
     x = PANEL.x + 8;
     y = PANEL.y + (PANEL.h - 4 - 32 - 32) / 2;
     tile_text_style.foreground_color = CO16_DARK_RED;
-    hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x - 0, y - 1, &tile_text_style);
-    hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x - 0, y + 1, &tile_text_style);
-    hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x - 1, y - 1, &tile_text_style);
-    hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x - 1, y + 0, &tile_text_style);
-    hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x - 1, y + 1, &tile_text_style);
-    hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x + 1, y - 0, &tile_text_style);
-    hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x + 1, y - 1, &tile_text_style);
+    // hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x - 0, y - 1, &tile_text_style);
+    // hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x - 1, y - 1, &tile_text_style);
+    // hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x - 1, y + 0, &tile_text_style);
+    // hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x - 1, y + 1, &tile_text_style);
+    // hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x + 0, y + 1, &tile_text_style);
+    // hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x + 1, y - 0, &tile_text_style);
+    // hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x + 1, y - 1, &tile_text_style);
     hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x + 1, y + 1, &tile_text_style);
     tile_text_style.foreground_color = CO16_ORANGE;
     hagl_ext_put_text(hagl_ext_backend, L"COSMIC", x + 0, y + 0, &tile_text_style);
@@ -135,13 +94,13 @@ void tiles_draw(void)
     x = PANEL.x + PANEL.w - 8 * 6 - 8;
     y = PANEL.y + PANEL.h / 2 + 16 + 4;
     tile_text_style.foreground_color = CO16_DARK_RED;
-    hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x - 0, y - 1, &tile_text_style);
-    hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x - 0, y + 1, &tile_text_style);
-    hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x - 1, y - 1, &tile_text_style);
-    hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x - 1, y + 0, &tile_text_style);
-    hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x - 1, y + 1, &tile_text_style);
-    hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x + 1, y - 0, &tile_text_style);
-    hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x + 1, y - 1, &tile_text_style);
+    // hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x - 0, y - 1, &tile_text_style);
+    // hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x - 1, y - 1, &tile_text_style);
+    // hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x - 1, y + 0, &tile_text_style);
+    // hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x - 1, y + 1, &tile_text_style);
+    // hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x + 0, y + 1, &tile_text_style);
+    // hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x + 1, y - 0, &tile_text_style);
+    // hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x + 1, y - 1, &tile_text_style);
     hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x + 1, y + 1, &tile_text_style);
     tile_text_style.foreground_color = CO16_ORANGE;
     hagl_ext_put_text(hagl_ext_backend, L"BATTLE", x + 0, y + 0, &tile_text_style);
@@ -151,7 +110,7 @@ void tiles_draw(void)
     y = PANEL.y + PANEL.h - 32 - 4;
     w = PANEL.w - 8;
     h = 4 + 8 + 16 + 4;
-    hagl_draw_rounded_rectangle_xywh(hagl_backend, x, y, w, h, 3, CO16_DARK_VIOLET);
+    hagl_draw_rounded_rectangle_xywh(hagl_backend, x, y, w, h, 3, CO16_DARK_BLUE);
     tile_text_style.font = FONT5X8.fontx;
     tile_text_style.foreground_color = CO16_GREEN;
     hagl_ext_put_text(hagl_ext_backend, L"SHIPS", PANEL.x + 8, PANEL.y + PANEL.h - 32, &tile_text_style);
@@ -164,28 +123,50 @@ void tiles_draw(void)
     }
     /* DEBUG */
     // hagl_draw_hline_xyw(hagl_backend, PANEL.x, PANEL.y + PANEL.h / 2, PANEL.w, CO16_WHITE);
-    // hagl_draw_rectangle_xywh(
-    //   hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, COLORS - 2);
-    // hagl_draw_rectangle_xyxy(hagl_backend,
-    //                          SCROLL.x - 2,
-    //                          SCROLL.y - 2,
-    //                          SCROLL.x + SCROLL.w + 2,
-    //                          SCROLL.y + SCROLL.h + 2,
-    //                          COLORS - 1);
-    // swprintf(TILES.scratch_text,
-    //          sizeof(TILES.scratch_text) / sizeof(wchar_t*),
-    //          L"col=%d dx=%d row=%d dy=%d",
-    //          TILES.scroll_col,
-    //          TILES.scroll_dx,
-    //          TILES.scroll_row,
-    //          TILES.scroll_dy);
-    // wprintf(L"DEBUG: %ls\n", TILES.scratch_text);
-    // hagl_put_text(hagl_backend,
-    //               TILES.scratch_text,
-    //               SCROLL.x + 16,
-    //               SCROLL.y + SCROLL.h - 40,
-    //               COLORS - 1,
-    //               FONT6X9.fontx);
+}
+
+void tiles_draw(void)
+{
+    /********************************* TILES *********************************/
+    int start_row, end_row, row;
+    int start_col, end_col, col;
+    int x, y, w, h, index;
+    clip(&SCROLL);
+    /*
+        d=-1 => -1 .. +1
+        d=+1 => -2 .. +0?
+    */
+    start_col = TILES.scroll_dx < 0 ? -3 : -3;
+    end_col = TILES.scroll_dx > 0 ? TILES.cols + 3 : TILES.cols + 2;
+    start_row = TILES.scroll_dy < 0 ? -3 : -3;
+    end_row = TILES.scroll_dy > 0 ? TILES.rows + 3 : TILES.rows + 2;
+    for (row = start_row; row < end_row; row += 1)
+    {
+        for (col = start_col; col < end_col; col += 1)
+        {
+            // horizontal scroll
+            /* clang-format off */
+            // horizontal scroll
+            x = SCROLL.x + TILES_W * col +
+                (TILES.scroll_dx == -1  ? TILES.scroll_x
+                 : TILES.scroll_dx == 1 ? TILES_W - TILES.scroll_x
+                                        : 0);
+            // vertical scroll
+            y = SCROLL.y + TILES_H * row +
+                (TILES.scroll_dy == -1  ? TILES.scroll_y
+                 : TILES.scroll_dy == 1 ? TILES_H - TILES.scroll_y
+                                        : 0);
+            /* clang-format on */
+            // which tile?
+            index = (TILES.scroll_row + row) * TILES.map_cols + TILES.scroll_col + col;
+            if (row < -1 || col < -1 || row > TILES.cols - 1 || col > TILES.cols - 1 || index < 0 || index > TILES.map_size - 1)
+                // display error as tile #0
+                hagl_blit_xywh(hagl_backend, x, y, TILES_W, TILES_H, &tiles_8x8x4[0]);
+            else
+                // display tile
+                hagl_blit_xywh(hagl_backend, x, y, TILES_W, TILES_H, &tiles_8x8x4[TILES.map[index]]);
+        }
+    }
 }
 
 void tile_change_speed(bool random)
@@ -208,8 +189,8 @@ void tiles_make(void)
         {
             for (size_t y = 0; y < TILES_H; y += 1)
             {
-                // Space is mostly empty
-                color = tiles_colors[rand() % 100 < 98 ? 0 : rand() % (sizeof(tiles_colors) / sizeof(hagl_color_t))];
+                // Space is mostly empty!
+                color = tiles_colors[rand() % 1000 < 990 ? 0 : rand() % (sizeof(tiles_colors) / sizeof(hagl_color_t))];
                 tiles_8x8x4_bitmaps[i][y * TILES_W + x] = color;
             }
         }
@@ -239,8 +220,8 @@ bool tiles_init(void)
     TILES.cols = SCROLL.w / TILES_W;
     TILES.rows = SCROLL.h / TILES_H;
     // map is bigger than scrolling region
-    TILES.map_cols = (3 * TILES.cols) / 2;
-    TILES.map_rows = (3 * TILES.rows) / 2;
+    TILES.map_cols = (4 * TILES.cols) / 2;
+    TILES.map_rows = (4 * TILES.rows) / 2;
     TILES.map_size = sizeof(uint8_t) * TILES.map_cols * TILES.map_rows;
     TILES.map = malloc(TILES.map_size);
     if (TILES.map == NULL)

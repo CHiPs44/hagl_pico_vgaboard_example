@@ -87,7 +87,7 @@ wchar_t *specs_scroller = _specs_scroller;
 //     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x9, 0x0,
 //     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
 // };
-// /* clang-format off */
+// /* clang-format on */
 // hagl_bitmap_t tile1 = {
 //     .width = 8,
 //     .height = 8,
@@ -108,12 +108,14 @@ void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *styl
     hagl_color_t foreground_color = style->foreground_color;
     style->background_color = 0;
     /* Shadow text */
-    style->foreground_color = 0; // shadow_color;
-    hagl_ext_put_text(hagl_ext_backend, text, x0 - 1, y0 - 1, style);
-    hagl_ext_put_text(hagl_ext_backend, text, x0 - 1, y0 + 0, style);
-    hagl_ext_put_text(hagl_ext_backend, text, x0 + 1, y0 - 0, style);
-    hagl_ext_put_text(hagl_ext_backend, text, x0 - 0, y0 + 1, style);
-    hagl_ext_put_text(hagl_ext_backend, text, x0 + 0, y0 - 1, style);
+    style->foreground_color = shadow_color;
+    // hagl_ext_put_text(hagl_ext_backend, text, x0 - 0, y0 + 1, style);
+    // hagl_ext_put_text(hagl_ext_backend, text, x0 - 1, y0 - 1, style);
+    // hagl_ext_put_text(hagl_ext_backend, text, x0 - 1, y0 + 0, style);
+    // hagl_ext_put_text(hagl_ext_backend, text, x0 - 1, y0 + 1, style);
+    // hagl_ext_put_text(hagl_ext_backend, text, x0 + 0, y0 - 1, style);
+    // hagl_ext_put_text(hagl_ext_backend, text, x0 + 1, y0 - 0, style);
+    // hagl_ext_put_text(hagl_ext_backend, text, x0 + 1, y0 - 1, style);
     hagl_ext_put_text(hagl_ext_backend, text, x0 + 1, y0 + 1, style);
     /* Real text */
     style->foreground_color = foreground_color;
@@ -147,7 +149,7 @@ wchar_t *get_vreg_voltage_text(int vreg_voltage)
         return L"1.30";
     }
 #endif
-    return L"?.??";
+    return L"1.10";
 }
 
 void specs_calc(bool for_scroller)
@@ -162,7 +164,7 @@ void specs_calc(bool for_scroller)
     labels[i++] = for_scroller ? L"Horizontal clock"   : (DEMO.w > 160 ? L"HORIZ. CLK " : L"HORZ");
     labels[i++] = for_scroller ? L"BPP / colors"       : (DEMO.w > 160 ? L"BPP/COLORS " : L"BPP ");
     labels[i++] = for_scroller ? L"Video RAM"          : (DEMO.w > 160 ? L"VIDEO RAM  " : L"VRAM");
-    labels[i++] = for_scroller ? L"Free value ;-)"     : (DEMO.w > 160 ? L"FREE ;)    " : L"FREE");
+    labels[i++] = for_scroller ? L"Framebuffer size"   : (DEMO.w > 160 ? L"Framebuffer" : L"FBUF");
     labels[i++] = for_scroller ? L"System clock"       : (DEMO.w > 160 ? L"SYSTEM CLK " : L"SCLK");
     labels[i++] = for_scroller ? L"Voltage regulator"  : (DEMO.w > 160 ? L"VOLTAGE REG" : L"VREG");
     labels[i++] = for_scroller ? L"Palette"            : (DEMO.w > 160 ? L"PALETTE    " : L"PAL ");
@@ -177,9 +179,23 @@ void specs_calc(bool for_scroller)
     char unique_id[2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1];
     pico_get_unique_board_id_string(unique_id, 2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1);
     uint8_t rom = rp2040_rom_version();
-    wchar_t *rev = rom == 1 ? L"B0" : rom == 2 ? L"B1"
-                                  : rom == 3   ? L"B2"
-                                               : L"B?";
+    wchar_t *rev;
+    switch (rom)
+    {
+    case 1:
+        rev = L"B0";
+        break;
+    case 2:
+        rev = L"B1";
+        break;
+    case 3:
+        rev = L"B2";
+        break;
+    default:
+        rom = 0;
+        rev = L"B0";
+        break;
+    }
     int sys_clock_khz = clock_get_hz(clk_sys) / 1000;
 #else
     char unique_id[2 * 8 + 1];
@@ -188,25 +204,29 @@ void specs_calc(bool for_scroller)
     wchar_t *rev = L"B?";
     int sys_clock_khz = 133000;
 #endif
+    /* clang-format off */
     int pixel_clock = pico_vgaboard->scanvideo_mode->default_timing->clock_freq / 1000;
+    int vga_w       = pico_vgaboard->scanvideo_mode->width  * pico_vgaboard->scanvideo_mode->xscale;
+    int vga_h       = pico_vgaboard->scanvideo_mode->height * pico_vgaboard->scanvideo_mode->yscale;
     i = 0;
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx%d@%d Hz", pico_vgaboard->scanvideo_mode->width * pico_vgaboard->scanvideo_mode->xscale, pico_vgaboard->scanvideo_mode->height * pico_vgaboard->scanvideo_mode->yscale, pico_vgaboard->freq_hz);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx%d", pico_vgaboard->width, pico_vgaboard->height);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx%d", pico_vgaboard->display_width, pico_vgaboard->display_height);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d.%d MHz", pixel_clock / 1000, pixel_clock % 1000);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d", DEPTH, COLORS);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx%d@%d Hz"   , vga_w, vga_h, pico_vgaboard->freq_hz);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx%d"         , pico_vgaboard->width, pico_vgaboard->height);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx%d"         , pico_vgaboard->display_width, pico_vgaboard->display_height);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d.%d MHz"     , pixel_clock / 1000, pixel_clock % 1000);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d"         , DEPTH, COLORS);
     if (pico_vgaboard->double_buffer)
-        swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx2=%d/%d", pico_vgaboard->framebuffer_size, 2 * pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx2=%d/%d"    , pico_vgaboard->framebuffer_size, 2 * pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size);
     else
-        swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d", pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"FREE LINE");
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d.%d MHz", sys_clock_khz / 1000, sys_clock_khz % 1000);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%ls V", vreg_voltage);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%ls", DEPTH == 16 ? L"N/A" : palette_name);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"v%s", PICO_SDK_VERSION_STRING);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%s", unique_id);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%ls", rom, rev);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d", get_free_ram_1(), get_free_ram_2());
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d"         , pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size);
+    // swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"FREE LINE");
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d.%d MHz"     , sys_clock_khz / 1000, sys_clock_khz % 1000);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%ls V"         , vreg_voltage);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%ls"           , DEPTH == 16 ? L"N/A" : palette_name);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"v%s"           , PICO_SDK_VERSION_STRING);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%s"            , unique_id);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%ls"        , rom, rev);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d"         , get_free_ram_1(), get_free_ram_2());
+    /* clang-format on */
 #if PICO_VGABOARD_DEBUG
     {
         for (i = 0; i < NLABELS; i++)
@@ -278,7 +298,7 @@ void specs_draw()
 {
     const font_t *font = WIDTH >= 512 ? &FONT8X13B : &FONT8X8;
     uint16_t x0, y0, x1, y1;
-    // /* TILED BACKGROUND IN 4BPP MODE */
+    // // /* TILED BACKGROUND IN 4BPP MODE */
     // if (DEPTH == 4)
     // {
     //     int zoom = 1;
@@ -323,7 +343,7 @@ void specs_draw()
         size_t len = wcslen(lines[i]);
         x0 = DEMO.x + (DEMO.w - font->w * len * style1.scale_x_numerator / style1.scale_x_denominator) / 2;
         style1.foreground_color = specs_colors[i % 4];
-        specs_text(x0, y0, lines[i], &style1, specs_colors[(i + 1) % 4]);
+        specs_text(x0, y0, lines[i], &style1, 0); // specs_colors[(i + 1) % 4]);
         y0 += font->h * style1.scale_y_numerator / style1.scale_y_denominator;
     }
     font = &FONT8X8;
@@ -346,11 +366,11 @@ void specs_draw()
     x0 = DEMO.x + font->w * style2.scale_x_numerator / style2.scale_x_denominator;
     for (uint8_t i = 0; i < NLABELS; i += 1)
     {
-        x1 = x0 + (wcslen(labels[i]) + 1) * font->w * style2.scale_x_denominator / style2.scale_y_denominator;
-        y1 = y0 + i * font->h * style2.scale_y_numerator / style2.scale_y_denominator;
+        x1 = x0 + font->w * (wcslen(labels[i]) + 1) * style2.scale_x_denominator / style2.scale_y_denominator;
+        y1 = y0 + font->h * i * style2.scale_y_numerator / style2.scale_y_denominator;
         style2.foreground_color = specs_colors[i % 4];
-        specs_text(x0, y1, labels[i], &style2, specs_colors[(i + 1) % 4]);
-        specs_text(x1, y1, values[i], &style2, specs_colors[(i + 1) % 4]);
+        specs_text(x0, y1, labels[i], &style2, 0); // specs_colors[(i + 1) % 4]);
+        specs_text(x1, y1, values[i], &style2, 0); // specs_colors[(i + 1) % 4]);
         // wprintf(
         //     L"spec #%d: label=%ls value=%ls\r\n",
         //     i, labels[i], values[i]

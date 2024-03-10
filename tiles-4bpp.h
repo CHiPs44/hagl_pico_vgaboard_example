@@ -2,23 +2,26 @@
 
 #define TILES_W 8
 #define TILES_H 8
-#define TILES_N 16
+#define TILES_N 64
 
-#define BG CO16_BLACK
-#define B0 CO16_GREYISH
-#define B1 CO16_DARK_BLUE
-#define B2 CO16_BLUE
-#define G0 CO16_RED
-#define G1 CO16_DARK_VIOLET
-#define G2 CO16_DARK_RED
-#define G3 CO16_VIOLET
-#define E0 CO16_MAGENTA
-#define E1 CO16_YELLOW
-
-hagl_color_t tiles_colors[] = {BG, B0, B1, B2, G0, G1, G2, G3, E0, E1};
+hagl_color_t tiles_colors[] = {
+    CO16_BLACK,
+    CO16_DARK_BLUE, CO16_DARK_VIOLET, CO16_DARK_RED, CO16_VIOLET}; /*,
+      CO16_DARK_BLUE, CO16_DARK_VIOLET, CO16_DARK_RED,
+      CO16_YELLOW};*/
 hagl_color_t tiles_8x8x4_bitmaps[TILES_N][TILES_W * TILES_H * sizeof(hagl_color_t)];
 hagl_bitmap_t tiles_8x8x4[TILES_N];
 
+#define BG CO16_BLACK
+// #define B0 CO16_GREYISH
+// #define B1 CO16_DARK_BLUE
+// #define B2 CO16_BLUE
+// #define G0 CO16_RED
+// #define G1 CO16_DARK_VIOLET
+// #define G2 CO16_DARK_RED
+// #define G3 CO16_VIOLET
+// #define E0 CO16_MAGENTA
+// #define E1 CO16_YELLOW
 
 // hagl_color_t tile_8x8x4_0_bitmap[] = {
 //   /*       0   1   2   3   4   5   6   7 */
