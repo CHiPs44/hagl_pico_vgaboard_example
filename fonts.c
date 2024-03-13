@@ -43,7 +43,7 @@ void fonts_draw()
     {
         swprintf(fonts_line1, sizeof(fonts_line1) / sizeof(wchar_t), L" %ls ", FONTS[i]->name);
         swprintf(fonts_line2, sizeof(fonts_line2) / sizeof(wchar_t), L"0123456789 AaEeIiMmWw ÄäÂâÉéÊêÈèÏÎïîÖÔöôÜüÿŸÇç");
-        hagl_char_style_t style = {
+        hagl_ext_char_style_t style = {
             .font = FONTS[i]->fontx,
             .background_color = 0,
             .foreground_color = fonts_color1,

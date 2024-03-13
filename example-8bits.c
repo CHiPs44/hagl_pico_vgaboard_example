@@ -39,6 +39,7 @@
 // Modes
 #include "modes/experimental/1024x576.h"
 #include "modes/experimental/1280x800.h"
+#include "modes/experimental/1600x900.h"
 #include "modes/experimental/640x512.h"
 #include "modes/experimental/840x525.h"
 // #include "modes/experimental/840x525.h"
@@ -178,7 +179,7 @@ demo_t demos[] = {
     // { .name = L"Rectangles"         , .init = rects_init        , .draw = rects_draw        , .done = NULL              , .cumulative = true , .duration_s = 15 },
     // { .name = L"Fonts"              , .init = fonts_init        , .draw = fonts_draw        , .done = NULL              , .cumulative = false, .duration_s = 15 },
     // { .name = L"Images"             , .init = images_init       , .draw = images_draw       , .done = images_done       , .cumulative = false, .duration_s = 40 },
-    { .name = L"16 color sprites"   , .init = sprites_init      , .draw = sprites_draw      , .done = sprites_done      , .cumulative = false, .duration_s = 60 },
+    // { .name = L"16 color sprites"   , .init = sprites_init      , .draw = sprites_draw      , .done = sprites_done      , .cumulative = false, .duration_s = 60 },
     // { .name = L"Scroller"           , .init = scroller_init     , .draw = scroller_draw     , .done = NULL              , .cumulative = true , .duration_s = 60 },
 };
 /* clang-format on */
@@ -456,6 +457,8 @@ int main(void)
     // setup(&pico_vgaboard_320x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x360x4bpp        ,   0,   0); // OK
+    setup(&pico_vgaboard_400x225x4bpp        , 320, 200); // TODO test with another monitor
+    // setup(&pico_vgaboard_400x225x4bpp        ,   0,   0); // TODO test with another monitor
     // setup(&pico_vgaboard_512x144x4bpp        ,   0,   0); // OK (sort of: 144 lines is not enough...)
     // setup(&pico_vgaboard_640x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x360x4bpp        ,   0,   0); // OK
@@ -476,7 +479,7 @@ int main(void)
     // setup(&pico_vgaboard_336x210x4bpp_1      , 320, 200); // OK
     // setup(&pico_vgaboard_512x192x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_560x350x4bpp_1      , 384, 288); // OK
-    setup(&pico_vgaboard_560x350x4bpp_1      , 480, 272); // OK (1680x1050 based, 16:9ish TIC-80)
+    // setup(&pico_vgaboard_560x350x4bpp_1      , 480, 272); // OK (1680x1050 based, 16:9ish TIC-80)
     // setup(&pico_vgaboard_560x350x4bpp_1      , 480, 270); // OK (1680x1050 based, 16:9)
     // setup(&pico_vgaboard_640x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x400x4bpp        ,   0,   0); // OK

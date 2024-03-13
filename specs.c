@@ -35,7 +35,7 @@ size_t get_free_ram_1()
     }
     return left;
 #else
-    return 0;
+    return 0x1000 + rand() % 0x3000;
 #endif
 }
 
@@ -53,7 +53,7 @@ size_t get_free_ram_2()
     struct mallinfo info = mallinfo();
     return total_heap - info.uordblks;
 #else
-    return 0;
+    return 0x1000 + rand() % 0x3000;
 #endif
 }
 
@@ -103,19 +103,19 @@ wchar_t *specs_scroller = _specs_scroller;
 //     .size = sizeof(tile2_bitmap), // 8 * 8  = 64 bytes
 //     .buffer = (uint8_t *)&tile2_bitmap};
 
-void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *style, hagl_color_t shadow_color)
+void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_ext_char_style_t *style, hagl_color_t shadow_color)
 {
     hagl_color_t foreground_color = style->foreground_color;
     style->background_color = 0;
     /* Shadow text */
     style->foreground_color = shadow_color;
-    // hagl_ext_put_text(hagl_ext_backend, text, x0 - 0, y0 + 1, style);
-    // hagl_ext_put_text(hagl_ext_backend, text, x0 - 1, y0 - 1, style);
-    // hagl_ext_put_text(hagl_ext_backend, text, x0 - 1, y0 + 0, style);
-    // hagl_ext_put_text(hagl_ext_backend, text, x0 - 1, y0 + 1, style);
-    // hagl_ext_put_text(hagl_ext_backend, text, x0 + 0, y0 - 1, style);
-    // hagl_ext_put_text(hagl_ext_backend, text, x0 + 1, y0 - 0, style);
-    // hagl_ext_put_text(hagl_ext_backend, text, x0 + 1, y0 - 1, style);
+    hagl_ext_put_text(hagl_ext_backend, text, x0 - 0, y0 + 1, style);
+    hagl_ext_put_text(hagl_ext_backend, text, x0 - 1, y0 - 1, style);
+    hagl_ext_put_text(hagl_ext_backend, text, x0 - 1, y0 + 0, style);
+    hagl_ext_put_text(hagl_ext_backend, text, x0 - 1, y0 + 1, style);
+    hagl_ext_put_text(hagl_ext_backend, text, x0 + 0, y0 - 1, style);
+    hagl_ext_put_text(hagl_ext_backend, text, x0 + 1, y0 - 0, style);
+    hagl_ext_put_text(hagl_ext_backend, text, x0 + 1, y0 - 1, style);
     hagl_ext_put_text(hagl_ext_backend, text, x0 + 1, y0 + 1, style);
     /* Real text */
     style->foreground_color = foreground_color;
@@ -163,8 +163,8 @@ void specs_calc(bool for_scroller)
     labels[i++] = for_scroller ? L"Letterbox mode"     : (DEMO.w > 160 ? L"LETTERBOX  " : L"BOX ");
     labels[i++] = for_scroller ? L"Horizontal clock"   : (DEMO.w > 160 ? L"HORIZ. CLK " : L"HORZ");
     labels[i++] = for_scroller ? L"BPP / colors"       : (DEMO.w > 160 ? L"BPP/COLORS " : L"BPP ");
-    labels[i++] = for_scroller ? L"Video RAM"          : (DEMO.w > 160 ? L"VIDEO RAM  " : L"VRAM");
     labels[i++] = for_scroller ? L"Framebuffer size"   : (DEMO.w > 160 ? L"Framebuffer" : L"FBUF");
+    labels[i++] = for_scroller ? L"Video RAM"          : (DEMO.w > 160 ? L"VIDEO RAM  " : L"VRAM");
     labels[i++] = for_scroller ? L"System clock"       : (DEMO.w > 160 ? L"SYSTEM CLK " : L"SCLK");
     labels[i++] = for_scroller ? L"Voltage regulator"  : (DEMO.w > 160 ? L"VOLTAGE REG" : L"VREG");
     labels[i++] = for_scroller ? L"Palette"            : (DEMO.w > 160 ? L"PALETTE    " : L"PAL ");
@@ -199,10 +199,10 @@ void specs_calc(bool for_scroller)
     int sys_clock_khz = clock_get_hz(clk_sys) / 1000;
 #else
     char unique_id[2 * 8 + 1];
-    strcpy(unique_id, "PICO-HOST-SDL");
-    uint8_t rom = 0;
-    wchar_t *rev = L"B?";
-    int sys_clock_khz = 133000;
+    strcpy(unique_id, "E66058388346792E");
+    uint8_t rom = 2;
+    wchar_t *rev = L"B1";
+    int sys_clock_khz = pico_vgaboard->sys_clock_khz;
 #endif
     /* clang-format off */
     int pixel_clock = pico_vgaboard->scanvideo_mode->default_timing->clock_freq / 1000;
@@ -214,11 +214,13 @@ void specs_calc(bool for_scroller)
     swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx%d"         , pico_vgaboard->display_width, pico_vgaboard->display_height);
     swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d.%d MHz"     , pixel_clock / 1000, pixel_clock % 1000);
     swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d"         , DEPTH, COLORS);
-    if (pico_vgaboard->double_buffer)
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx2=%d/%d"    , pico_vgaboard->framebuffer_size, 2 * pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size);
-    else
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d"         , pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size);
-    // swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"FREE LINE");
+    if (pico_vgaboard->double_buffer) {
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"2x%d"          , pico_vgaboard->framebuffer_size);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d"         , 2 * pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size);
+    } else {
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d"            , pico_vgaboard->framebuffer_size);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d"            , pico_vgaboard->vram_size);
+    }
     swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d.%d MHz"     , sys_clock_khz / 1000, sys_clock_khz % 1000);
     swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%ls V"         , vreg_voltage);
     swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%ls"           , DEPTH == 16 ? L"N/A" : palette_name);
@@ -228,11 +230,9 @@ void specs_calc(bool for_scroller)
     swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d"         , get_free_ram_1(), get_free_ram_2());
     /* clang-format on */
 #if PICO_VGABOARD_DEBUG
+    for (i = 0; i < NLABELS; i++)
     {
-        for (i = 0; i < NLABELS; i++)
-        {
-            wprintf(L"%ls: %ls\r\n", labels[i], values[i]);
-        }
+        wprintf(L"%ls: %ls\r\n", labels[i], values[i]);
     }
 #endif
     if (for_scroller)
@@ -248,7 +248,6 @@ void specs_calc(bool for_scroller)
     }
 }
 
-hagl_color_t specs_color1, specs_color2, specs_color3, specs_color4;
 hagl_color_t specs_colors[4];
 
 /**
@@ -256,40 +255,68 @@ hagl_color_t specs_colors[4];
  */
 bool specs_init()
 {
+    hagl_color_t color1, color2, color3, color4;
+    int luminance0, luminance1, luminance2, luminance3, luminance4;
     if (DEPTH == 1)
     {
-        specs_color1 = 1;
-        specs_color2 = 1;
-        specs_color3 = 1;
-        specs_color4 = 1;
+        color1 = 1;
+        color2 = 1;
+        color3 = 1;
+        color4 = 1;
     }
     else if (DEPTH == 2)
     {
-        specs_color1 = 1;
-        specs_color2 = 2;
-        specs_color3 = 3;
-        specs_color4 = 1;
+        color1 = 1;
+        color2 = 2;
+        color3 = 3;
+        color4 = 1;
+    }
+    else if (DEPTH == 4 || DEPTH == 8)
+    {
+        color1 = 1 + rand() % (COLORS - 1);
+        color2 = 1 + rand() % (COLORS - 1);
+        color3 = 1 + rand() % (COLORS - 1);
+        color4 = 1 + rand() % (COLORS - 1);
+        const BGAR5515 *palette = palette_table[palette_index].palette;
+        luminance0 = pico_vgaboard_get_luminance(palette[0]);
+        do
+        {
+            color1 = 1 + rand() % (COLORS - 1);
+            luminance1 = pico_vgaboard_get_luminance(palette[color1]);
+        } while (abs(luminance1 - luminance0) >= 50000);
+        do
+        {
+            color2 = 1 + rand() % (COLORS - 1);
+            luminance2 = pico_vgaboard_get_luminance(palette[color2]);
+        } while (color2 == color1 || abs(luminance1 - luminance2) < 50000);
+        do
+        {
+            color3 = 1 + rand() % (COLORS - 1);
+            luminance3 = pico_vgaboard_get_luminance(palette[color3]);
+        } while (
+            color3 == color1 || abs(luminance1 - luminance3) < 50000 ||
+            color3 == color2 || abs(luminance2 - luminance3) < 50000);
+        do
+        {
+            color4 = 1 + rand() % (COLORS - 1);
+            luminance4 = pico_vgaboard_get_luminance(palette[color4]);
+        } while (
+            color4 == color1 || abs(luminance1 - luminance4) < 50000 ||
+            color4 == color2 || abs(luminance2 - luminance4) < 50000 ||
+            color4 == color3 || abs(luminance3 - luminance4) < 50000);
     }
     else
     {
-        specs_color1 = 1 + rand() % (COLORS - 1);
-        do
-        {
-            specs_color2 = 1 + rand() % (COLORS - 1);
-        } while (specs_color2 == specs_color1);
-        do
-        {
-            specs_color3 = 1 + rand() % (COLORS - 1);
-        } while (specs_color3 == specs_color1 || specs_color3 == specs_color2);
-        do
-        {
-            specs_color4 = 1 + rand() % (COLORS - 1);
-        } while (specs_color4 == specs_color1 || specs_color4 == specs_color2 || specs_color4 == specs_color3);
+        // TODO use luminance, too
+        color1 = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        color2 = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        color3 = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        color4 = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
     }
-    specs_colors[0] = specs_color1;
-    specs_colors[1] = specs_color2;
-    specs_colors[2] = specs_color3;
-    specs_colors[3] = specs_color4;
+    specs_colors[0] = color1;
+    specs_colors[1] = color2;
+    specs_colors[2] = color3;
+    specs_colors[3] = color4;
     specs_calc(false);
     return true;
 }
@@ -316,6 +343,8 @@ void specs_draw()
     //         }
     //     }
     // }
+    hagl_fill_rounded_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, 3, specs_colors[0]);
+    hagl_draw_rounded_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, 3, specs_colors[3]);
     /* TITLE LINES */
     /*                          1234567890123456789      1234567890 */
     lines[0] = DEMO.w > 160 ? L"Raspberry Pi Pico" : L"RPi Pico";
@@ -323,7 +352,7 @@ void specs_draw()
     lines[2] = DEMO.w > 160 ? L"HAGL HAL by CHiPs44" : L"HAGL HAL";
     lines[3] = DEMO.w > 160 ? L"github.com/CHiPs44" : L"by CHiPs44";
     y0 = DEMO.y;
-    hagl_char_style_t style1 = {
+    hagl_ext_char_style_t style1 = {
         .font = font->fontx,
         .background_color = 0,
         .foreground_color = 0,
@@ -342,8 +371,8 @@ void specs_draw()
     {
         size_t len = wcslen(lines[i]);
         x0 = DEMO.x + (DEMO.w - font->w * len * style1.scale_x_numerator / style1.scale_x_denominator) / 2;
-        style1.foreground_color = specs_colors[i % 4];
-        specs_text(x0, y0, lines[i], &style1, 0); // specs_colors[(i + 1) % 4]);
+        style1.foreground_color = specs_colors[1 + i % 3];
+        specs_text(x0, y0, lines[i], &style1, 0);
         y0 += font->h * style1.scale_y_numerator / style1.scale_y_denominator;
     }
     font = &FONT8X8;
@@ -353,7 +382,7 @@ void specs_draw()
         y0 += font->h * style1.scale_y_numerator / style1.scale_y_denominator;
     }
     /* DISPLAY LABELS & VALUES */
-    hagl_char_style_t style2 = {
+    hagl_ext_char_style_t style2 = {
         .font = font->fontx,
         .background_color = 0,
         .foreground_color = 0,
@@ -368,13 +397,12 @@ void specs_draw()
     {
         x1 = x0 + font->w * (wcslen(labels[i]) + 1) * style2.scale_x_denominator / style2.scale_y_denominator;
         y1 = y0 + font->h * i * style2.scale_y_numerator / style2.scale_y_denominator;
-        style2.foreground_color = specs_colors[i % 4];
-        specs_text(x0, y1, labels[i], &style2, 0); // specs_colors[(i + 1) % 4]);
-        specs_text(x1, y1, values[i], &style2, 0); // specs_colors[(i + 1) % 4]);
-        // wprintf(
-        //     L"spec #%d: label=%ls value=%ls\r\n",
-        //     i, labels[i], values[i]
-        // );
+        style2.foreground_color = specs_colors[1 + i % 3];
+        specs_text(x0, y1, labels[i], &style2, 0);
+        specs_text(x1, y1, values[i], &style2, 0);
+        wprintf(
+            L"spec #%d: label=%ls value=%ls\r\n",
+            i, labels[i], values[i]);
     }
 }
 

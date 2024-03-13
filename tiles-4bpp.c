@@ -30,7 +30,7 @@ struct _tiles_t
     absolute_time_t timer;
     wchar_t scratch_text[80];
 } TILES;
-hagl_char_style_t tile_text_style = {
+hagl_ext_char_style_t tile_text_style = {
     .font = NULL,
     .background_color = 0,
     .foreground_color = 0,

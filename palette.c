@@ -7,7 +7,7 @@ wchar_t palette_text[20];
 // wchar_t palette_separator = L'\u2192'; // \u2192 => Unicode right arrow
 font_t *palette_font = &FONT8X8;
 wchar_t palette_separator = ':';
-hagl_char_style_t palette_style = {
+hagl_ext_char_style_t palette_style = {
     .mode = HAGL_EXT_CHAR_MODE_TRANSPARENT,
     .scale_x_numerator = 1,
     .scale_x_denominator = 1,

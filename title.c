@@ -4,7 +4,7 @@ wchar_t title_text[40];
 hagl_color_t title_text_color;
 hagl_color_t title_frame_color;
 hagl_color_t title_shadow_color;
-hagl_char_style_t title_text_style;
+hagl_ext_char_style_t title_text_style;
 
 void title_init()
 {
