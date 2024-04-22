@@ -46,7 +46,6 @@ else()
 include(../hagl_pico_vgaboard/CMakeLists.txt)
 endif()
 
-# Add HAGL directory
 if (GIT_MODULES==1)
 add_subdirectory(external/hagl)
 else()
@@ -56,15 +55,19 @@ endif()
 if (GIT_MODULES==1)
 add_subdirectory(external/fontx2-fonts)
 else()
-# add_subdirectory(../fontx2-fonts)
 include(../fontx2-fonts/CMakeLists.txt)
 endif()
 
 if (GIT_MODULES==1)
 add_subdirectory(external/embedded-fonts)
 else()
-# add_subdirectory(../embedded-fonts)
 include(../embedded-fonts/CMakeLists.txt)
+endif()
+
+if (GIT_MODULES==1)
+add_subdirectory(external/chips44-fonts)
+else()
+include(../chips44-fonts/CMakeLists.txt)
 endif()
 
 # Set program name and version for UF2 / picotool
@@ -152,9 +155,9 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
   # PICO_VGABOARD_VRAM_SIZE=65536
   # BIG: OK for 16 or 256 colors based modes in "hi-res"
   # PICO_VGABOARD_VRAM_SIZE=76800
-  PICO_VGABOARD_VRAM_SIZE=98304
+  # PICO_VGABOARD_VRAM_SIZE=98304
   # 128 KB
-  # PICO_VGABOARD_VRAM_SIZE=131072
+  PICO_VGABOARD_VRAM_SIZE=131072
   # 2 x 320x240 16 colors framebuffers
   # PICO_VGABOARD_VRAM_SIZE=76800
   # use MALLOC if size is zero => DOES NOT WORK, IMAGE IS CORRUPTED

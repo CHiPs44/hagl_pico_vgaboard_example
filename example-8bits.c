@@ -65,6 +65,7 @@ hagl_ext_surface_t *hagl_ext_backend = &_hagl_ext_backend;
 hagl_backend_t *hagl_backend = NULL;
 
 bool double_buffer = true;
+// bool double_buffer = false;
 
 // Convenient macros
 #define WIDTH (hagl_backend->width)
@@ -81,25 +82,25 @@ typedef struct _palette_t
 
 /* clang-format off */
 
-palette_t palettes1[] = {
+palette_t palettes_1bpp[] = {
     { /* 0 */ .name = L"White on black"     , .code = L"MONO2 ", .palette = palette_1bpp_black      },
     { /* 1 */ .name = L"Amber CRT 2"        , .code = L"AMBER2", .palette = palette_1bpp_amber      },
     { /* 2 */ .name = L"Amstrad CPC mode 2" , .code = L"CPC2  ", .palette = palette_1bpp_cpc2       },
     { /* 3 */ .name = L"Green CRT 2"        , .code = L"GREEN2", .palette = palette_1bpp_green      },
     { /* 4 */ .name = L"Black on white"     , .code = L"PAPER2", .palette = palette_1bpp_paper      },
 };
-#define N_PALETTES1 (sizeof(palettes1) / sizeof(palette_t))
+#define N_PALETTES_1BPP (sizeof(palettes_1bpp) / sizeof(palette_t))
 
-palette_t palettes2[] = {
+palette_t palettes_2bpp[] = {
     { /* 0 */ .name = L"White on black"     , .code = L"MONO4 ", .palette = palette_2bpp_black      },
     { /* 1 */ .name = L"Amber CRT 4"        , .code = L"AMBER4", .palette = palette_2bpp_amber      },
     { /* 2 */ .name = L"Amstrad CPC mode 1" , .code = L"CPC1  ", .palette = palette_2bpp_cpc1       },
     { /* 3 */ .name = L"Green CRT 4"        , .code = L"GREEN4", .palette = palette_2bpp_green      },
     { /* 4 */ .name = L"Grey/Gray 4"        , .code = L"GREY4 ", .palette = palette_2bpp_grey       },
 };
-#define N_PALETTES2 (sizeof(palettes2) / sizeof(palette_t))
+#define N_PALETTES_2BPP (sizeof(palettes_2bpp) / sizeof(palette_t))
 
-palette_t palettes4[] = {
+palette_t palettes_4bpp[] = {
     { /* 6 */ .name = L"Console 16"         , .code = L"CO16  ", .palette = palette_4bpp_co16       },
     { /* 0 */ .name = L"ANSI 16"            , .code = L"ANSI16", .palette = palette_4bpp_ansi       },
     { /* 1 */ .name = L"Amstrad CPC mode 0" , .code = L"CPC0  ", .palette = palette_4bpp_cpc0       },
@@ -111,9 +112,9 @@ palette_t palettes4[] = {
     { /* 8 */ .name = L"Grey/Gray 16"       , .code = L"GREY16", .palette = palette_4bpp_grey       },
     { /* 9 */ .name = L"Sweetie 16"         , .code = L"SW16  ", .palette = palette_4bpp_sw16       },
 };
-#define N_PALETTES4 (sizeof(palettes4) / sizeof(palette_t))
+#define N_PALETTES_4BPP (sizeof(palettes_4bpp) / sizeof(palette_t))
 
-palette_t palettes8[] = {
+palette_t palettes_8bpp[] = {
     { /* 0 */ .name = L"ANSI"               , .code = L"ANSI  ", .palette = palette_8bpp_ansi       },
     { /* 1 */ .name = L"Aurora"             , .code = L"AURORA", .palette = palette_8bpp_aurora     },
     { /* 2 */ .name = L"Commander X16"      , .code = L"CX16  ", .palette = palette_8bpp_cx16       },
@@ -121,7 +122,7 @@ palette_t palettes8[] = {
     { /* 4 */ .name = L"RGB 685"            , .code = L"RGB685", .palette = palette_8bpp_rgb685     },
     { /* 4 */ .name = L"RGBI"               , .code = L"RGBI  ", .palette = palette_8bpp_rgbi       },
 };
-#define N_PALETTES8 (sizeof(palettes8) / sizeof(palette_t))
+#define N_PALETTES_8BPP (sizeof(palettes_8bpp) / sizeof(palette_t))
 
 palette_t *palette_table;
 int        palette_count;
@@ -376,6 +377,9 @@ int main(void)
     // setup(&pico_vgaboard_1024x384x1bpp       ,   0,   0); // KO, perf
     // setup(&pico_vgaboard_1024x768x1bpp_98304 ,   0,   0); // KO, perf
 
+    /******************************* 16:9 RATIO *******************************/
+    // setup(&pico_vgaboard_640x360x1bpp        ,   0,   0); // OK
+
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_640x200x1bpp_16000  ,   0,   0); // OK
     // setup(&pico_vgaboard_640x400x1bpp        ,   0,   0); // OK
@@ -424,8 +428,8 @@ int main(void)
     // setup(&pico_vgaboard_256x192x4bpp_24576_2,   0,   0); // OK (768x576 based)
     // setup(&pico_vgaboard_256x192x4bpp_24576_2, 240, 136); // OK (768x576 based)
     // setup(&pico_vgaboard_320x240x4bpp        ,   0,   0); // OK
-    // setup(&pico_vgaboard_320x240x4bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x4bpp        , 256, 192); // OK
+    // setup(&pico_vgaboard_320x240x4bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_384x288x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 288); // OK (Pac-man rulez ;-))
@@ -457,26 +461,31 @@ int main(void)
     // setup(&pico_vgaboard_320x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x360x4bpp        ,   0,   0); // OK
-    setup(&pico_vgaboard_400x225x4bpp        , 320, 200); // TODO test with another monitor
+    // setup(&pico_vgaboard_400x225x4bpp        , 320, 200); // TODO test with another monitor
     // setup(&pico_vgaboard_400x225x4bpp        ,   0,   0); // TODO test with another monitor
     // setup(&pico_vgaboard_512x144x4bpp        ,   0,   0); // OK (sort of: 144 lines is not enough...)
+    // setup(&pico_vgaboard_512x288x4bpp_73728  , 384, 216); // OK
+    // setup(&pico_vgaboard_512x288x4bpp_73728  ,   0,   0); // OK
     // setup(&pico_vgaboard_640x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x360x4bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_640x360x4bpp        , 480, 270); // OK
+    // setup(&pico_vgaboard_640x360x4bpp        , 480, 272); // OK
     // setup(&pico_vgaboard_640x360x4bpp        , 576, 324); // OK
     // setup(&pico_vgaboard_640x360x4bpp        , 608, 328); // OK
     // setup(&pico_vgaboard_1024x576x4bpp_294912, 640, 200); // OK, too much margins
     // setup(&pico_vgaboard_1024x576x4bpp_294912, 640, 400); // OK, too much margins
 
     /******************************* 16:10 RATIO ******************************/
-    // setup(&pico_vgaboard_160x200x4bpp_16000  ,   0,   0); // OK (Fruity Frank compatible ;-))
-    // setup(&pico_vgaboard_320x100x4bpp_16000  ,   0,   0); // OK (not very interesting...)
+
+    // setup(&pico_vgaboard_160x200x4bpp_16000  ,   0,   0); // OK (Amstrad CPC / Fruity Frank compatible ;-))
+    // setup(&pico_vgaboard_320x100x4bpp_16000  ,   0,   0); // OK (Hi to George Foot! https://www.youtube.com/watch?v=8Vbphmf4Ocw)
     // setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x4bpp        , 240, 136); // OK
     // setup(&pico_vgaboard_320x400x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x400x4bpp        , 256, 256); // OK
     // setup(&pico_vgaboard_336x210x4bpp_1      , 256, 192); // OK
     // setup(&pico_vgaboard_336x210x4bpp_1      , 320, 180); // OK
-    // setup(&pico_vgaboard_336x210x4bpp_1      , 320, 200); // OK
+    setup(&pico_vgaboard_336x210x4bpp_1      , 320, 200); // OK
     // setup(&pico_vgaboard_512x192x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_560x350x4bpp_1      , 384, 288); // OK
     // setup(&pico_vgaboard_560x350x4bpp_1      , 480, 272); // OK (1680x1050 based, 16:9ish TIC-80)
@@ -492,6 +501,7 @@ int main(void)
     /**************************************************************************/
 
     /******************************** 4:3 RATIO *******************************/
+    // setup(&pico_vgaboard_160x100x8bpp        ,   0,   0); // OK (Hi to Ben Eater! https://eater.net/vga)
     // setup(&pico_vgaboard_160x240x8bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_192x288x8bpp        ,   0,   0); // KO
     // setup(&pico_vgaboard_256x192x8bpp_1      ,   0,   0); // OK (1024x768 based)
@@ -532,10 +542,10 @@ int main(void)
 
     if (pico_vgaboard->has_margins){
         /* Random border colors in letterbox mode instead of default black ones */
-        // pico_vgaboard->border_color_top    = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-        // pico_vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-        // pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-        // pico_vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        pico_vgaboard->border_color_top    = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        pico_vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        pico_vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
         /* White */
         // pico_vgaboard->border_color_top    = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
         // pico_vgaboard->border_color_left   = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
@@ -553,20 +563,20 @@ int main(void)
     switch (DEPTH)
     {
     case 1:
-        palette_table = palettes1;
-        palette_count = N_PALETTES1;
+        palette_table = palettes_1bpp;
+        palette_count = N_PALETTES_1BPP;
         break;
     case 2:
-        palette_table = palettes2;
-        palette_count = N_PALETTES2;
+        palette_table = palettes_2bpp;
+        palette_count = N_PALETTES_2BPP;
         break;
     case 4:
-        palette_table = palettes4;
-        palette_count = N_PALETTES4;
+        palette_table = palettes_4bpp;
+        palette_count = N_PALETTES_4BPP;
         break;
     case 8:
-        palette_table = palettes8;
-        palette_count = N_PALETTES8;
+        palette_table = palettes_8bpp;
+        palette_count = N_PALETTES_8BPP;
         break;
     default:
         panic("NO PALETTES for DEPTH %d!!!", DEPTH);
@@ -577,7 +587,7 @@ int main(void)
     palette_name = palette_table[palette_index].name;
 
 #if PICO_VGABOARD_DEBUG
-    printf("*** CORE1 => RENDER LOOP ***\n");
+    printf("*** CORE1 => RENDER LOOP (%d plane%s) ***\n", PICO_SCANVIDEO_PLANE_COUNT, PICO_SCANVIDEO_PLANE_COUNT > 1 ? "s" : "");
 #endif
     multicore_launch_core1(pico_vgaboard_render_loop);
 #if PICO_VGABOARD_DEBUG

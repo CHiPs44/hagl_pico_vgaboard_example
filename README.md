@@ -68,7 +68,8 @@ If you use a Picoprobe or another SWD device, you should know how to upload ELF 
 ```bash
 mkdir build2
 cd build2
-reset && cmake -DPICO_PLATFORM=host -DPICO_SDK_PRE_LIST_DIRS=~/src/pico-host-sdl -DCMAKE_BUILD_TYPE=Debug ..
+# change to location of pico-host-sdl
+reset && cmake -DPICO_PLATFORM=host -DPICO_SDK_PRE_LIST_DIRS=/home/<user>/src/pico-host-sdl -DCMAKE_BUILD_TYPE=Debug ..
 reset && make -j$(nproc) && ./hagl_pico_vgaboard_example
 ```
 

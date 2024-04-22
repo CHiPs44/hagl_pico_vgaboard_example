@@ -64,7 +64,7 @@ void images_4bpp_done()
 {
     // Restore palette
     palette_index = images4_palette_save;
-    pico_vgaboard_set_palette(palettes4[palette_index].palette);
+    pico_vgaboard_set_palette(palettes_4bpp[palette_index].palette);
 }
 
 /* EOF */

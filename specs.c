@@ -66,42 +66,42 @@ wchar_t values[NLABELS][40];
 wchar_t _specs_scroller[NLABELS * (40 + 40)];
 wchar_t *specs_scroller = _specs_scroller;
 
-// /* clang-format off */
-// hagl_color_t tile1_bitmap[] = {
-//     0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
-//     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-//     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-//     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-//     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-//     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-//     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7, 0x0,
-//     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-// };
-// hagl_color_t tile2_bitmap[] = {
-//     0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7,
-//     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-//     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-//     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-//     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-//     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-//     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x9, 0x0,
-//     0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-// };
-// /* clang-format on */
-// hagl_bitmap_t tile1 = {
-//     .width = 8,
-//     .height = 8,
-//     .depth = 4,                   // bits
-//     .pitch = 16,                  // 8 * 2, bytes per row
-//     .size = sizeof(tile1_bitmap), // 8 * 8  = 64 bytes
-//     .buffer = (uint8_t *)&tile1_bitmap};
-// hagl_bitmap_t tile2 = {
-//     .width = 8,
-//     .height = 8,
-//     .depth = 4,                   // bits
-//     .pitch = 16,                  // 8 * 2, bytes per row
-//     .size = sizeof(tile2_bitmap), // 8 * 8  = 64 bytes
-//     .buffer = (uint8_t *)&tile2_bitmap};
+/* clang-format off */
+hagl_color_t tile1_bitmap[] = {
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x4, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+};
+hagl_color_t tile2_bitmap[] = {
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x5, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x2, 0x0, 0x0, 0x0, 0x0, 0x0,
+};
+/* clang-format on */
+hagl_bitmap_t tile1 = {
+    .width = 8,
+    .height = 8,
+    .depth = 4,                   // bits
+    .pitch = 16,                  // 8 * 2, bytes per row
+    .size = sizeof(tile1_bitmap), // 8 * 8  = 64 bytes
+    .buffer = (uint8_t *)&tile1_bitmap};
+hagl_bitmap_t tile2 = {
+    .width = 8,
+    .height = 8,
+    .depth = 4,                   // bits
+    .pitch = 16,                  // 8 * 2, bytes per row
+    .size = sizeof(tile2_bitmap), // 8 * 8  = 64 bytes
+    .buffer = (uint8_t *)&tile2_bitmap};
 
 void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_ext_char_style_t *style, hagl_color_t shadow_color)
 {
@@ -147,6 +147,8 @@ wchar_t *get_vreg_voltage_text(int vreg_voltage)
         return L"1.25";
     case VREG_VOLTAGE_1_30:
         return L"1.30";
+    default:
+        return L"?.??";
     }
 #endif
     return L"1.10";
@@ -193,7 +195,7 @@ void specs_calc(bool for_scroller)
         break;
     default:
         rom = 0;
-        rev = L"B0";
+        rev = L"?0";
         break;
     }
     int sys_clock_khz = clock_get_hz(clk_sys) / 1000;
@@ -209,25 +211,26 @@ void specs_calc(bool for_scroller)
     int vga_w       = pico_vgaboard->scanvideo_mode->width  * pico_vgaboard->scanvideo_mode->xscale;
     int vga_h       = pico_vgaboard->scanvideo_mode->height * pico_vgaboard->scanvideo_mode->yscale;
     i = 0;
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx%d@%d Hz"   , vga_w, vga_h, pico_vgaboard->freq_hz);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx%d"         , pico_vgaboard->width, pico_vgaboard->height);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx%d"         , pico_vgaboard->display_width, pico_vgaboard->display_height);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d.%d MHz"     , pixel_clock / 1000, pixel_clock % 1000);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d"         , DEPTH, COLORS);
+    int zzz = sizeof(values[i]) / sizeof(wchar_t) - 1;
+    swprintf(values[i++], zzz, L"%dx%d@%d Hz"   , vga_w, vga_h, pico_vgaboard->freq_hz);
+    swprintf(values[i++], zzz, L"%dx%d"         , pico_vgaboard->width, pico_vgaboard->height);
+    swprintf(values[i++], zzz, L"%dx%d"         , pico_vgaboard->display_width, pico_vgaboard->display_height);
+    swprintf(values[i++], zzz, L"%d.%d MHz"     , pixel_clock / 1000, pixel_clock % 1000);
+    swprintf(values[i++], zzz, L"%d/%d"         , DEPTH, COLORS);
     if (pico_vgaboard->double_buffer) {
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"2x%d"          , pico_vgaboard->framebuffer_size);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d"         , 2 * pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size);
+    swprintf(values[i++], zzz, L"2x%d"          , pico_vgaboard->framebuffer_size);
+    swprintf(values[i++], zzz, L"%d/%d"         , 2 * pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size);
     } else {
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d"            , pico_vgaboard->framebuffer_size);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d"            , pico_vgaboard->vram_size);
+    swprintf(values[i++], zzz, L"%d"            , pico_vgaboard->framebuffer_size);
+    swprintf(values[i++], zzz, L"%d"            , pico_vgaboard->vram_size);
     }
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d.%d MHz"     , sys_clock_khz / 1000, sys_clock_khz % 1000);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%ls V"         , vreg_voltage);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%ls"           , DEPTH == 16 ? L"N/A" : palette_name);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"v%s"           , PICO_SDK_VERSION_STRING);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%s"            , unique_id);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%ls"        , rom, rev);
-    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d"         , get_free_ram_1(), get_free_ram_2());
+    swprintf(values[i++], zzz, L"%d.%d MHz"     , sys_clock_khz / 1000, sys_clock_khz % 1000);
+    swprintf(values[i++], zzz, L"%ls V"         , vreg_voltage);
+    swprintf(values[i++], zzz, L"%ls"           , DEPTH == 16 ? L"N/A" : palette_name);
+    swprintf(values[i++], zzz, L"v%s"           , PICO_SDK_VERSION_STRING);
+    swprintf(values[i++], zzz, L"%s"            , unique_id);
+    swprintf(values[i++], zzz, L"%d/%ls"        , rom, rev);
+    swprintf(values[i++], zzz, L"%d/%d"         , get_free_ram_1(), get_free_ram_2());
     /* clang-format on */
 #if PICO_VGABOARD_DEBUG
     for (i = 0; i < NLABELS; i++)
@@ -325,32 +328,34 @@ void specs_draw()
 {
     const font_t *font = WIDTH >= 512 ? &FONT8X13B : &FONT8X8;
     uint16_t x0, y0, x1, y1;
-    // // /* TILED BACKGROUND IN 4BPP MODE */
-    // if (DEPTH == 4)
-    // {
-    //     int zoom = 1;
-    //     for (int row = 0; row < DEMO.h / tile1.height / zoom; row++)
-    //     {
-    //         for (int col = 0; col < DEMO.w / tile1.width / zoom; col++)
-    //         {
-    //             hagl_blit_xywh(
-    //                 hagl_backend,
-    //                 DEMO.x + col * tile1.width * zoom,
-    //                 DEMO.y + row * tile1.height * zoom,
-    //                 tile1.width * zoom,
-    //                 tile1.height * zoom,
-    //                 (row + col) % 2 == 0 ? &tile1 : &tile2);
-    //         }
-    //     }
-    // }
-    hagl_fill_rounded_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, 3, specs_colors[0]);
-    hagl_draw_rounded_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, 3, specs_colors[3]);
+    // /* TILED BACKGROUND IN 4BPP MODE */
+    if (DEPTH == 4)
+    {
+        int zoom = 1;
+        for (int row = 0; row < DEMO.h / tile1.height / zoom; row++)
+        {
+            for (int col = 0; col < DEMO.w / tile1.width / zoom; col++)
+            {
+                hagl_blit_xywh(
+                    hagl_backend,
+                    DEMO.x + col * tile1.width * zoom,
+                    DEMO.y + row * tile1.height * zoom,
+                    tile1.width * zoom,
+                    tile1.height * zoom,
+                    (row + col) % 2 == 0 ? &tile1 : &tile2);
+            }
+        }
+    }
+    // hagl_fill_rounded_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, 3, specs_colors[0]);
+    // hagl_draw_rounded_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, 3, specs_colors[3]);
     /* TITLE LINES */
-    /*                          1234567890123456789      1234567890 */
-    lines[0] = DEMO.w > 160 ? L"Raspberry Pi Pico" : L"RPi Pico";
-    lines[1] = DEMO.w > 160 ? L"VGA Demo Board" : L"VGA Board";
+    /* clang-format off */
+    /*                          12345678901234567890     1234567890 */
+    lines[0] = DEMO.w > 160 ? L"Raspberry Pi Pico"   : L"RPi Pico";
+    lines[1] = DEMO.w > 160 ? L"VGA Demo Board"      : L"VGA Board";
     lines[2] = DEMO.w > 160 ? L"HAGL HAL by CHiPs44" : L"HAGL HAL";
-    lines[3] = DEMO.w > 160 ? L"github.com/CHiPs44" : L"by CHiPs44";
+    lines[3] = DEMO.w > 160 ? L"github.com/CHiPs44"  : L"by CHiPs44";
+    /* clang-format on */
     y0 = DEMO.y;
     hagl_ext_char_style_t style1 = {
         .font = font->fontx,
@@ -400,9 +405,7 @@ void specs_draw()
         style2.foreground_color = specs_colors[1 + i % 3];
         specs_text(x0, y1, labels[i], &style2, 0);
         specs_text(x1, y1, values[i], &style2, 0);
-        wprintf(
-            L"spec #%d: label=%ls value=%ls\r\n",
-            i, labels[i], values[i]);
+        // wprintf(L"spec #%d: label=%ls value=%ls\r\n", i, labels[i], values[i]);
     }
 }
 
