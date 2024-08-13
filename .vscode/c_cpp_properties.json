@@ -5,6 +5,8 @@
             "includePath": [
                 "/usr/lib/arm-none-eabi/**",
                 "${workspaceFolder}/**",
+                "${workspaceFolder}/../hagl/**",
+                "${workspaceFolder}/../hagl_pico_vgaboard/**",
                 "${env:PICO_SDK_PATH}/**",
                 "${env:PICO_EXTRAS_PATH}/**"
             ],

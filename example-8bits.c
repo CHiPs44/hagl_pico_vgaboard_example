@@ -173,15 +173,15 @@ demo_t demos[] = {
     // { .name = L"Minimal"            , .init = minimal_init      , .draw = minimal_draw      , .done = NULL              , .cumulative = true , .duration_s = 15 },
     // { .name = L"Double buffer test" , .init = dblbuf_init       , .draw = dblbuf_draw       , .done = dblbuf_done       , .cumulative = false, .duration_s = 15 },
     { .name = L"Specifications"     , .init = specs_init        , .draw = specs_draw        , .done = NULL              , .cumulative = false, .duration_s = 15 },
-    // { .name = L"Palette"            , .init = palette_init      , .draw = palette_draw      , .done = NULL              , .cumulative = false, .duration_s = 15 },
-    // { .name = L"Hollow figures"     , .init = figures_init      , .draw = figures_draw      , .done = NULL              , .cumulative = true , .duration_s = 15 },
-    // { .name = L"Filled figures"     , .init = figures_init      , .draw = figures_fill      , .done = NULL              , .cumulative = true , .duration_s = 15 },
-    // { .name = L"Bars"               , .init = bars_init         , .draw = bars_draw         , .done = NULL              , .cumulative = false, .duration_s = 15 },
-    // { .name = L"Rectangles"         , .init = rects_init        , .draw = rects_draw        , .done = NULL              , .cumulative = true , .duration_s = 15 },
-    // { .name = L"Fonts"              , .init = fonts_init        , .draw = fonts_draw        , .done = NULL              , .cumulative = false, .duration_s = 15 },
-    // { .name = L"Images"             , .init = images_init       , .draw = images_draw       , .done = images_done       , .cumulative = false, .duration_s = 40 },
-    // { .name = L"16 color sprites"   , .init = sprites_init      , .draw = sprites_draw      , .done = sprites_done      , .cumulative = false, .duration_s = 60 },
-    // { .name = L"Scroller"           , .init = scroller_init     , .draw = scroller_draw     , .done = NULL              , .cumulative = true , .duration_s = 60 },
+    { .name = L"Palette"            , .init = palette_init      , .draw = palette_draw      , .done = NULL              , .cumulative = false, .duration_s = 15 },
+    { .name = L"Hollow figures"     , .init = figures_init      , .draw = figures_draw      , .done = NULL              , .cumulative = true , .duration_s = 15 },
+    { .name = L"Filled figures"     , .init = figures_init      , .draw = figures_fill      , .done = NULL              , .cumulative = true , .duration_s = 15 },
+    { .name = L"Bars"               , .init = bars_init         , .draw = bars_draw         , .done = NULL              , .cumulative = false, .duration_s = 15 },
+    { .name = L"Rectangles"         , .init = rects_init        , .draw = rects_draw        , .done = NULL              , .cumulative = true , .duration_s = 15 },
+    { .name = L"Fonts"              , .init = fonts_init        , .draw = fonts_draw        , .done = NULL              , .cumulative = false, .duration_s = 15 },
+    { .name = L"Images"             , .init = images_init       , .draw = images_draw       , .done = images_done       , .cumulative = false, .duration_s = 40 },
+    { .name = L"16 color sprites"   , .init = sprites_init      , .draw = sprites_draw      , .done = sprites_done      , .cumulative = false, .duration_s = 60 },
+    { .name = L"Scroller"           , .init = scroller_init     , .draw = scroller_draw     , .done = NULL              , .cumulative = true , .duration_s = 60 },
 };
 /* clang-format on */
 #define N_DEMOS (sizeof(demos) / sizeof(demo_t))
@@ -206,8 +206,7 @@ void screen_update()
         else
         {
             // Clear screen
-            memset(
-                (uint8_t *)pico_vgaboard->framebuffer, 0, pico_vgaboard->framebuffer_size);
+            memset((uint8_t *)pico_vgaboard->framebuffer, 0, pico_vgaboard->framebuffer_size);
         }
     }
     // Draw title?
@@ -246,12 +245,11 @@ void example_demo_loop(void)
            DEPTH,
            pico_vgaboard->freq_hz);
 #endif
-    init_windows(0, 0);
+    // init_windows(0, 0);
     // init_windows(0, 8);
-    // init_windows(8, 8);
+    init_windows(16, 8);
     // init_windows( HEIGHT <= 192 ? 0 : HEIGHT <= 240 ? 8 : 16, 8);
-    // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() %
-    // (COLORS - 1), 1 + rand() % (COLORS - 1));
+    // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
     demo = 0;
     buttons_demo_first = false;
     buttons_demo_next = false;
@@ -262,8 +260,7 @@ void example_demo_loop(void)
         wprintf(L"Launching #%d of %d: %ls\r\n", demo, N_DEMOS, demos[demo].name);
 #endif
         // Clear framebuffer between each demo
-        memset(
-            (uint8_t *)pico_vgaboard->framebuffer, 0, pico_vgaboard->framebuffer_size);
+        memset((uint8_t *)pico_vgaboard->framebuffer, 0, pico_vgaboard->framebuffer_size);
         if (demos[demo].init())
         {
             if (pico_vgaboard->double_buffer)
@@ -436,7 +433,7 @@ int main(void)
     // setup(&pico_vgaboard_384x288x4bpp        , 256, 256); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
-    // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
+    setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  ,   0,   0); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 320); // OK
@@ -476,7 +473,6 @@ int main(void)
     // setup(&pico_vgaboard_1024x576x4bpp_294912, 640, 400); // OK, too much margins
 
     /******************************* 16:10 RATIO ******************************/
-
     // setup(&pico_vgaboard_160x200x4bpp_16000  ,   0,   0); // OK (Amstrad CPC / Fruity Frank compatible ;-))
     // setup(&pico_vgaboard_320x100x4bpp_16000  ,   0,   0); // OK (Hi to George Foot! https://www.youtube.com/watch?v=8Vbphmf4Ocw)
     // setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
@@ -485,7 +481,7 @@ int main(void)
     // setup(&pico_vgaboard_320x400x4bpp        , 256, 256); // OK
     // setup(&pico_vgaboard_336x210x4bpp_1      , 256, 192); // OK
     // setup(&pico_vgaboard_336x210x4bpp_1      , 320, 180); // OK
-    setup(&pico_vgaboard_336x210x4bpp_1      , 320, 200); // OK
+    // setup(&pico_vgaboard_336x210x4bpp_1      , 320, 200); // OK
     // setup(&pico_vgaboard_512x192x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_560x350x4bpp_1      , 384, 288); // OK
     // setup(&pico_vgaboard_560x350x4bpp_1      , 480, 272); // OK (1680x1050 based, 16:9ish TIC-80)

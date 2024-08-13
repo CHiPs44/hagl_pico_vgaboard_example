@@ -20,7 +20,7 @@ As of March 2024, included demos are:
 - **Filled figures**: same with filled primitives
 - **Bars**: sliding bars at different speeds
 - **Fonts**: sample text for every HAGL font (from 5x7 to 8x13) and 8x8 BIOS type one
-- **Scrolling 16 colors tiles & sprites**: "Cosmic Fight" idel screen with tiles, aliens, ships & score
+- **Scrolling 16 colors tiles & sprites**: "Cosmic Battle" screen with tiles, aliens, ship & score
 
 ## Status
 

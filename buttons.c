@@ -75,7 +75,6 @@ void buttons_handle()
 #if PICO_VGABOARD_DEBUG
             printf("BLACK BORDERS!\n");
 #endif
-            /* Random border colors in letterbox mode instead of default black ones */
             pico_vgaboard->border_color_top = 0;
             pico_vgaboard->border_color_left = 0;
             pico_vgaboard->border_color_bottom = 0;
