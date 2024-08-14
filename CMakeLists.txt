@@ -145,8 +145,8 @@ pico_add_extra_outputs(${PROJECT_NAME})
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC
   # Allow VREG voltage to be more than default?
-  # ALLOW_VREG_VOLTAGE_OVERRIDE=0
-  ALLOW_VREG_VOLTAGE_OVERRIDE=1
+  ALLOW_VREG_VOLTAGE_OVERRIDE=0
+  # ALLOW_VREG_VOLTAGE_OVERRIDE=1
   # Needed for 640x480 modes
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
   # Needed for 800x600 modes
@@ -171,9 +171,9 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
   # PICO_VGABOARD_VRAM_SIZE=76800
   # PICO_VGABOARD_VRAM_SIZE=98304
   # 128 KB
-  PICO_VGABOARD_VRAM_SIZE=131072
+  # PICO_VGABOARD_VRAM_SIZE=131072
   # 2 x 320x240 16 colors framebuffers
-  # PICO_VGABOARD_VRAM_SIZE=76800
+  PICO_VGABOARD_VRAM_SIZE=76800
   # use MALLOC if size is zero => DOES NOT WORK, IMAGE IS CORRUPTED
   # PICO_VGABOARD_VRAM_SIZE=0
   # As we use 10x20 fonts max, set char buffer size accordingly (10 * 20 * 2)
@@ -220,6 +220,6 @@ set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS "-Wl,--pri
 #     message(STATUS "${_variableName}=${${_variableName}}")
 # endforeach()
 
-message(STATUS "THIS IS THE END.")
+# message(STATUS "THIS IS THE END.")
 
 # EOF
