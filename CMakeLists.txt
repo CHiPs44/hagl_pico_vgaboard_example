@@ -6,7 +6,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# set(PROJECT_NAME hagl_pico_vgaboard_example)
+set(PROJECT_NAME hagl_pico_vgaboard_example)
 
 # Initialise pico_sdk from installed location
 # (note this can come from environment, CMake cache etc)
@@ -17,10 +17,10 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(PICO_SDK_PATH ${USERHOME}/.pico-sdk/sdk/1.5.1)
+set(PICO_SDK_PATH ${USERHOME}/.pico-sdk/sdk/2.0.0)
 set(PICO_TOOLCHAIN_PATH ${USERHOME}/.pico-sdk/toolchain/13_2_Rel1)
 if(WIN32)
-    set(pico-sdk-tools_DIR ${USERHOME}/.pico-sdk/tools/1.5.1)
+    set(pico-sdk-tools_DIR ${USERHOME}/.pico-sdk/tools/2.0.0)
     include(${pico-sdk-tools_DIR}/pico-sdk-tools-config.cmake)
     include(${pico-sdk-tools_DIR}/pico-sdk-tools-config-version.cmake)
 endif()
@@ -46,18 +46,18 @@ set(PICO_SDK 1)
 include(pico_sdk_import.cmake)
 include(pico_extras_import.cmake)
 
-if (PICO_SDK_VERSION_STRING VERSION_LESS "1.5.1")
+if (PICO_SDK_VERSION_STRING VERSION_LESS "2.0.0")
   message(
     FATAL_ERROR 
-    "Raspberry Pi Pico SDK version 1.5.1 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}"
+    "Raspberry Pi Pico SDK version 2.0.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}"
   )
 endif()
 
-project(hagl_pico_vgaboard_example C CXX ASM)
+project(${PROJECT_NAME} C CXX ASM)
 
 pico_sdk_init()
 
-add_executable(hagl_pico_vgaboard_example example.c)
+add_executable(${PROJECT_NAME} example.c)
 
 # Add this in a project that uses this HAL
 # (git add submodule https://github.com/CHiPs44/hagl_pico_vgaboard.git --branch develop external/hagl_hal)
@@ -92,55 +92,55 @@ include(../chips44-fonts/CMakeLists.txt)
 endif()
 
 # Set program name and version for UF2 / picotool
-pico_set_program_name(hagl_pico_vgaboard_example 
+pico_set_program_name(${PROJECT_NAME} 
   "Raspberry Pi Pico HAGL HAL for VGA board example"
 )
-pico_set_program_version(hagl_pico_vgaboard_example 
+pico_set_program_version(${PROJECT_NAME} 
   "0.1"
 )
 
 if (UART_TYPE EQUAL NONE)
   # Disable USB output, disable UART output
-  pico_enable_stdio_usb(hagl_pico_vgaboard_example 0)
-  pico_enable_stdio_uart(hagl_pico_vgaboard_example 0)
+  pico_enable_stdio_usb(${PROJECT_NAME} 0)
+  pico_enable_stdio_uart(${PROJECT_NAME} 0)
 endif()
 
 if (UART_TYPE EQUAL USB)
   # Enable USB output, disable UART output
-  pico_enable_stdio_usb(hagl_pico_vgaboard_example 1)
-  pico_enable_stdio_uart(hagl_pico_vgaboard_example 0)
+  pico_enable_stdio_usb(${PROJECT_NAME} 1)
+  pico_enable_stdio_uart(${PROJECT_NAME} 0)
 endif()
 
 if (UART_TYPE EQUAL GPIO)
   # Serial on GPIO20/GPIO21 with cutted tracks
-  pico_enable_stdio_usb(hagl_pico_vgaboard_example 0)
-  pico_enable_stdio_uart(hagl_pico_vgaboard_example 1)
-  target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
+  pico_enable_stdio_usb(${PROJECT_NAME} 0)
+  pico_enable_stdio_uart(${PROJECT_NAME} 1)
+  target_compile_definitions(${PROJECT_NAME} PUBLIC
     PICO_DEFAULT_UART_TX_PIN=20
     PICO_DEFAULT_UART_RX_PIN=21
   )
 endif()
 
 # Add the standard library to the build
-target_link_libraries(hagl_pico_vgaboard_example 
+target_link_libraries(${PROJECT_NAME} 
   pico_stdlib
 )
 
 # Add any user requested libraries
 if (NOT PICO_NO_HARDWARE)
-  target_link_libraries(hagl_pico_vgaboard_example 
+  target_link_libraries(${PROJECT_NAME} 
     hardware_interp
     pico_rand
   )
 endif()
-target_link_libraries(hagl_pico_vgaboard_example 
+target_link_libraries(${PROJECT_NAME} 
   pico_scanvideo_dpi
   pico_multicore
   hagl
   hagl_hal
 )
 
-pico_add_extra_outputs(hagl_pico_vgaboard_example)
+pico_add_extra_outputs(${PROJECT_NAME})
 
 # To change build type, use:
 # cmake .. -DCMAKE_BUILD_TYPE=Debug
@@ -150,7 +150,7 @@ pico_add_extra_outputs(hagl_pico_vgaboard_example)
 # No more <optimized out> messages (really?)
 # -DPICO_DEOPTIMIZED_DEBUG=1
 
-target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
+target_compile_definitions(${PROJECT_NAME} PUBLIC
   # Allow VREG voltage to be more than default?
   ALLOW_VREG_VOLTAGE_OVERRIDE=0
   # ALLOW_VREG_VOLTAGE_OVERRIDE=1
@@ -203,7 +203,7 @@ target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
 #              RAM:       94392 B       256 KB     36.01%
 #        SCRATCH_X:          2 KB         4 KB     50.00%
 #        SCRATCH_Y:          0 GB         4 KB      0.00%
-set_property(TARGET hagl_pico_vgaboard_example APPEND_STRING PROPERTY LINK_FLAGS "-Wl,--print-memory-usage")
+set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS "-Wl,--print-memory-usage")
 
 # # cf. https://stackoverflow.com/questions/6902149/listing-include-directories-in-cmake
 # message(STATUS "DIRS?")
