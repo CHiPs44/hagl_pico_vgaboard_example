@@ -277,8 +277,8 @@ void example_demo_loop(void)
                 wait_for_vblank();
                 screen_update();
             }
-            clock_t demo_now_ms = get_time_ms();
-            volatile clock_t demo_end_ms =
+            uint64_t demo_now_ms = get_time_ms();
+            volatile uint64_t demo_end_ms =
                 demo_now_ms + demos[demo].duration_s * 1000;
             while ((demo_now_ms < demo_end_ms) && !buttons_demo_next &&
                    !buttons_demo_first)

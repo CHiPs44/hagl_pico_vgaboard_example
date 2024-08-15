@@ -1,5 +1,7 @@
 /* SPDX-License-Identifier: MIT-0 */
 
+#include "palettes/console16.h"
+
 #define __ CO16_GREYISH
 #define XX CO16_GREEN
 #define YY CO16_WHITE

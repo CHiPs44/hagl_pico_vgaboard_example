@@ -7,7 +7,9 @@
                 "${userHome}/.pico-sdk/sdk/2.0.0/**",
                 "${workspaceFolder}/../pico-extras/**",
                 "${workspaceFolder}/../hagl_pico_vgaboard/**",
-                "${workspaceFolder}/../hagl/include/**"
+                "${workspaceFolder}/../hagl/include/**",
+                "${workspaceFolder}/../embedded-fonts/**",
+                "${workspaceFolder}/../fontx2-fonts/**"
             ],
             "forcedInclude": [
                 "${workspaceFolder}/build/generated/pico_base/pico/config_autogen.h",

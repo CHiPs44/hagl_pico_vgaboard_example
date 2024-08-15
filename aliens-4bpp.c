@@ -1,6 +1,10 @@
 /* SPDX-License-Identifier: MIT-0 */
 
-#include <pico/time.h>
+#include "hagl.h"
+#include "hagl_ext.h"
+// #include "aliens-4bpp.h"
+
+// extern hagl_ext_surface_t *hagl_ext_backend;
 
 typedef struct {
   int16_t x;
@@ -63,8 +67,8 @@ void alien_anim() {
     if (alien_counter % 100 == 0 && alien_speed_ms >= (ALIEN_SPEED_MS / 8)) {
       alien_speed_ms -= ALIEN_SPEED_MS / 8;
     }
-    int16_t min_x = 9999, max_x = 0;
-    int16_t min_y = 9999, max_y = 0;
+    int16_t min_x = INT16_MAX, max_x = INT16_MIN;
+    int16_t min_y = INT16_MAX, max_y = INT16_MIN;
     for (size_t i = 0; i < ALIEN_COUNT; i++) {
       if (aliens[i].alive && rand() % (8 * ALIEN_COUNT) == 0) {
         aliens[i].alive = false;
