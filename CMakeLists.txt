@@ -36,8 +36,8 @@ set(GIT_MODULES 0)
 
 set(PICO_BOARD vgaboard)
 # set(UART_TYPE NONE)
-# set(UART_TYPE USB)
-set(UART_TYPE GPIO)
+set(UART_TYPE USB)
+# set(UART_TYPE GPIO)
 
 # hagl/CMakeLists.txt wants this
 set(PICO_SDK 1)
@@ -203,7 +203,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 #              RAM:       94392 B       256 KB     36.01%
 #        SCRATCH_X:          2 KB         4 KB     50.00%
 #        SCRATCH_Y:          0 GB         4 KB      0.00%
-set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS "-Wl,--print-memory-usage")
+set_property(TARGET hagl_pico_vgaboard_example APPEND_STRING PROPERTY LINK_FLAGS "-Wl,--print-memory-usage")
 
 # # cf. https://stackoverflow.com/questions/6902149/listing-include-directories-in-cmake
 # message(STATUS "DIRS?")
