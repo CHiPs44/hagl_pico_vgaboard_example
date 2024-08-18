@@ -39,6 +39,8 @@
 #include "palettes/pico8.h"
 #include "palettes/rgb121.h"
 #include "palettes/na16.h"
+#include "palettes/fantasy16.h"
+#include "palettes/perfect16.h"
 #include "palettes/palettes.h"
 // Modes
 #include "modes/experimental/1024x576.h"
@@ -107,20 +109,22 @@ palette_t palettes_2bpp[] = {
 #define N_PALETTES_2BPP (sizeof(palettes_2bpp) / sizeof(palette_t))
 
 palette_t palettes_4bpp[] = {
-    { /* 06 */ .name = L"Console 16"         , .code = L"CO16  ", .palette = palette_4bpp_co16       },
-    { /* 00 */ .name = L"ANSI 16"            , .code = L"ANSI16", .palette = palette_4bpp_ansi       },
-    { /* 01 */ .name = L"Amstrad CPC mode 0" , .code = L"CPC0  ", .palette = palette_4bpp_cpc0       },
-    { /* 02 */ .name = L"Atari STE"          , .code = L"STE   ", .palette = palette_4bpp_atari_ste  },
-    { /* 03 */ .name = L"Bubblegum 16"       , .code = L"BG16  ", .palette = palette_4bpp_bg16       },
-    { /* 04 */ .name = L"CGA"                , .code = L"CGA   ", .palette = palette_4bpp_cga        },
-    { /* 05 */ .name = L"Commodore 64"       , .code = L"C64   ", .palette = palette_4bpp_c64        },
-    { /* 07 */ .name = L"Dawnbringer 16"     , .code = L"DB16  ", .palette = palette_4bpp_db16       },
-    { /* 08 */ .name = L"Grey/Gray 16"       , .code = L"GREY16", .palette = palette_4bpp_grey       },
-    { /* 09 */ .name = L"Sweetie 16"         , .code = L"SW16  ", .palette = palette_4bpp_sw16       },
-    { /* 10 */ .name = L"Night 16"           , .code = L"NGHT16", .palette = palette_4bpp_night16    },
-    { /* 11 */ .name = L"Pico-8"             , .code = L"PICO8" , .palette = palette_4bpp_pico8      },
-    { /* 12 */ .name = L"4-bit RGB"          , .code = L"RGB121", .palette = palette_4bpp_rgb121     },
-    { /* 13 */ .name = L"Nauris 16"          , .code = L"NA16"  , .palette = palette_4bpp_na16       },
+    { /* 00 */ .name = L"ANSI 16"            , .code = L"ANSI16", .palette = palette_4bpp_ansi      },
+    { /* 01 */ .name = L"Amstrad CPC mode 0" , .code = L"CPC0  ", .palette = palette_4bpp_cpc0      },
+    { /* 02 */ .name = L"Atari STE"          , .code = L"STE   ", .palette = palette_4bpp_atari_ste },
+    { /* 03 */ .name = L"Bubblegum 16"       , .code = L"BG16  ", .palette = palette_4bpp_bg16      },
+    { /* 04 */ .name = L"CGA"                , .code = L"CGA   ", .palette = palette_4bpp_cga       },
+    { /* 05 */ .name = L"Commodore 64"       , .code = L"C64   ", .palette = palette_4bpp_c64       },
+    { /* 06 */ .name = L"Console 16"         , .code = L"CO16  ", .palette = palette_4bpp_co16      },
+    { /* 07 */ .name = L"Dawnbringer 16"     , .code = L"DB16  ", .palette = palette_4bpp_db16      },
+    { /* 08 */ .name = L"Grey/Gray 16"       , .code = L"GREY16", .palette = palette_4bpp_grey      },
+    { /* 09 */ .name = L"Sweetie 16"         , .code = L"SW16  ", .palette = palette_4bpp_sw16      },
+    { /* 10 */ .name = L"Night 16"           , .code = L"NGHT16", .palette = palette_4bpp_night16   },
+    { /* 11 */ .name = L"Pico-8"             , .code = L"PICO8 ", .palette = palette_4bpp_pico8     },
+    { /* 12 */ .name = L"4-bit RGB"          , .code = L"RGB121", .palette = palette_4bpp_rgb121    },
+    { /* 13 */ .name = L"Nauris 16"          , .code = L"NA16  ", .palette = palette_4bpp_na16      },
+    { /* 14 */ .name = L"Fantasy 16"         , .code = L"FANT16", .palette = palette_4bpp_fantasy16 },
+    { /* 15 */ .name = L"Perfect 16"         , .code = L"PERF16", .palette = palette_4bpp_perfect16 },
 };
 #define N_PALETTES_4BPP (sizeof(palettes_4bpp) / sizeof(palette_t))
 
@@ -589,7 +593,8 @@ int main(void)
         panic("NO PALETTES for DEPTH %d!!!", DEPTH);
         break;
     }
-    palette_index = 0;
+    // palette_index = 0;
+    palette_index = rand() % palette_count;
     pico_vgaboard_set_palette(palette_table[palette_index].palette);
     palette_name = palette_table[palette_index].name;
 
