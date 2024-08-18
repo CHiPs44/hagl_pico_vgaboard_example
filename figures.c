@@ -1,10 +1,10 @@
 /* SPDX-License-Identifier: MIT-0 */
 
-int figure;
+// int figure;
 
 bool figures_init()
 {
-    figure = rand() % 9;
+    // figure = rand() % 9;
     // figure = 7 + rand() % 2;
     return true;
 }
@@ -12,7 +12,7 @@ bool figures_init()
 /**
  * @brief Draw random lines, squares, rectangles, circles & ellipses
  */
-void figures_draw()
+void figures_draw_hollow()
 {
     uint16_t x0, y0, x1, y1, x2, y2, x3, y3, x4, y4;
     uint16_t w, h;
@@ -21,7 +21,8 @@ void figures_draw()
     w  = 8 + rand() % (DEMO.w / 8);
     h  = 8 + rand() % (DEMO.h / 8);
     uint8_t  c = 1 + rand() % (COLORS  - 1);
-    switch (figure)
+    // switch (figure)
+    switch (rand() % 9)
     {
         case 0: // Line
             hagl_draw_line          (hagl_backend, x0, y0, x0 + w - 1, y0 + h - 1, c);            
@@ -45,8 +46,8 @@ void figures_draw()
             hagl_draw_ellipse       (hagl_backend, x0, y0, w         , h         , c);
             break;
         case 7: // Triangle
-            x0 = DEMO.x + rand() % (DEMO.w);
-            y0 = DEMO.y + rand() % (DEMO.h);
+            // x0 = DEMO.x + rand() % (DEMO.w);
+            // y0 = DEMO.y + rand() % (DEMO.h);
             x1 = DEMO.x + rand() % (DEMO.w);
             y1 = DEMO.y + rand() % (DEMO.h);
             x2 = DEMO.x + rand() % (DEMO.w);
@@ -54,8 +55,8 @@ void figures_draw()
             hagl_draw_triangle      (hagl_backend, x0, y0, x1, y1, x2, y2        , c);
             break;
         case 8: // Polygon
-            x0 = DEMO.x + rand() % (DEMO.w);
-            y0 = DEMO.y + rand() % (DEMO.h);
+            // x0 = DEMO.x + rand() % (DEMO.w);
+            // y0 = DEMO.y + rand() % (DEMO.h);
             x1 = DEMO.x + rand() % (DEMO.w);
             y1 = DEMO.y + rand() % (DEMO.h);
             x2 = DEMO.x + rand() % (DEMO.w);
@@ -73,26 +74,46 @@ void figures_draw()
 /**
  * @brief Fill random squares, rectangles, circles & ellipses
  */
-void figures_fill()
+void figures_draw_filled()
 {
-    uint16_t x = DEMO.x + rand() % (DEMO.w / 1);
-    uint16_t y = DEMO.y + rand() % (DEMO.h / 1);
+    uint16_t x0, y0, x1, y1, x2, y2, x3, y3, x4, y4;
+    x0 = DEMO.x + rand() % (DEMO.w / 1);
+    y0 = DEMO.y + rand() % (DEMO.h / 1);
     uint16_t w = 8 + rand() % (DEMO.w / 8);
     uint16_t h = 8 + rand() % (DEMO.h / 8);
     uint8_t  c = 1 + rand() % (COLORS  - 1);
-    switch (rand() % 4)
+    switch (rand() % 5)
     {
         case 0:
-            hagl_fill_rectangle_xywh(hagl_backend, x, y, w, w, c);
+            hagl_fill_rectangle_xywh(hagl_backend, x0, y0, w, w, c);
             break;
         case 1:
-            hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
+            hagl_fill_rectangle_xywh(hagl_backend, x0, y0, w, h, c);
             break;
         case 2:
-            hagl_fill_circle        (hagl_backend, x, y, w   , c);
+            hagl_fill_circle        (hagl_backend, x0, y0, w   , c);
             break;
         case 3:
-            hagl_fill_ellipse       (hagl_backend, x, y, w, h, c);
+            hagl_fill_ellipse       (hagl_backend, x0, y0, w, h, c);
+            break;
+        case 4:
+            x1 = DEMO.x + rand() % (DEMO.w);
+            y1 = DEMO.y + rand() % (DEMO.h);
+            x2 = DEMO.x + rand() % (DEMO.w);
+            y2 = DEMO.y + rand() % (DEMO.h);
+            hagl_fill_triangle      (hagl_backend, x0, y0, x1, y1, x2, y2, c);
+            break;
+        case 5:
+            x1 = DEMO.x + rand() % (DEMO.w);
+            y1 = DEMO.y + rand() % (DEMO.h);
+            x2 = DEMO.x + rand() % (DEMO.w);
+            y2 = DEMO.y + rand() % (DEMO.h);
+            x3 = DEMO.x + rand() % (DEMO.w);
+            y3 = DEMO.y + rand() % (DEMO.h);
+            x4 = DEMO.x + rand() % (DEMO.w);
+            y4 = DEMO.y + rand() % (DEMO.h);
+            uint16_t v[5 * 2] = { x0, y0, x1, y1, x2, y2, x3, y3, x4, y4 };
+            hagl_fill_polygon       (hagl_backend, 5, v, c);
             break;
     }
 }

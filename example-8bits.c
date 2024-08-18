@@ -172,18 +172,18 @@ typedef struct _demo_t
 /* clang-format off */
 /** @brief Demo table */
 demo_t demos[] = {
-    // { .name = L"Minimal"            , .init = minimal_init      , .draw = minimal_draw      , .done = NULL              , .cumulative = true , .duration_s = 15 },
-    // { .name = L"Double buffer test" , .init = dblbuf_init       , .draw = dblbuf_draw       , .done = dblbuf_done       , .cumulative = false, .duration_s = 15 },
-    { .name = L"Specifications"     , .init = specs_init        , .draw = specs_draw        , .done = NULL              , .cumulative = false, .duration_s = 15 },
-    { .name = L"Palette"            , .init = palette_init      , .draw = palette_draw      , .done = NULL              , .cumulative = false, .duration_s = 15 },
-    { .name = L"Hollow figures"     , .init = figures_init      , .draw = figures_draw      , .done = NULL              , .cumulative = true , .duration_s = 15 },
-    { .name = L"Filled figures"     , .init = figures_init      , .draw = figures_fill      , .done = NULL              , .cumulative = true , .duration_s = 15 },
-    { .name = L"Bars"               , .init = bars_init         , .draw = bars_draw         , .done = NULL              , .cumulative = false, .duration_s = 15 },
-    { .name = L"Rectangles"         , .init = rects_init        , .draw = rects_draw        , .done = NULL              , .cumulative = true , .duration_s = 15 },
-    { .name = L"Fonts"              , .init = fonts_init        , .draw = fonts_draw        , .done = NULL              , .cumulative = false, .duration_s = 15 },
-    { .name = L"Images"             , .init = images_init       , .draw = images_draw       , .done = images_done       , .cumulative = false, .duration_s = 40 },
-    { .name = L"16 color sprites"   , .init = sprites_init      , .draw = sprites_draw      , .done = sprites_done      , .cumulative = false, .duration_s = 60 },
-    { .name = L"Scroller"           , .init = scroller_init     , .draw = scroller_draw     , .done = NULL              , .cumulative = true , .duration_s = 60 },
+    // { .name = L"Minimal"            , .init = minimal_init      , .draw = minimal_draw       , .done = NULL              , .cumulative = true , .duration_s = 15 },
+    // { .name = L"Double buffer test" , .init = dblbuf_init       , .draw = dblbuf_draw        , .done = dblbuf_done       , .cumulative = false, .duration_s = 15 },
+    { .name = L"Specifications"     , .init = specs_init        , .draw = specs_draw         , .done = NULL              , .cumulative = false, .duration_s = 15 },
+    { .name = L"Palette"            , .init = palette_init      , .draw = palette_draw       , .done = NULL              , .cumulative = false, .duration_s = 15 },
+    { .name = L"Hollow figures"     , .init = figures_init      , .draw = figures_draw_hollow, .done = NULL              , .cumulative = true , .duration_s = 15 },
+    { .name = L"Filled figures"     , .init = figures_init      , .draw = figures_draw_filled, .done = NULL              , .cumulative = true , .duration_s = 15 },
+    { .name = L"Bars"               , .init = bars_init         , .draw = bars_draw          , .done = NULL              , .cumulative = false, .duration_s = 15 },
+    { .name = L"Rectangles"         , .init = rects_init        , .draw = rects_draw         , .done = NULL              , .cumulative = true , .duration_s = 15 },
+    { .name = L"Fonts"              , .init = fonts_init        , .draw = fonts_draw         , .done = NULL              , .cumulative = false, .duration_s = 15 },
+    { .name = L"Images"             , .init = images_init       , .draw = images_draw        , .done = images_done       , .cumulative = false, .duration_s = 40 },
+    { .name = L"16 color sprites"   , .init = sprites_init      , .draw = sprites_draw       , .done = sprites_done      , .cumulative = false, .duration_s = 60 },
+    { .name = L"Scroller"           , .init = scroller_init     , .draw = scroller_draw      , .done = NULL              , .cumulative = true , .duration_s = 60 },
 };
 /* clang-format on */
 #define N_DEMOS (sizeof(demos) / sizeof(demo_t))

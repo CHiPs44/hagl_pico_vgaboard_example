@@ -83,8 +83,8 @@ typedef struct _demo_t
 demo_t demos[] = {
     { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL       , .duration_s = 10 },
     { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL       , .duration_s = 10 },
-    { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL       , .duration_s = 10 },
-    { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL       , .duration_s = 10 },
+    { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw_hollow      , .done = NULL       , .duration_s = 10 },
+    { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_draw_filled      , .done = NULL       , .duration_s = 10 },
     { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL       , .duration_s = 10 },
     { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL       , .duration_s = 10 },
     { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL       , .duration_s = 10 },
