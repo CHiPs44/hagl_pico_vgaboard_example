@@ -36,6 +36,9 @@
 #include "palettes/grey.h"
 #include "palettes/sweetie16.h"
 #include "palettes/night16.h"
+#include "palettes/pico8.h"
+#include "palettes/rgb121.h"
+#include "palettes/na16.h"
 #include "palettes/palettes.h"
 // Modes
 #include "modes/experimental/1024x576.h"
@@ -89,6 +92,8 @@ palette_t palettes_1bpp[] = {
     { /* 2 */ .name = L"Amstrad CPC mode 2" , .code = L"CPC2  ", .palette = palette_1bpp_cpc2       },
     { /* 3 */ .name = L"Green CRT 2"        , .code = L"GREEN2", .palette = palette_1bpp_green      },
     { /* 4 */ .name = L"Black on white"     , .code = L"PAPER2", .palette = palette_1bpp_paper      },
+    { /* 5 */ .name = L"Casio LCD"          , .code = L"CASIO2", .palette = palette_1bpp_casio      },
+    { /* 6 */ .name = L"Sharp LCD"          , .code = L"SHARP2", .palette = palette_1bpp_sharp      },
 };
 #define N_PALETTES_1BPP (sizeof(palettes_1bpp) / sizeof(palette_t))
 
@@ -102,17 +107,20 @@ palette_t palettes_2bpp[] = {
 #define N_PALETTES_2BPP (sizeof(palettes_2bpp) / sizeof(palette_t))
 
 palette_t palettes_4bpp[] = {
-    { /* 6 */ .name = L"Console 16"         , .code = L"CO16  ", .palette = palette_4bpp_co16       },
-    { /* 0 */ .name = L"ANSI 16"            , .code = L"ANSI16", .palette = palette_4bpp_ansi       },
-    { /* 1 */ .name = L"Amstrad CPC mode 0" , .code = L"CPC0  ", .palette = palette_4bpp_cpc0       },
-    { /* 2 */ .name = L"Atari STE"          , .code = L"STE   ", .palette = palette_4bpp_atari_ste  },
-    { /* 3 */ .name = L"Bubblegum 16"       , .code = L"BG16  ", .palette = palette_4bpp_bg16       },
-    { /* 4 */ .name = L"CGA"                , .code = L"CGA   ", .palette = palette_4bpp_cga        },
-    { /* 5 */ .name = L"Commodore 64"       , .code = L"C64   ", .palette = palette_4bpp_c64        },
-    { /* 7 */ .name = L"Dawnbringer 16"     , .code = L"DB16  ", .palette = palette_4bpp_db16       },
-    { /* 8 */ .name = L"Grey/Gray 16"       , .code = L"GREY16", .palette = palette_4bpp_grey       },
-    { /* 9 */ .name = L"Sweetie 16"         , .code = L"SW16  ", .palette = palette_4bpp_sw16       },
-    { /* 9 */ .name = L"Night 16"           , .code = L"NGHT16", .palette = palette_4bpp_night16    },
+    { /* 06 */ .name = L"Console 16"         , .code = L"CO16  ", .palette = palette_4bpp_co16       },
+    { /* 00 */ .name = L"ANSI 16"            , .code = L"ANSI16", .palette = palette_4bpp_ansi       },
+    { /* 01 */ .name = L"Amstrad CPC mode 0" , .code = L"CPC0  ", .palette = palette_4bpp_cpc0       },
+    { /* 02 */ .name = L"Atari STE"          , .code = L"STE   ", .palette = palette_4bpp_atari_ste  },
+    { /* 03 */ .name = L"Bubblegum 16"       , .code = L"BG16  ", .palette = palette_4bpp_bg16       },
+    { /* 04 */ .name = L"CGA"                , .code = L"CGA   ", .palette = palette_4bpp_cga        },
+    { /* 05 */ .name = L"Commodore 64"       , .code = L"C64   ", .palette = palette_4bpp_c64        },
+    { /* 07 */ .name = L"Dawnbringer 16"     , .code = L"DB16  ", .palette = palette_4bpp_db16       },
+    { /* 08 */ .name = L"Grey/Gray 16"       , .code = L"GREY16", .palette = palette_4bpp_grey       },
+    { /* 09 */ .name = L"Sweetie 16"         , .code = L"SW16  ", .palette = palette_4bpp_sw16       },
+    { /* 10 */ .name = L"Night 16"           , .code = L"NGHT16", .palette = palette_4bpp_night16    },
+    { /* 11 */ .name = L"Pico-8"             , .code = L"PICO8" , .palette = palette_4bpp_pico8      },
+    { /* 12 */ .name = L"4-bit RGB"          , .code = L"RGB121", .palette = palette_4bpp_rgb121     },
+    { /* 13 */ .name = L"Nauris 16"          , .code = L"NA16"  , .palette = palette_4bpp_na16       },
 };
 #define N_PALETTES_4BPP (sizeof(palettes_4bpp) / sizeof(palette_t))
 
@@ -380,6 +388,7 @@ int main(void)
     // setup(&pico_vgaboard_640x360x1bpp        ,   0,   0); // OK
 
     /******************************* 16:10 RATIO ******************************/
+    // setup(&pico_vgaboard_560x350x1bpp        ,   0,   0); // KO?
     // setup(&pico_vgaboard_640x200x1bpp_16000  ,   0,   0); // OK
     // setup(&pico_vgaboard_640x400x1bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_840x525x1bpp_1      , 640, 400); // OK
