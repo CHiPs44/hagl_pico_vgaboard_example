@@ -35,6 +35,7 @@
 #include "palettes/dawnbringer16.h"
 #include "palettes/grey.h"
 #include "palettes/sweetie16.h"
+#include "palettes/night16.h"
 #include "palettes/palettes.h"
 // Modes
 #include "modes/experimental/1024x576.h"
@@ -55,7 +56,7 @@
 #include "hagl.h"
 #include "hagl_hal.h"
 #include "hagl_hal_color.h"
-// HAGL extension
+// HAGL EXTended
 #include "hagl_ext.h"
 #include "hagl_ext_blit.h"
 #include "hagl_ext_char.h"
@@ -111,6 +112,7 @@ palette_t palettes_4bpp[] = {
     { /* 7 */ .name = L"Dawnbringer 16"     , .code = L"DB16  ", .palette = palette_4bpp_db16       },
     { /* 8 */ .name = L"Grey/Gray 16"       , .code = L"GREY16", .palette = palette_4bpp_grey       },
     { /* 9 */ .name = L"Sweetie 16"         , .code = L"SW16  ", .palette = palette_4bpp_sw16       },
+    { /* 9 */ .name = L"Night 16"           , .code = L"NGHT16", .palette = palette_4bpp_night16    },
 };
 #define N_PALETTES_4BPP (sizeof(palettes_4bpp) / sizeof(palette_t))
 
