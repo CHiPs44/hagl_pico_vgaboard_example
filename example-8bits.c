@@ -401,7 +401,7 @@ int main(void)
 
     /******************************** 5:4 RATIO *******************************/
     // setup(&pico_vgaboard_640x512x1bpp        ,   0,   0); // OK ()
-    // setup(&pico_vgaboard_640x512x1bpp_2        ,   0,   0); // OK
+    // setup(&pico_vgaboard_640x512x1bpp_2      ,   0,   0); // OK
 
     /******************************* 16:9 RATIO *******************************/
     // setup(&pico_vgaboard_640x360x1bpp        ,   0,   0); // OK
@@ -448,7 +448,7 @@ int main(void)
     // setup(&pico_vgaboard_384x288x4bpp        , 256, 256); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
-    setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
+    // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  ,   0,   0); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 320); // OK
@@ -457,11 +457,11 @@ int main(void)
     // setup(&pico_vgaboard_800x600x4bpp        , 640, 480); // OK 
 
     /******************************** 5:4 RATIO *******************************/
-    // setup(&pico_vgaboard_320x256x4bpp        ,   0,   0); // OK
-    // setup(&pico_vgaboard_320x256x4bpp        , 320, 200); // OK
     // setup(&pico_vgaboard_320x256x4bpp        , 224, 256); // OK (Space Invaders rulez ;-), again)
-    // setup(&pico_vgaboard_320x256x4bpp_2      ,   0,   0); // OK
-    // setup(&pico_vgaboard_320x256x4bpp_2      , 288, 224); // OK, sort of, no bottom border on my LG monitor...
+    setup(&pico_vgaboard_320x256x4bpp        , 320, 200); // OK
+    // setup(&pico_vgaboard_320x256x4bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_320x256x4bpp_2      ,   0,   0); // KO, should work on my old Dell
+    // setup(&pico_vgaboard_320x256x4bpp_2      , 288, 224); // KO, no bottom border on my monitors...
     // setup(&pico_vgaboard_640x256x4bpp        ,   0,   0); // OK
 
     /******************************* 16:9 RATIO *******************************/
@@ -529,9 +529,10 @@ int main(void)
     // setup(&pico_vgaboard_640x480x8bpp_307200 , 480, 272); // OK (2x scale of TIC-80 => 130560 bytes framebuffer)
 
     /******************************** 5:4 RATIO *******************************/
+    // setup(&pico_vgaboard_320x256x8bpp        ,   320,   200); // OK
     // setup(&pico_vgaboard_320x256x8bpp        ,   0,   0); // OK
-    // setup(&pico_vgaboard_320x256x8bpp_2      ,   0,   0); // OK
-    // setup(&pico_vgaboard_320x256x8bpp_2      , 288, 224); // OK, sort of, no bottom border on my LG monitor...
+    // setup(&pico_vgaboard_320x256x8bpp_2      ,   0,   0); // KO
+    // setup(&pico_vgaboard_320x256x8bpp_2      , 288, 224); // KO, sort of, no bottom border on my LG monitor...
 
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x8bpp        ,   0,   0); // OK
@@ -599,7 +600,8 @@ int main(void)
     palette_name = palette_table[palette_index].name;
 
 #if PICO_VGABOARD_DEBUG
-    printf("*** CORE1 => RENDER LOOP (%d plane%s) ***\n", PICO_SCANVIDEO_PLANE_COUNT, PICO_SCANVIDEO_PLANE_COUNT > 1 ? "s" : "");
+    printf("*** CORE1 => RENDER LOOP (%d plane%s) ***\n",
+           PICO_SCANVIDEO_PLANE_COUNT, PICO_SCANVIDEO_PLANE_COUNT > 1 ? "s" : "");
 #endif
     multicore_launch_core1(pico_vgaboard_render_loop);
 #if PICO_VGABOARD_DEBUG

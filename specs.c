@@ -17,7 +17,7 @@
 size_t get_free_ram_1()
 {
 #if !PICO_NO_HARDWARE
-    size_t left = 0, right = 512 * 1024, middle;
+    size_t left = 0, right = 1024 * 1024, middle;
     void *ptr;
     while (left < right)
     {
