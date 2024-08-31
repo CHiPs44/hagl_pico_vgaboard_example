@@ -172,7 +172,7 @@ void specs_calc(bool for_scroller)
     labels[i++] = for_scroller ? L"Palette"            : (DEMO.w > 160 ? L"PALETTE    " : L"PAL ");
     labels[i++] = for_scroller ? L"Pico SDK"           : (DEMO.w > 160 ? L"PICO SDK   " : L"SDK ");
     labels[i++] = for_scroller ? L"Pico serial number" : (DEMO.w > 160 ? L"SERIAL NUM " : L"S/N ");
-    labels[i++] = for_scroller ? L"RP2040 ROM rev."    : (DEMO.w > 160 ? L"RP2040 ROM " : L"ROM ");
+    labels[i++] = for_scroller ? L"CPU / ROM"          : (DEMO.w > 160 ? L"CPU/ROM    " : L"CPU ");
     labels[i++] = for_scroller ? L"Free memory"        : (DEMO.w > 160 ? L"FREE RAM   " : L"FREE");
     /* clang-format on */
     /* VALUES */
@@ -180,24 +180,45 @@ void specs_calc(bool for_scroller)
 #if !PICO_NO_HARDWARE
     char unique_id[2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1];
     pico_get_unique_board_id_string(unique_id, 2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1);
+#if HAS_RP2350_TRNG
+    uint8_t rom = rp2350_chip_version();
+    wchar_t *rev;
+    switch (rom)
+    {
+    case 0:
+#if PICO_RP2350A
+        rev = L"RP2350A A0";
+#else
+        rev = L"RP2350B A0";
+#endif
+        break;
+    case 1:
+        rev = L"RP2350 A1";
+        break;
+    case 2:
+        rev = L"RP2350 A2";
+        break;
+    }
+#else
     uint8_t rom = rp2040_rom_version();
     wchar_t *rev;
     switch (rom)
     {
     case 1:
-        rev = L"B0";
+        rev = L"RP2040 B0";
         break;
     case 2:
-        rev = L"B1";
+        rev = L"RP2040 B1";
         break;
     case 3:
-        rev = L"B2";
+        rev = L"RP2040 B2";
         break;
     default:
         rom = 0;
         rev = L"?0";
         break;
     }
+#endif
     int sys_clock_khz = clock_get_hz(clk_sys) / 1000;
 #else
     char unique_id[2 * 8 + 1];
@@ -229,7 +250,7 @@ void specs_calc(bool for_scroller)
     swprintf(values[i++], zzz, L"%ls"           , DEPTH == 16 ? L"N/A" : palette_name);
     swprintf(values[i++], zzz, L"v%s"           , PICO_SDK_VERSION_STRING);
     swprintf(values[i++], zzz, L"%s"            , unique_id);
-    swprintf(values[i++], zzz, L"%d/%ls"        , rom, rev);
+    swprintf(values[i++], zzz, L"%ls (%d)"      , rev, rom);
     swprintf(values[i++], zzz, L"%d/%d"         , get_free_ram_1(), get_free_ram_2());
     /* clang-format on */
 #if PICO_VGABOARD_DEBUG

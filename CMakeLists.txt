@@ -34,7 +34,17 @@ set(CMAKE_MESSAGE_LOG_LEVEL "DEBUG")
 # Use includes for dependencies
 set(GIT_MODULES 0)
 
+# cf. https://github.com/raspberrypi/pico-sdk/issues/1789
+set(PICO_BOARD_HEADER_DIRS ${CMAKE_CURRENT_LIST_DIR}/boards)
+
+# cf. https://forums.raspberrypi.com/viewtopic.php?t=375074#p2248387
+# Pico / RP2040 
+# set(PICO_BOARD vgaboard)
+# Pico 2 / RP2350
+# set(PICO_BOARD vgaboard-pico2)
 set(PICO_BOARD vgaboard)
+set(PICO_PLATFORM rp2350)
+
 # set(UART_TYPE NONE)
 set(UART_TYPE USB)
 # set(UART_TYPE GPIO)
@@ -119,6 +129,8 @@ if (UART_TYPE EQUAL GPIO)
     PICO_DEFAULT_UART_TX_PIN=20
     PICO_DEFAULT_UART_RX_PIN=21
   )
+  # Serial means SD card is 1 bit (4 bits otherwise)
+  set(PICO_SD_DAT_PIN_COUNT 1)
 endif()
 
 # Add the standard library to the build
@@ -175,12 +187,13 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
   # NORMAL: OK for 640x480 based modes and below
   # PICO_VGABOARD_VRAM_SIZE=65536
   # BIG: OK for 16 or 256 colors based modes in "hi-res"
-  # PICO_VGABOARD_VRAM_SIZE=76800
   # PICO_VGABOARD_VRAM_SIZE=98304
+  # 2 x 320x240 256 colors framebuffers
+  PICO_VGABOARD_VRAM_SIZE=153600
   # 128 KB
   # PICO_VGABOARD_VRAM_SIZE=131072
   # 2 x 320x240 16 colors framebuffers
-  PICO_VGABOARD_VRAM_SIZE=76800
+  # PICO_VGABOARD_VRAM_SIZE=76800
   # use MALLOC if size is zero => DOES NOT WORK, IMAGE IS CORRUPTED
   # PICO_VGABOARD_VRAM_SIZE=0
   # As we use 10x20 fonts max, set char buffer size accordingly (10 * 20 * 2)

@@ -458,7 +458,7 @@ int main(void)
 
     /******************************** 5:4 RATIO *******************************/
     // setup(&pico_vgaboard_320x256x4bpp        , 224, 256); // OK (Space Invaders rulez ;-), again)
-    setup(&pico_vgaboard_320x256x4bpp        , 320, 200); // OK
+    // setup(&pico_vgaboard_320x256x4bpp        , 320, 200); // OK
     // setup(&pico_vgaboard_320x256x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x256x4bpp_2      ,   0,   0); // KO, should work on my old Dell
     // setup(&pico_vgaboard_320x256x4bpp_2      , 288, 224); // KO, no bottom border on my monitors...
@@ -522,7 +522,7 @@ int main(void)
     // setup(&pico_vgaboard_256x192x8bpp_49152_2, 240, 136); // OK (16:9 letterbox as 1x scale of TIC-80)
     // setup(&pico_vgaboard_320x240x8bpp_76800  ,   0,   0); // OK (/!\ 76,800 bytes framebuffer /!\)
     // setup(&pico_vgaboard_320x240x8bpp_76800  , 256, 224); // OK (NES letterbox)
-    // setup(&pico_vgaboard_320x240x8bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
+    // setup(&pico_vgaboard_320x240x8bpp_76800  , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x8bpp        , 256, 192); // OK
     // setup(&pico_vgaboard_384x144x8bpp        ,   0,   0); // KO after a few seconds
     // setup(&pico_vgaboard_384x288x8bpp_110592 ,   0,   0); // ?
@@ -537,6 +537,7 @@ int main(void)
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x8bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x8bpp        ,   0,   0); // OK
+    setup(&pico_vgaboard_336x210x8bpp_1      , 320, 200); // OK
     // setup(&pico_vgaboard_560x175x8bpp_1      , 384, 170); // OK (1680x1050 based)
 
     /******************************* 16:9 RATIO *******************************/
