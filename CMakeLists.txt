@@ -17,13 +17,10 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(PICO_SDK_PATH ${USERHOME}/.pico-sdk/sdk/2.0.0)
-set(PICO_TOOLCHAIN_PATH ${USERHOME}/.pico-sdk/toolchain/13_2_Rel1)
-if(WIN32)
-    set(pico-sdk-tools_DIR ${USERHOME}/.pico-sdk/tools/2.0.0)
-    include(${pico-sdk-tools_DIR}/pico-sdk-tools-config.cmake)
-    include(${pico-sdk-tools_DIR}/pico-sdk-tools-config-version.cmake)
-endif()
+set(sdkVersion 2.0.0)
+set(toolchainVersion 13_2_Rel1)
+set(picotoolVersion 2.0.0)
+include(${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 # ====================================================================================
 
 # Use cmake --log-level=debug to get debug output.
@@ -38,12 +35,18 @@ set(GIT_MODULES 0)
 set(PICO_BOARD_HEADER_DIRS ${CMAKE_CURRENT_LIST_DIR}/boards)
 
 # cf. https://forums.raspberrypi.com/viewtopic.php?t=375074#p2248387
-# Pico / RP2040 
+
+# # RP2040
+# set(PICO_PLATFORM rp2040)
+# # Pico
 # set(PICO_BOARD vgaboard)
-# Pico 2 / RP2350
-# set(PICO_BOARD vgaboard-pico2)
-set(PICO_BOARD vgaboard)
+
+# RP2350
 set(PICO_PLATFORM rp2350)
+# Pico 2
+set(PICO_BOARD vgaboard-pico2)
+# # Pimoroni Pico Plus 2 / RP2350
+# set(PICO_BOARD vgaboard-pimorono-pico-plus-2)
 
 # set(UART_TYPE NONE)
 set(UART_TYPE USB)

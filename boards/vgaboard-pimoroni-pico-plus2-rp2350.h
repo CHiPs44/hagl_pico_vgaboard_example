@@ -9,10 +9,10 @@
 //       SHOULD ONLY CONSIST OF PREPROCESSOR DIRECTIVES
 // -----------------------------------------------------
 
-// NB: copied from vgaboard.h for Pico 2
+// NB: copied from vgaboard.h for Pimoroni Pico Plus 2
 
-#ifndef _BOARDS_VGABOARD_PICO2_H
-#define _BOARDS_VGABOARD_PICO2_H
+#ifndef _BOARDS_VGABOARD_PIMORONI_PICO_PLUS2_RP2350_H
+#define _BOARDS_VGABOARD_PIMORONI_PICO_PLUS2_RP2350_H
 
 // For board detection
 #define RASPBERRYPI_VGABOARD
@@ -102,7 +102,7 @@
 
 #define PICO_VGA_BOARD
 
-// vgaboard with a Pico 2 on it, so default anything we haven't set above
-#include "boards/pico2.h"
+// vgaboard with a Pimoroni Pico Plus 2 on it, so default anything we haven't set above
+#include "boards/pimoroni_pico_plus2_rp2350.h"
 
 #endif
