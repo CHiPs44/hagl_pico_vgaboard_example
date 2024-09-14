@@ -180,7 +180,7 @@ void specs_calc(bool for_scroller)
 #if !PICO_NO_HARDWARE
     char unique_id[2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1];
     pico_get_unique_board_id_string(unique_id, 2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1);
-#if HAS_RP2350_TRNG
+#if PICO_RP2350
     uint8_t rom = rp2350_chip_version();
     wchar_t *rev;
     switch (rom)
